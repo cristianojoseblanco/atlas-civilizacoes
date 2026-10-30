@@ -98,3 +98,33 @@ Fontes F150–F255. A maior parte é da UNESCO (fichas do Patrimônio Mundial e 
   - A Muralha Ming foi "reforçada" por volta de 1490.
   - A Primeira Guerra terminou com "bombardeios aéreos".
 - As outras 27 são fatos de manual conferidos, mas ainda sem fonte ligada.
+
+## 30/10/2026: quinta rodada (lugares, casos, sincronias e eventos)
+
+Fontes F328–F415. Agora 410 itens têm fonte, 96 estão revisados sem fonte e 1 é contestado.
+
+- **Lugares:** todos os lugares têm fonte. As fichas da UNESCO cobrem a maior parte; os sítios fora da lista usam artigos científicos (Nature 2022 para Casarabe, Science 2003 para Kuhikugu, Neves et al. 1999 para Luzia, Ancient Mesoamerica 2022 para El Mirador), o INAH (La Venta, Tula), a Britannica e Schaan (Marajó).
+- **Correções em lugares:**
+  - Teotihuacan: saiu "mais de 100 mil pessoas" (a UNESCO diz pelo menos 25 mil).
+  - Chichén Itzá: saiu a serpente de sombra nos equinócios.
+  - Chaco: saíram os alinhamentos astronômicos; entraram as estradas.
+  - Stonehenge: "alinhado aos solstícios" virou "significado astronômico ainda estudado".
+  - Machu Picchu: saiu "propriedade real inca".
+  - Tikal: início em -600.
+  - El Mirador: "dezenas de cidades" virou "centenas de cidades, vilas e aldeias".
+- **Casos das grandes perguntas:** os 7 restantes têm fonte. Stonehenge usa o estudo dos porcos de Madgwick et al. 2019; Monte Albán usa Marcus e Flannery.
+- **Sincronias:** as 27 restantes têm fonte. Textos ajustados ao que as fontes dizem:
+  - S008: Tera "entre cerca de 1600 e 1525 a.C.".
+  - S017: Tikal e Calakmul em 537 viraram "Tikal, e um século depois a dinastia Kaan em Calakmul".
+  - S018: Chang'an com perto de 1 milhão.
+  - S020: Cahokia com 10 a 20 mil, sem comparar com Londres.
+  - S021: Angkor como capital khmer.
+  - S025: Shakespeare e Cervantes com 11 dias de diferença.
+  - S028: Nintendo, data de 1889 contestada.
+  - S029: tanques em 1916, sem "bombardeios aéreos".
+  - Datas de referência sem fonte própria nesta tabela: morte de Cleópatra (30 a.C.), Apollo 11 (1969), Torre Eiffel (1889).
+- **Eventos:** os 18 têm fonte.
+  - Alexandre: "dezenas de cidades" virou "cerca de 20".
+  - Cabral: avistou terra em 22/4 e ancorou em Porto Seguro dias depois.
+  - Astecas e incas: saiu "a varíola matou mais que as armas"; entrou a morte de Huayna Capac.
+- **Ainda sem fonte (96):** civilizações (62), passeios (20), rotas (10) e artes (4). As 15 épocas são resumos editoriais e ficam fora dessa conta.
