@@ -10,7 +10,10 @@ def snaps():
         y = int(m.group(2)) * (-1 if m.group(1) else 1)
         t = json.loads(f.read_text()); k = list(t['objects'])[0]; t['objects'] = {'r': t['objects'][k]}
         out[y] = t
-    return ('const SNAP_YEARS=' + json.dumps(sorted(out)) + ';\nconst SNAPS=' +
+    meta = json.loads((data / 'ne_meta.json').read_text())
+    years = sorted(set(out) | {int(k) for k in meta})
+    return ('const NE_META=' + json.dumps({int(k): v for k, v in meta.items()}) + ';const NE_CUSTOM=' + (data / 'ne_custom.json').read_text() +
+            ';const SNAP_YEARS=' + json.dumps(years) + ';\nconst SNAPS=' +
             json.dumps({str(k): v for k, v in out.items()}, separators=(',', ':')) + ';')
 
 def geo():

@@ -14,6 +14,7 @@ Mapa interativo das civilizações ao longo do tempo, de 123 mil a.C. até hoje:
 - **Grandes perguntas**: casos do modelo clássico (Childe) e contraexemplos (Graeber & Wengrow) sobre agricultura, cidades sem reis e origem da escrita.
 - **Enquanto isso…**: sincronias surpreendentes em cada época.
 - **Busca** por civilização, cidade, sítio, evento ou rota (atalho `/`).
+- **Oriente Próximo desenhado à mão** entre 3500 e 1500 a.C. (Uruk, Akkad, Ur III, Hamurabi, Dilmun, Magan, Marhashi, Mitanni…), com 5 épocas extras na linha do tempo.
 - **Cartões** em português com período, centros e contexto de cada civilização, cidade ou sítio.
 
 O resultado é um único `index.html` autocontido, que funciona offline e no celular.
@@ -45,6 +46,7 @@ Para regenerar `data/` do zero (fronteiras, rios, relevo): `npm run data` (preci
 
 ## Fontes dos dados
 
+- Fronteiras do Oriente Próximo entre 3500 e 1500 a.C.: desenhadas para este atlas (`scripts/ne_borders.py`), aproximadas.
 - Fronteiras históricas: [historical-basemaps](https://github.com/aourednik/historical-basemaps), de A. Ourednik (GPL-3.0). São aproximadas, sobretudo antes de 1000 a.C.
 - Relevo sombreado, litoral, rios e lagos: [Natural Earth](https://www.naturalearthdata.com/) (domínio público).
 - Textos, datas de cidades e sítios: redação própria, aproximada e em revisão.

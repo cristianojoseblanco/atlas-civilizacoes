@@ -41,10 +41,16 @@ function ptName(name){
 }
 
 const OCC = {};
-SNAP_YEARS.forEach(y => SNAPS[y].objects.r.geometries.forEach(g => {
-  const n = g.properties && g.properties.NAME; if (!n) return;
-  (OCC[n] = OCC[n] || []).push(y);
-}));
+// nomes presentes em cada época (as épocas do Oriente Próximo combinam uma base mundial com os mapas desenhados à mão)
+const CUSTOM_NAMES = new Set(NE_CUSTOM.features.map(f => f.properties.NAME));
+function namesAt(y){
+  const m = NE_META[y];
+  const base = SNAPS[m ? m.base : y].objects.r.geometries.map(g => g.properties && g.properties.NAME).filter(Boolean).map(n => n.trim());
+  if (!m) return base;
+  const rm = new Set(m.remove);
+  return base.filter(n => !rm.has(n)).concat(NE_CUSTOM.features.filter(f => f.properties.ano === y).map(f => f.properties.NAME));
+}
+SNAP_YEARS.forEach(y => namesAt(y).forEach(n => (OCC[n] = OCC[n] || []).push(y)));
 for (const k in OCC) OCC[k] = [...new Set(OCC[k])];
 
 // ---------- imagens de relevo ----------
@@ -65,8 +71,15 @@ function fixWinding(f){
 }
 function features(year){
   if (!geoCache.has(year)) {
-    const fc = topojson.feature(SNAPS[year], SNAPS[year].objects.r);
-    geoCache.set(year, fc.features.filter(f => f.geometry && f.properties.NAME).map(fixWinding));
+    const m = NE_META[year], by = m ? m.base : year;
+    const fc = topojson.feature(SNAPS[by], SNAPS[by].objects.r);
+    let list = fc.features.filter(f => f.geometry && f.properties.NAME);
+    if (m) {
+      const rm = new Set(m.remove);
+      list = list.filter(f => !rm.has(f.properties.NAME.trim()))
+        .concat(NE_CUSTOM.features.filter(f => f.properties.ano === year).map(f => JSON.parse(JSON.stringify(f))));
+    }
+    geoCache.set(year, list.map(fixWinding));
   }
   return geoCache.get(year);
 }
@@ -359,7 +372,8 @@ function openCiv(name, quiet){
   $('#cTitle').textContent = ptName(name);
   $('#cSub').textContent = ptName(name) !== name ? name : '';
   $('#cMeta').innerHTML = (civ ? `<b>Período:</b> ${civ.periodo}<br><b>Centros:</b> ${civ.cidades}<br>` : '') +
-    `<span class="muted">${rangeText(name)}${here ? '' : ' · não existe nesta data'}</span>`;
+    `<span class="muted">${rangeText(name)}${here ? '' : ' · não existe nesta data'}</span>` +
+    (CUSTOM_NAMES.has(name) ? '<br><span class="muted">Fronteira desenhada para este atlas, aproximada.</span>' : '');
   $('#cText').textContent = civ ? civ.texto : 'Ainda sem descrição própria no atlas.';
   $('#cLink').href = wiki(civ ? civ.pt : name);
   const ys = OCC[name] || [];
@@ -413,7 +427,13 @@ function overlapsSnap(y, e, i = idx){
   const cur = SNAP_YEARS[i], prev = i > 0 ? SNAP_YEARS[i-1] : -Infinity;
   return y <= cur && e > prev;
 }
-const activeEvents = () => EVENTS.filter(ev => overlapsSnap(ev.y, ev.e));
+// sequências só aparecem nas épocas em que alguma parada nova acontece
+const activeEvents = () => EVENTS.filter(ev => {
+  if (!overlapsSnap(ev.y, ev.e)) return false;
+  if (ev.tipo !== 'seq') return true;
+  const cur = SNAP_YEARS[idx], prev = idx > 0 ? SNAP_YEARS[idx-1] : -Infinity;
+  return ev.pts.some(p => p.y > prev && p.y <= cur);
+});
 const activeRoutes = () => showRoutes ? ROUTES.filter(r => overlapsSnap(r.y, r.e) || (r.y <= SNAP_YEARS[idx] && r.e >= SNAP_YEARS[idx])) : [];
 const evOverride = {};
 const S = (x, y) => [x * transform.k + transform.x, y * transform.k + transform.y];
@@ -873,6 +893,7 @@ function initialView(){
 }
 window.__pt = (lon, lat) => { const p = projection([lon, lat]); return [p[0]*transform.k + transform.x, p[1]*transform.k + transform.y]; };
 window.__go = i => go(i);
+window.__ne = () => flyTo([[35,26],[62,38]]);
 window.addEventListener('resize', () => { setup(); redraw(); });
 setup(); slider.value = idx; updateHUD(false);
 d3.select(canvas).call(zoom.transform, initialView());

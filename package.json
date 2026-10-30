@@ -1,12 +1,13 @@
 {
   "name": "atlas-civilizacoes",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "description": "Atlas interativo das civilizações ao longo do tempo",
   "license": "GPL-3.0-only",
   "scripts": {
     "build": "python3 scripts/build.py",
-    "data": "bash scripts/fetch_raw.sh && bash scripts/build_data.sh"
+    "data": "bash scripts/fetch_raw.sh && bash scripts/build_data.sh && npm run ne",
+    "ne": "python3 scripts/ne_borders.py && npx mapshaper -i raw/ne_custom_raw.geojson -clip raw/land50.geojson -o data/ne_custom.json format=geojson precision=0.001 force && node scripts/build_ne.js"
   },
   "dependencies": {
     "d3": "^7.9.0",
