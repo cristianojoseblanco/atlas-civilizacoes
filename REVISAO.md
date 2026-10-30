@@ -128,3 +128,23 @@ Fontes F328–F415. Agora 410 itens têm fonte, 96 estão revisados sem fonte e 
   - Cabral: avistou terra em 22/4 e ancorou em Porto Seguro dias depois.
   - Astecas e incas: saiu "a varíola matou mais que as armas"; entrou a morte de Huayna Capac.
 - **Ainda sem fonte (96):** civilizações (62), passeios (20), rotas (10) e artes (4). As 15 épocas são resumos editoriais e ficam fora dessa conta.
+
+## 30/10/2026: sexta rodada (civilizações, rotas, passeios e artes)
+
+- **Fontes:** 50 novas (F416–F465). Agora 505 de 507 itens têm fonte. Fica sem fonte só o padrão polinésio: não achei peça de museu confiável para ancorá-lo.
+- **Civilizações (62):** todas com fonte, temas e nível. Correções de texto:
+  - Teotihuacan: saiu "mais de 100 mil habitantes"; a UNESCO dá ao menos 25 mil, e outras estimativas são maiores.
+  - Incas: estradas de "40 mil km" viraram "mais de 30 mil km".
+  - Khmer: saiu "maior monumento religioso do mundo".
+  - Gupta: "era clássica" agora aparece como rótulo questionado.
+  - Frígios: Midas é histórico; o toque de ouro e o nó górdio são lendas. Período ajustado para c. 950–550 a.C.
+  - Jōmon: período ajustado para c. 13 mil–400 a.C. (UNESCO).
+  - Hunos: o empurrão sobre os godos (376) é anterior a Átila.
+  - Mali: saiu "talvez o homem mais rico da história".
+  - Grande Zimbábue: saiu a cerâmica chinesa, sem fonte.
+  - Hurritas, Máuria, Alexandre, Sabá e Srivijaya: ajustes menores.
+  - Xia: confiança das datas baixa; a existência da dinastia não tem registro da época.
+- **Rotas (10):** todas com fonte. Lápis-lazúli: "única fonte" virou "fonte mais provável".
+- **Passeios (20) e artes (3):** com fonte. O passeio de Alexandre também passou a dizer "pouco mais de dez anos".
+- **Temas automáticos:** os temas de lugares (260) e sincronias (30) foram sugeridos por palavras-chave e precisam de revisão humana. Os das civilizações, rotas, eventos e passeios foram escolhidos item a item.
+- Afirmações que as fontes não cobrem ficaram anotadas em `notas_revisao` de cada linha.
