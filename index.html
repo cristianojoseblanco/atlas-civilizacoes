@@ -58,6 +58,18 @@ header h1 small{display:block;font-family:Inter;font-weight:400;font-size:11px;l
 #cClose{position:absolute;top:10px;right:10px;border:none;background:none;color:var(--mute);font-size:22px;cursor:pointer;width:32px;height:32px}
 #layers{display:flex;gap:6px}
 .layersbtn{display:none;background:var(--panel);color:var(--ink);border:1px solid var(--line);width:34px;height:30px;border-radius:999px;font-size:15px;cursor:pointer}
+.searchbtn{display:block;font-size:19px;line-height:1}
+#search{position:fixed;inset:0;background:rgba(4,8,12,.55);backdrop-filter:blur(3px);display:none;justify-content:center;align-items:flex-start;z-index:11;padding:70px 14px 14px}
+#search.open{display:flex}
+.s-box{width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+#sInput{width:100%;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);font:500 17px Inter,system-ui,sans-serif;padding:16px 18px;outline:none}
+#sResults{max-height:min(60vh,520px);overflow:auto;padding:6px}
+.s-item{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;width:100%;text-align:left;background:none;border:none;color:var(--ink);padding:9px 10px;border-radius:10px;cursor:pointer;font-family:inherit}
+.s-item.on,.s-item:hover{background:rgba(255,255,255,.07)}
+.s-k{grid-row:1/3;align-self:center;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);border:1px solid var(--line);border-radius:6px;padding:3px 6px;min-width:78px;text-align:center}
+.s-item b{font-weight:600;font-size:14px}
+.s-sub{font-size:12px;color:var(--mute)}
+.s-hint{padding:14px;color:var(--mute);font-size:13px}
 .tourbtn{font:600 12px Inter,system-ui,sans-serif;background:var(--gold);color:#1a1405;border:none;padding:7px 12px;border-radius:999px;cursor:pointer}
 #tour{position:fixed;left:12px;right:12px;top:88px;max-height:calc(100vh - 330px);overflow:auto;max-width:440px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 16px 12px;backdrop-filter:blur(8px);z-index:6;box-shadow:0 10px 40px rgba(0,0,0,.5);transform:translateY(-130%);opacity:0;transition:transform .4s ease,opacity .4s}
 #tour:not(.open),#card:not(.open){pointer-events:none}
@@ -99,6 +111,7 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
 <header>
   <h1>Atlas das Civilizações<small>Fronteiras do mundo ao longo do tempo</small></h1>
   <div class="toggles">
+    <button id="btnSearch" class="layersbtn searchbtn" aria-label="Buscar">⌕</button>
     <button id="btnTours" class="tourbtn">▶ Passeios</button>
     <button id="btnLayers" class="layersbtn" aria-label="Camadas">☰</button>
     <div id="layers">
@@ -137,6 +150,7 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
   <div id="tText"></div>
   <div class="t-ctrl"><button id="tPrev" aria-label="Parada anterior">‹</button><button id="tAuto" aria-label="Pausar ou continuar">❚❚</button><button id="tNext" aria-label="Próxima parada">›</button><div class="t-prog"><i id="tProg"></i></div></div>
 </div>
+<div id="search"><div class="s-box"><input id="sInput" type="search" placeholder="Buscar: Uruk, Incas, Rota da Seda, Peste…" autocomplete="off"><div id="sResults"></div></div></div>
 <div id="tourMenu"><div class="tm-box"><div class="tm-top"><h2>Passeios guiados</h2><button id="tmClose" aria-label="Fechar">×</button></div><div id="tmList"></div></div></div>
 <div class="credit">Fronteiras: <a href="https://github.com/aourednik/historical-basemaps" target="_blank" rel="noopener">historical-basemaps</a> (GPL-3), aproximadas · Relevo e rios: Natural Earth</div>
 
@@ -156,8 +170,8 @@ const SNAPS={"100":{"type":"Topology","arcs":[[[11827,10940],[7,-51]],[[11834,10
 // Datas aproximadas; anos negativos = a.C.
 const PLACES = [
   // ---------- Mesopotâmia ----------
-  {k:'c', n:"Eridu", p:"Iraque", lat:30.816, lon:45.996, y:-5400, e:-600, w:2, t:"Para os sumérios, a primeira cidade criada pelos deuses. O templo de Enki foi reconstruído mais de 15 vezes no mesmo lugar, e na época a cidade ficava à beira do Golfo."},
-  {k:'c', n:"Uruk", p:"Iraque", lat:31.322, lon:45.636, y:-4500, e:300, w:3, t:"Talvez a primeira cidade de verdade, com dezenas de milhares de habitantes por volta de 3100 a.C. Lá surgiu a escrita cuneiforme, e foi a cidade do rei Gilgamesh."},
+  {k:'c', n:"Eridu", p:"Iraque", lat:30.816, lon:45.996, y:-5400, e:-600, w:2, t:"Para os sumérios, a primeira cidade criada pelos deuses. O templo de Enki foi reconstruído mais de 15 vezes no mesmo lugar, e a cidade ficava perto de lagunas ligadas ao Golfo."},
+  {k:'c', n:"Uruk", p:"Iraque", lat:31.322, lon:45.636, y:-4500, e:300, w:3, t:"Talvez a primeira cidade de verdade, com dezenas de milhares de habitantes por volta de 3100 a.C. Lá surgiu a escrita cuneiforme, e era a cidade do lendário rei Gilgamesh."},
   {k:'c', n:"Ur", p:"Iraque", lat:30.962, lon:46.103, y:-3800, e:-500, w:3, t:"Tumbas reais com ouro e lápis-lazúli, o grande zigurate de Ur-Nammu e capital da 3ª dinastia de Ur, o último império sumério."},
   {k:'c', n:"Lagash", p:"Iraque", lat:31.41, lon:46.40, y:-3000, e:-1700, w:2, t:"Cidade-Estado suméria rival de Umma. A disputa entre as duas por terras e canais gerou a Estela dos Abutres, um dos primeiros registros de guerra da história. Foi a terra do rei Gudea."},
   {k:'c', n:"Girsu", p:"Iraque", lat:31.56, lon:46.18, y:-3500, e:-1600, w:1, t:"Centro religioso do Estado de Lagash, onde foram achadas as famosas estátuas de diorito de Gudea."},
@@ -175,15 +189,15 @@ const PLACES = [
   {k:'c', n:"Nínive", p:"Iraque", lat:36.36, lon:43.15, y:-3000, e:-612, w:3, t:"Capital assíria de Senaqueribe e Assurbanípal. Sua biblioteca preservou a Epopeia de Gilgamesh. Caiu em 612 a.C."},
   {k:'c', n:"Nimrud", p:"Iraque", lat:36.10, lon:43.33, y:-1270, e:-612, w:1, t:"Capital assíria com touros alados e os tesouros das rainhas assírias."},
   {k:'c', n:"Selêucia", p:"Iraque", lat:33.10, lon:44.52, y:-305, e:200, w:1, t:"Fundada pelos selêucidas para substituir Babilônia. Foi uma das maiores cidades helenísticas."},
-  {k:'c', n:"Ctesifonte", p:"Iraque", lat:33.09, lon:44.58, y:-120, e:800, w:2, t:"Capital parta e sassânida. O arco do Taq Kasra é a maior abóbada de tijolos sem armação do mundo antigo."},
+  {k:'c', n:"Ctesifonte", p:"Iraque", lat:33.09, lon:44.58, y:-120, e:800, w:2, t:"Capital parta e sassânida. O arco do Taq Kasra é uma das maiores abóbadas de tijolo já construídas."},
   {k:'c', n:"Bagdá", p:"Iraque", lat:33.31, lon:44.36, y:762, e:null, w:3, t:"A Cidade Redonda dos abássidas e sede da Casa da Sabedoria."},
   // ---------- Irã, Golfo e Ásia Central ----------
   {k:'c', n:"Susa", p:"Irã", lat:32.19, lon:48.26, y:-4200, e:1218, w:3, t:"Capital de Elam e depois dos persas aquemênidas, onde foi achado o Código de Hamurabi, levado como butim."},
   {k:'c', n:"Anshan", p:"Irã", lat:29.99, lon:52.42, y:-3200, e:-500, w:1, t:"Capital das terras altas de Elam. Ciro, o Grande, se chamava 'rei de Anshan'."},
   {k:'c', n:"Jiroft (Konar Sandal)", p:"Irã", lat:28.43, lon:57.79, y:-3000, e:-2200, w:2, t:"Civilização da Idade do Bronze revelada em 2000–2001, depois de saques de túmulos. Famosa pelos vasos de clorita esculpidos, exportados até a Mesopotâmia. Alguns pesquisadores a ligam à lendária Aratta ou a Marhashi."},
   {k:'c', n:"Shahr-i Sokhta", p:"Irã", lat:30.60, lon:61.33, y:-3200, e:-1800, w:2, t:"A 'Cidade Queimada', no Sistão. Lá foram achados um olho artificial de cerca de 2800 a.C. e um dos tabuleiros de jogo mais antigos."},
-  {k:'c', n:"Dilmun (Qal'at al-Bahrain)", p:"Bahrein", lat:26.233, lon:50.52, y:-2800, e:-500, w:2, t:"Entreposto do Golfo entre a Mesopotâmia, Magan (Omã) e o Indo. No mito sumério, é a 'terra pura' do paraíso. Deixou dezenas de milhares de túmulos em monte."},
-  {k:'c', n:"Gonur Tepe", p:"Turcomenistão", lat:38.21, lon:62.04, y:-2400, e:-1600, w:1, t:"Capital do Complexo do Oxus (BMAC), uma civilização de fortalezas e templos no deserto do Karakum."},
+  {k:'c', n:"Dilmun (Qal'at al-Bahrain)", p:"Bahrein", lat:26.233, lon:50.52, y:-2300, e:-500, w:2, t:"Entreposto do Golfo entre a Mesopotâmia, Magan (Omã) e o Indo. No mito sumério, é a 'terra pura' do paraíso. Chegou a ter dezenas de milhares de túmulos em monte; cerca de 11 mil ainda existem."},
+  {k:'c', n:"Gonur Tepe", p:"Turcomenistão", lat:38.21, lon:62.04, y:-2400, e:-1600, w:1, t:"Principal centro conhecido do Complexo do Oxus (BMAC), uma civilização de fortalezas e templos no delta do Murghab, no deserto do Karakum."},
   {k:'c', n:"Ecbátana", p:"Irã", lat:34.80, lon:48.52, y:-700, e:null, w:1, t:"Capital meda com sete muralhas concêntricas, segundo Heródoto. Hoje é a cidade de Hamadã."},
   {k:'c', n:"Samarcanda", p:"Uzbequistão", lat:39.65, lon:66.97, y:-700, e:null, w:2, t:"Grande cidade da Rota da Seda, conquistada por Alexandre e capital de Tamerlão."},
   {k:'c', n:"Merv", p:"Turcomenistão", lat:37.66, lon:62.19, y:-500, e:1221, w:1, t:"Talvez a maior cidade do mundo no século 12, até ser arrasada pelos mongóis."},
@@ -196,14 +210,14 @@ const PLACES = [
   {k:'c', n:"Damasco", p:"Síria", lat:33.51, lon:36.29, y:-3000, e:null, w:2, t:"Uma das cidades habitadas continuamente mais antigas do mundo."},
   {k:'c', n:"Jerusalém", p:"Israel/Palestina", lat:31.778, lon:35.235, y:-1800, e:null, w:2, t:"Cidade sagrada para judeus, cristãos e muçulmanos, destruída e reconstruída várias vezes."},
   {k:'c', n:"Hattusa", p:"Turquia", lat:40.02, lon:34.615, y:-2000, e:-1180, w:2, t:"Capital hitita, onde foram achados milhares de tabletes, entre eles a versão hitita do tratado de Kadesh."},
-  {k:'c', n:"Kanesh (Kültepe)", p:"Turquia", lat:38.85, lon:35.63, y:-2000, e:-1700, w:1, t:"Colônia de mercadores assírios. Seus cerca de 23 mil tabletes são o arquivo comercial mais antigo que se conhece."},
+  {k:'c', n:"Kanesh (Kültepe)", p:"Turquia", lat:38.85, lon:35.63, y:-2000, e:-1700, w:1, t:"Colônia de mercadores assírios. Seus cerca de 23 mil tabletes formam um dos maiores arquivos comerciais da Antiguidade."},
   {k:'c', n:"Troia", p:"Turquia", lat:39.957, lon:26.239, y:-3000, e:500, w:2, t:"Dez camadas de cidades sobrepostas. Troia VI–VII é a candidata à Troia de Homero."},
   {k:'c', n:"Petra", p:"Jordânia", lat:30.329, lon:35.444, y:-300, e:700, w:2, t:"Capital nabateia esculpida na rocha rosa, mantida por um sistema engenhoso de coleta de água."},
   {k:'c', n:"Palmira", p:"Síria", lat:34.55, lon:38.27, y:-100, e:1400, w:1, t:"Oásis caravaneiro da rainha Zenóbia, que desafiou Roma."},
   // ---------- Egito, Núbia e África ----------
   {k:'c', n:"Mênfis", p:"Egito", lat:29.845, lon:31.25, y:-3100, e:640, w:3, t:"Primeira capital do Egito unificado, junto às necrópoles de Sacara e Gizé."},
-  {k:'c', n:"Tebas (Luxor)", p:"Egito", lat:25.70, lon:32.64, y:-2100, e:null, w:3, t:"Capital do Império Novo, com Karnak, Luxor e o Vale dos Reis."},
-  {k:'c', n:"Avaris", p:"Egito", lat:30.787, lon:31.82, y:-1800, e:-1530, w:1, t:"Capital dos hicsos, governantes estrangeiros do delta, com afrescos minoicos."},
+  {k:'c', n:"Tebas (Luxor)", p:"Egito", lat:25.70, lon:32.64, y:-2100, e:null, w:3, t:"Capital religiosa do Império Novo, com Karnak, Luxor e o Vale dos Reis."},
+  {k:'c', n:"Avaris", p:"Egito", lat:30.787, lon:31.82, y:-1800, e:-1530, w:1, t:"Capital dos hicsos, governantes estrangeiros do delta. Depois deles, ganhou afrescos de estilo minoico."},
   {k:'c', n:"Amarna", p:"Egito", lat:27.645, lon:30.895, y:-1346, e:-1332, w:2, t:"Capital-relâmpago de Akhenaton, construída para o culto de Aton e abandonada em cerca de 15 anos. Foi ali que surgiu o busto de Nefertiti."},
   {k:'c', n:"Alexandria", p:"Egito", lat:31.20, lon:29.92, y:-331, e:null, w:3, t:"Fundada por Alexandre. Teve o Farol e a Biblioteca e foi o centro do saber helenístico."},
   {k:'c', n:"Kerma", p:"Sudão", lat:19.60, lon:30.41, y:-2500, e:-1500, w:2, t:"Capital do primeiro reino de Kush, com templos de tijolo cru gigantes, as deffufas."},
@@ -218,7 +232,7 @@ const PLACES = [
   // ---------- Mediterrâneo e Europa ----------
   {k:'c', n:"Cnossos", p:"Grécia (Creta)", lat:35.298, lon:25.163, y:-1900, e:-1100, w:2, t:"Palácio minoico labiríntico, ligado ao mito do Minotauro."},
   {k:'c', n:"Micenas", p:"Grécia", lat:37.731, lon:22.756, y:-1600, e:-1100, w:2, t:"A cidade de Agamenon, com a Porta dos Leões e a máscara de ouro."},
-  {k:'c', n:"Atenas", p:"Grécia", lat:37.971, lon:23.726, y:-1400, e:null, w:3, t:"Berço da democracia, do teatro e da filosofia clássica. O Partenon foi erguido em 447 a.C."},
+  {k:'c', n:"Atenas", p:"Grécia", lat:37.971, lon:23.726, y:-1400, e:null, w:3, t:"Berço da democracia, do teatro e da filosofia clássica. O Partenon começou a ser erguido em 447 a.C."},
   {k:'c', n:"Esparta", p:"Grécia", lat:37.08, lon:22.42, y:-900, e:null, w:1, t:"Cidade-Estado militar, rival de Atenas na Guerra do Peloponeso."},
   {k:'c', n:"Roma", p:"Itália", lat:41.89, lon:12.49, y:-753, e:null, w:3, t:"De aldeia no Tibre a capital de um império de dezenas de milhões. O Coliseu é de 80 d.C."},
   {k:'c', n:"Constantinopla", p:"Turquia", lat:41.01, lon:28.98, y:-657, e:null, w:3, t:"Bizâncio, depois Constantinopla e hoje Istambul: capital de dois impérios por 1.600 anos."},
@@ -227,7 +241,7 @@ const PLACES = [
   {k:'c', n:"Harappa", p:"Paquistão", lat:30.631, lon:72.864, y:-3300, e:-1300, w:3, t:"A cidade que deu nome à civilização do Indo, com celeiros, oficinas e selos inscritos."},
   {k:'c', n:"Mohenjo-daro", p:"Paquistão", lat:27.329, lon:68.138, y:-2600, e:-1900, w:3, t:"Cidade planejada em grade, com o Grande Banho e drenagem em quase todas as casas."},
   {k:'c', n:"Dholavira", p:"Índia", lat:23.89, lon:70.21, y:-3000, e:-1500, w:1, t:"Cidade do Indo com reservatórios de água monumentais e uma placa de sinais gigante."},
-  {k:'c', n:"Lothal", p:"Índia", lat:22.52, lon:72.25, y:-2200, e:-1600, w:1, t:"Porto do Indo com uma doca escavada, ligado às rotas para Dilmun e a Mesopotâmia."},
+  {k:'c', n:"Lothal", p:"Índia", lat:22.52, lon:72.25, y:-2200, e:-1600, w:1, t:"Porto do Indo com uma possível doca escavada (a interpretação é debatida), ligado às rotas para Dilmun e a Mesopotâmia."},
   {k:'c', n:"Rakhigarhi", p:"Índia", lat:29.29, lon:76.11, y:-2600, e:-1900, w:1, t:"Talvez a maior cidade do Indo. O DNA antigo de lá ajudou a mapear a ancestralidade sul-asiática."},
   {k:'c', n:"Taxila", p:"Paquistão", lat:33.75, lon:72.82, y:-600, e:500, w:1, t:"Cidade-universidade do Gandara, encruzilhada entre a Índia, a Pérsia e o mundo grego."},
   {k:'c', n:"Pataliputra", p:"Índia", lat:25.61, lon:85.14, y:-490, e:null, w:2, t:"Capital dos impérios máuria e gupta, descrita pelo embaixador grego Megástenes."},
@@ -293,8 +307,8 @@ const PLACES = [
   {k:'s', n:"Ilha de Marajó", p:"Brasil (PA)", lat:-0.90, lon:-49.60, y:400, w:1, t:"Sociedades com aterros e cerâmica marajoara sofisticada, prova de culturas complexas na Amazônia."},
   {k:'s', n:"Hagia Sophia", p:"Turquia", lat:41.008, lon:28.98, y:537, w:1, t:"A grande cúpula de Justiniano, maior igreja do mundo por quase mil anos."},
   {k:'s', n:"Borobudur", p:"Indonésia", lat:-7.608, lon:110.204, y:800, w:2, t:"O maior templo budista do mundo, uma mandala de pedra com 2.672 relevos."},
-  {k:'s', n:"Rapa Nui", p:"Chile (Ilha de Páscoa)", lat:-27.125, lon:-109.277, y:1250, w:2, t:"Quase mil moai esculpidos pelos polinésios no lugar habitado mais isolado do planeta."},
-  {k:'s', n:"Machu Picchu", p:"Peru", lat:-13.163, lon:-72.545, y:1450, w:3, t:"Propriedade real inca nos Andes, que o mundo exterior só conheceu em 1911."},
+  {k:'s', n:"Rapa Nui", p:"Chile (Ilha de Páscoa)", lat:-27.125, lon:-109.277, y:1250, w:2, t:"Quase mil moai esculpidos pelos polinésios num dos lugares habitados mais isolados do planeta."},
+  {k:'s', n:"Machu Picchu", p:"Peru", lat:-13.163, lon:-72.545, y:1450, w:3, t:"Propriedade real inca nos Andes. Conhecida pelos moradores locais, ganhou fama mundial em 1911 com Hiram Bingham."},
 ];
 
 // Eventos históricos animados. Aparecem na época cujo intervalo (época anterior, época atual] cruza [y, e].
@@ -310,13 +324,13 @@ const EVENT_CATS = {
 };
 const EVENTS = [
   {id:'gobekli', tipo:'ponto', cat:'cultura', y:-9600, e:-9500, n:"Primeiros monumentos", at:[38.922, 37.223],
-   t:"Caçadores-coletores erguem os recintos de Göbekli Tepe, com pilares de até 5 metros. A construção é anterior à agricultura na região."},
+   t:"Caçadores-coletores erguem os recintos de Göbekli Tepe, com pilares de até 5,5 metros. A construção é anterior à agricultura na região."},
   {id:'agri', tipo:'seq', cat:'cultura', y:-9500, e:-5000, n:"A agricultura surge várias vezes",
-   t:"A domesticação de plantas não foi uma invenção única: aconteceu de forma independente em pelo menos sete regiões, ao longo de milênios.",
+   t:"A domesticação de plantas não foi uma invenção única: aconteceu de forma independente em várias regiões, ao longo de milênios.",
    pts:[{at:[39.8,37.7], y:-9500, l:"Crescente Fértil (Karacadağ): trigo, cevada"}, {at:[112,34.5], y:-7000, l:"Rio Amarelo: painço"}, {at:[118,30.5], y:-7000, l:"Yangtzé: arroz"},
-        {at:[144.5,-6], y:-7000, l:"Nova Guiné: taro, banana"}, {at:[-97.5,18], y:-7000, l:"Mesoamérica: abóbora, milho"}, {at:[-74,-12], y:-6000, l:"Andes: batata, quinoa"}, {at:[-86,36], y:-5000, l:"Leste da América do Norte"}]},
+        {at:[144.5,-6], y:-7000, l:"Nova Guiné: taro, banana"}, {at:[-97.5,18], y:-8000, l:"Mesoamérica: abóbora, depois milho"}, {at:[-74,-12], y:-6000, l:"Andes: batata, quinoa"}]},
   {id:'escrita', tipo:'seq', cat:'cultura', y:-3300, e:-1200, n:"A escrita é inventada",
-   t:"A escrita surgiu do zero em poucos lugares. Na Mesopotâmia, ela nasceu da contabilidade de templos.",
+   t:"A escrita surgiu do zero em poucos lugares: Mesopotâmia, Egito, China e, mais tarde, Mesoamérica. Na Mesopotâmia, ela nasceu da contabilidade de templos.",
    pts:[{at:[45.636,31.322], y:-3300, l:"Uruk: cuneiforme"}, {at:[31.25,29.85], y:-3200, l:"Egito: hieróglifos"}, {at:[114.31,36.12], y:-1200, l:"China: ossos oraculares"}]},
   {id:'egito', tipo:'ponto', cat:'politica', y:-3100, e:-3100, n:"Unificação do Egito", at:[31.25, 29.85],
    t:"O Alto e o Baixo Egito são unidos sob um só rei, segundo a tradição, Narmer, com capital em Mênfis."},
@@ -353,7 +367,7 @@ const EVENTS = [
    pts:[{at:[102.8,47.2], y:1206, l:"Gengis Khan unifica os mongóis"}, {at:[116.4,39.9], y:1215, l:"Zhongdu (Pequim)"}, {at:[66.97,39.65], y:1220, l:"Samarcanda"}, {at:[30.52,50.45], y:1240, l:"Kiev"}, {at:[19.0,47.5], y:1241, l:"Hungria"}, {at:[44.36,33.31], y:1258, l:"Bagdá"}, {at:[35.3,32.55], y:1260, l:"Ain Jalut: derrota mongol"}]},
   {id:'peste', tipo:'seq', cat:'desastre', y:1346, e:1353, n:"A Peste Negra",
    t:"A peste chega da Ásia pelas rotas comerciais e mata entre um terço e metade da população da Europa em cerca de sete anos.",
-   pts:[{at:[35.38,45.03], y:1346, l:"Caffa (Crimeia)"}, {at:[28.98,41.01], y:1347, l:"Constantinopla"}, {at:[15.55,38.19], y:1347, l:"Messina"}, {at:[31.2,30.05], y:1347, l:"Cairo"}, {at:[5.37,43.3], y:1348, l:"Marselha"}, {at:[2.35,48.86], y:1348, l:"Paris"}, {at:[-0.13,51.5], y:1348, l:"Londres"}, {at:[5.32,60.39], y:1349, l:"Bergen"}, {at:[37.62,55.75], y:1352, l:"Moscou"}]},
+   pts:[{at:[35.38,45.03], y:1346, l:"Caffa (Crimeia)"}, {at:[28.98,41.01], y:1347, l:"Constantinopla"}, {at:[15.55,38.19], y:1347, l:"Messina"}, {at:[31.2,30.05], y:1348, l:"Cairo"}, {at:[5.37,43.3], y:1347, l:"Marselha"}, {at:[2.35,48.86], y:1348, l:"Paris"}, {at:[-0.13,51.5], y:1348, l:"Londres"}, {at:[5.32,60.39], y:1349, l:"Bergen"}, {at:[37.62,55.75], y:1352, l:"Moscou"}]},
   {id:'constantinopla', tipo:'ponto', cat:'guerra', y:1453, e:1453, n:"Queda de Constantinopla", at:[28.98, 41.01],
    t:"Os otomanos de Mehmed II tomam a cidade com canhões gigantes, encerrando o Império Bizantino."},
   {id:'colombo', tipo:'rota', cat:'exploracao', y:1492, e:1492, n:"A viagem de Colombo",
@@ -381,13 +395,13 @@ const EVENTS = [
 // Rotas comerciais. Ficam visíveis enquanto ativas, com fluxo animado.
 const ROUTES = [
   {id:'lapis', n:"Rota do lápis-lazúli", y:-3200, e:-1500, cor:'#3d6fe0', bens:"lápis-lazúli, estanho, clorita esculpida",
-   t:"O lápis-lazúli de Badaquistão, no Afeganistão, era a única fonte conhecida da pedra. Passava por Shahr-i Sokhta e Jiroft até Susa e Ur, onde aparece nas tumbas reais.",
+   t:"O lápis-lazúli de Badaquistão, no Afeganistão, era praticamente a única fonte da pedra. Passava por Shahr-i Sokhta e Jiroft até Susa e Ur, onde aparece nas tumbas reais.",
    path:[[70.8,36.2],[66.9,36.75],[61.33,30.6],[57.79,28.43],[52.42,29.99],[48.26,32.19],[46.103,30.962]]},
   {id:'golfo', n:"Rede do Golfo: Dilmun, Magan e Meluhha", y:-2600, e:-1700, cor:'#e0a23d', bens:"cobre, cornalina, pérolas, madeira, marfim",
    t:"Navios ligavam a Mesopotâmia a Dilmun (Bahrein), Magan (Omã) e Meluhha (o Vale do Indo). Selos do Indo foram achados em Ur, e pesos padronizados do Indo foram achados em Dilmun.",
    path:[[46.103,30.962],[48.6,29.4],[50.52,26.233],[53.5,25.5],[56.3,26.6],[58.5,23.6],[59.8,22.4],[62,24.5],[66.5,24.8],[68.9,24.2],[70.21,23.89],[72.25,22.52]]},
   {id:'bronze', n:"Cobre e estanho do Bronze", y:-1600, e:-1200, cor:'#c9773a', bens:"lingotes de cobre de Chipre, estanho, vidro, marfim",
-   t:"O naufrágio de Uluburun (c. 1300 a.C.) levava 10 toneladas de cobre cipriota e 1 tonelada de estanho. Era a liga de bronze de um exército inteiro.",
+   t:"O naufrágio de Uluburun (c. 1300 a.C.) levava 10 toneladas de cobre cipriota e 1 tonelada de estanho. Era material para fazer bronze em grande escala.",
    path:[[33.2,35.1],[35.78,35.6],[33.5,34.7],[29.68,36.13],[27.4,36.4],[25.163,35.298],[23.5,36.6],[22.756,37.731]]},
   {id:'fenicia', n:"Rotas fenícias", y:-900, e:-200, cor:'#b04fd0', bens:"púrpura, cedro, vidro, prata da Ibéria",
    t:"Os fenícios de Tiro levaram o alfabeto e o comércio por todo o Mediterrâneo, fundando Cartago e chegando a Gadir (Cádiz), além de Gibraltar.",
@@ -436,13 +450,13 @@ const TOURS = [
     {ano:-9600, foco:[[38.56,37.06],[39.49,37.36]], k:55, lugar:"Sefertepe", t:"Uma rede, não um ponto",
      txt:"Sefertepe revelou em 2025 dois rostos humanos em relevo, em estilos diferentes. Harbetsuvan, Kurt Tepesi, Taşlı Tepe, Çakmaktepe, Gürcütepe, Hamzan Tepe e Ayanlar completam o mapa, e pilares do mesmo tipo já foram achados também em Adıyaman. Göbekli Tepe não era uma exceção isolada: era parte de uma paisagem inteira de centros interligados."},
     {ano:-8000, foco:[[36,33],[48,38]], ev:'agri', t:"E a agricultura?",
-     txt:"Aqui está a grande virada. A genética aponta que o trigo einkorn foi domesticado nas montanhas de Karacadağ, logo ao lado. Os monumentos vieram antes ou junto com as primeiras plantas domesticadas, não depois. Childe via a agricultura como a causa da complexidade social; Taş Tepeler sugere que reunir pessoas, rituais e banquetes pode ter vindo primeiro."},
+     txt:"Aqui está a grande virada. Estudos genéticos apontam que o trigo einkorn foi domesticado nas montanhas de Karacadağ, na mesma região. Os monumentos vieram antes ou junto com as primeiras plantas domesticadas, não depois. Childe via a agricultura como a causa da complexidade social; Taş Tepeler sugere que reunir pessoas, rituais e banquetes pode ter vindo primeiro."},
    ]},
   {id:'mesopotamia', n:"Mesopotâmia: das aldeias ao império", cor:'#3fa7e0',
    d:"Seis mil anos entre o Tigre e o Eufrates: templos, cidades, escrita, guerras por água e os primeiros impérios.",
    steps:[
     {ano:-5000, foco:[[45.996,30.816],[45.636,31.322]], k:9, lugar:"Eridu", t:"Eridu e as aldeias de Ubaid",
-     txt:"No sul da Mesopotâmia, aldeias irrigadas crescem em volta de templos que são reconstruídos sempre no mesmo lugar. Para os sumérios, Eridu era a primeira cidade criada pelos deuses. Na época, o Golfo chegava bem mais perto."},
+     txt:"No sul da Mesopotâmia, aldeias irrigadas crescem em volta de templos que são reconstruídos sempre no mesmo lugar. Para os sumérios, Eridu era a primeira cidade criada pelos deuses. Na época, o litoral do Golfo ficava mais perto."},
     {ano:-3000, foco:[[45.636,31.322]], k:10, ev:'escrita', lugar:"Uruk", t:"Uruk e a invenção da escrita",
      txt:"Uruk chega a dezenas de milhares de habitantes. Para controlar cevada, ovelhas e trabalho, os administradores do templo passam de fichas de argila a sinais gravados em tabletes. Por volta de 3300 a.C., isso vira escrita."},
     {ano:-3000, foco:[[70.8,36.2],[46.1,30.96]], rt:'lapis', t:"Pedras azuis do Afeganistão",
@@ -492,38 +506,38 @@ const CIVS = [
   {keys:["Ubaid"], pt:"Cultura de Ubaid", periodo:"c. 6500 – 3800 a.C.", cidades:"Eridu, Tell al-'Ubaid", texto:"Aldeias irrigadas no sul da Mesopotâmia, com templos que cresceram camada sobre camada. É a base direta das cidades sumérias."},
   {keys:["Ur"], pt:"Suméria", periodo:"c. 4000 – 2000 a.C.", cidades:"Uruk, Ur, Lagash, Eridu, Nippur", texto:"Primeiras cidades grandes do mundo. Em Uruk, por volta de 3300 a.C., a contabilidade em argila virou escrita cuneiforme. Política organizada em cidades-Estado rivais."},
   {keys:["Egypt"], pt:"Egito Antigo", periodo:"c. 3100 – 30 a.C.", cidades:"Mênfis, Tebas, Amarna, Alexandria", texto:"O Nilo unificado sob um faraó criou um dos Estados mais duradouros da história: hieróglifos, pirâmides de Gizé e uma burocracia que durou três mil anos."},
-  {keys:["Elam"], pt:"Elam", periodo:"c. 3200 – 539 a.C.", cidades:"Susa, Anshan", texto:"Vizinho e rival da Mesopotâmia no atual sudoeste do Irã. Teve escrita própria (proto-elamita), ainda só parcialmente decifrada."},
+  {keys:["Elam"], pt:"Elam", periodo:"c. 3200 – 539 a.C.", cidades:"Susa, Anshan", texto:"Vizinho e rival da Mesopotâmia no atual sudoeste do Irã. Teve escritas próprias: o proto-elamita, ainda não decifrado, e o elamita linear, cuja decifração foi proposta em 2022."},
   {keys:["Indus valley civilization"], pt:"Civilização do Vale do Indo", periodo:"c. 3300 – 1300 a.C.", cidades:"Harappa, Mohenjo-daro, Dholavira", texto:"Cidades planejadas em grade, com esgoto, pesos padronizados e poucos sinais de palácios ou reis. A escrita do Indo continua sem decifração."},
   {keys:["Minoan"], pt:"Civilização Minoica", periodo:"c. 3000 – 1100 a.C.", cidades:"Cnossos, Festo, Malia", texto:"Cultura palaciana de Creta, potência marítima do Egeu. A escrita Linear A não foi decifrada."},
   {keys:["Cycladic"], pt:"Cultura Cicládica", periodo:"c. 3200 – 2000 a.C.", cidades:"Naxos, Keros, Melos", texto:"Ilhas do Egeu famosas pelas figuras de mármore estilizadas e pelo comércio de obsidiana."},
   {keys:["Norte Chico","El Paraiso"], pt:"Norte Chico (Caral)", periodo:"c. 3500 – 1800 a.C.", cidades:"Caral, Áspero", texto:"A civilização mais antiga das Américas, contemporânea das pirâmides do Egito. Construiu pirâmides e praças monumentais antes mesmo de usar cerâmica."},
   {keys:["Valdivia"], pt:"Cultura Valdivia", periodo:"c. 3800 – 1500 a.C.", cidades:"Real Alto", texto:"Na costa do Equador, produziu uma das cerâmicas mais antigas das Américas e aldeias organizadas em torno de praças."},
   {keys:["Jōmon","Late Jomon culture"], pt:"Cultura Jōmon", periodo:"c. 14 mil – 300 a.C.", cidades:"Sannai-Maruyama", texto:"Caçadores-coletores sedentários do Japão, autores de uma das cerâmicas mais antigas do mundo. Mostram que vida em aldeia não exigiu agricultura."},
-  {keys:["Kerma","Kush","Meroe"], pt:"Núbia: Kerma, Kush e Meroé", periodo:"c. 2500 a.C. – 350 d.C.", cidades:"Kerma, Napata, Meroé", texto:"Reinos do atual Sudão. Os reis de Kush governaram o próprio Egito como 25ª dinastia, e Meroé ergueu mais pirâmides que o Egito inteiro."},
-  {keys:["Yamnaya culture"], pt:"Cultura Yamnaya", periodo:"c. 3300 – 2600 a.C.", cidades:"kurgans das estepes", texto:"Pastores das estepes com carroças e cavalos. A genética antiga liga sua expansão à difusão das línguas indo-europeias."},
+  {keys:["Kerma","Kush","Meroe"], pt:"Núbia: Kerma, Kush e Meroé", periodo:"c. 2500 a.C. – 350 d.C.", cidades:"Kerma, Napata, Meroé", texto:"Reinos do atual Sudão. Os reis de Kush governaram o próprio Egito como 25ª dinastia, e a Núbia tem mais pirâmides que o Egito."},
+  {keys:["Yamnaya culture"], pt:"Cultura Yamnaya", periodo:"c. 3300 – 2600 a.C.", cidades:"kurgans das estepes", texto:"Pastores das estepes com carroças e rebanhos, que talvez já montassem cavalos. A genética antiga liga sua expansão à difusão das línguas indo-europeias."},
   {keys:["Hittites"], pt:"Império Hitita", periodo:"c. 1650 – 1180 a.C.", cidades:"Hattusa", texto:"Potência da Anatólia que enfrentou o Egito em Kadesh e assinou com ele um dos tratados de paz mais antigos que se conhecem. Desapareceu no colapso da Idade do Bronze."},
   {keys:["Babylonia"], pt:"Babilônia", periodo:"c. 1894 – 539 a.C.", cidades:"Babilônia", texto:"Casa do Código de Hamurabi e de uma astronomia matemática sofisticada. Viveu um novo auge com Nabucodonosor II."},
   {keys:["Assyria"], pt:"Assíria", periodo:"c. 2025 – 609 a.C.", cidades:"Assur, Nimrud, Nínive", texto:"Primeiro grande império militar do Oriente Próximo. A biblioteca de Assurbanípal, em Nínive, preservou a Epopeia de Gilgamesh."},
   {keys:["Xia"], pt:"Dinastia Xia", periodo:"c. 2070 – 1600 a.C.", cidades:"Erlitou (provável)", texto:"Primeira dinastia da tradição chinesa. A arqueologia associa a ela o sítio de Erlitou, mas a ligação ainda é debatida."},
   {keys:["Sinic","Zhoa","Zhou states"], pt:"China: Shang e Zhou", periodo:"c. 1600 – 256 a.C.", cidades:"Anyang, Haojing, Luoyang", texto:"Os Shang deixaram os ossos oraculares, a escrita chinesa mais antiga. Os Zhou criaram a ideia do Mandato do Céu e assistiram ao nascimento de Confúcio e do taoísmo."},
   {keys:["Qin"], pt:"Qin", periodo:"221 – 206 a.C.", cidades:"Xianyang", texto:"Unificou a China pela primeira vez, padronizou escrita, moedas e medidas e deixou o Exército de Terracota."},
-  {keys:["Han Empire","Han"], pt:"Império Han", periodo:"206 a.C. – 220 d.C.", cidades:"Chang'an, Luoyang", texto:"Período que deu nome à etnia chinesa majoritária. Abriu a Rota da Seda e inventou o papel."},
+  {keys:["Han Empire","Han"], pt:"Império Han", periodo:"206 a.C. – 220 d.C.", cidades:"Chang'an, Luoyang", texto:"Período que deu nome à etnia chinesa majoritária. Abriu a Rota da Seda, e foi nele que o papel surgiu e se aperfeiçoou."},
   {keys:["Olmec"], pt:"Olmecas", periodo:"c. 1600 – 400 a.C.", cidades:"San Lorenzo, La Venta", texto:"Considerados a cultura-mãe da Mesoamérica: cabeças colossais de pedra, jogo de bola e as primeiras pistas de calendário e escrita da região."},
   {keys:["Chavin"], pt:"Cultura Chavín", periodo:"c. 900 – 200 a.C.", cidades:"Chavín de Huántar", texto:"Centro religioso nos Andes peruanos, com galerias subterrâneas e uma arte que se espalhou por boa parte do Peru."},
-  {keys:["Maya chiefdoms and states","Maya states","Maya city-states"], pt:"Maias", periodo:"c. 2000 a.C. – 1697 d.C.", cidades:"Tikal, Calakmul, Palenque, Copán, Chichén Itzá", texto:"Cidades-Estado rivais na península de Iucatã, com o único sistema de escrita completo das Américas, o uso do zero e calendários muito precisos."},
+  {keys:["Maya chiefdoms and states","Maya states","Maya city-states"], pt:"Maias", periodo:"c. 2000 a.C. – 1697 d.C.", cidades:"Tikal, Calakmul, Palenque, Copán, Chichén Itzá", texto:"Cidades-Estado rivais no sul do México e na América Central, com o sistema de escrita mais completo das Américas, o uso do zero e calendários muito precisos."},
   {keys:["Teotihuacan"], pt:"Teotihuacan", periodo:"c. 100 a.C. – 550 d.C.", cidades:"Teotihuacan", texto:"Uma das maiores cidades do mundo em seu auge, com mais de 100 mil habitantes, a Pirâmide do Sol e a Avenida dos Mortos. Quem a fundou ainda é um mistério."},
   {keys:["Monte Albán","Zapotec Empire"], pt:"Zapotecas", periodo:"c. 500 a.C. – 1521 d.C.", cidades:"Monte Albán, Mitla", texto:"Construíram no vale de Oaxaca uma capital no topo de uma montanha aplainada. Tiveram uma das primeiras escritas da Mesoamérica."},
   {keys:["Greek city-states"], pt:"Cidades-Estado gregas", periodo:"c. 800 – 146 a.C.", cidades:"Atenas, Esparta, Corinto, Mileto", texto:"Centenas de póleis independentes. Delas vieram a democracia ateniense, a filosofia, o teatro e a historiografia."},
-  {keys:["Empire of Alexander"], pt:"Império de Alexandre", periodo:"336 – 323 a.C.", cidades:"Babilônia, Alexandria", texto:"Em 13 anos, Alexandre conquistou da Grécia ao Indo. O império se partiu depois da sua morte, mas espalhou a cultura grega pelo Oriente."},
+  {keys:["Empire of Alexander"], pt:"Império de Alexandre", periodo:"336 – 323 a.C.", cidades:"Babilônia, Alexandria", texto:"Em cerca de 11 anos de campanha, Alexandre conquistou da Grécia ao Indo. O império se partiu depois da sua morte, mas espalhou a cultura grega pelo Oriente."},
   {keys:["Achaemenid Empire"], pt:"Império Aquemênida (Persa)", periodo:"550 – 330 a.C.", cidades:"Persépolis, Susa, Pasárgada", texto:"O maior império visto até então. Governou com sátrapas e a Estrada Real, e tolerava os costumes e religiões dos povos conquistados."},
-  {keys:["Parthia","Parthian Empire"], pt:"Império Parta", periodo:"247 a.C. – 224 d.C.", cidades:"Ctesifonte, Nisa", texto:"Persas que barraram Roma no Oriente, famosos pela cavalaria de arqueiros. Controlavam um trecho central da Rota da Seda."},
+  {keys:["Parthia","Parthian Empire"], pt:"Império Parta", periodo:"247 a.C. – 224 d.C.", cidades:"Ctesifonte, Nisa", texto:"Iranianos que barraram Roma no Oriente, famosos pela cavalaria de arqueiros. Controlavam um trecho central da Rota da Seda."},
   {keys:["Sasanian Empire","Persia"], pt:"Império Sassânida (Persa)", periodo:"224 – 651 d.C.", cidades:"Ctesifonte", texto:"Último grande império persa antes do islã, rival de Roma e de Bizâncio por quatro séculos. Teve o zoroastrismo como religião oficial."},
   {keys:["Rome","Roman Empire","Western Roman Empire"], pt:"Roma", periodo:"753 a.C. – 476 d.C.", cidades:"Roma, Cartago romana, Alexandria", texto:"De cidade-Estado a império do Mediterrâneo inteiro. O direito, o latim e a engenharia romana moldaram a Europa."},
   {keys:["Eastern Roman Empire","Byzantine Empire"], pt:"Império Bizantino", periodo:"330 – 1453 d.C.", cidades:"Constantinopla", texto:"A metade oriental de Roma sobreviveu mil anos depois da queda do Ocidente e preservou boa parte dos textos gregos clássicos."},
   {keys:["Carthaginian Empire","Carthage"], pt:"Cartago", periodo:"c. 814 – 146 a.C.", cidades:"Cartago", texto:"Colônia fenícia que virou potência comercial do Mediterrâneo ocidental. Foi rival de Roma nas Guerras Púnicas, as de Aníbal."},
   {keys:["Etrurians"], pt:"Etruscos", periodo:"c. 900 – 27 a.C.", cidades:"Veios, Tarquínia, Cerveteri", texto:"Antecessores e vizinhos de Roma, que herdou deles arquitetura, rituais e até reis."},
   {keys:["Mauryan Empire"], pt:"Império Máuria", periodo:"322 – 185 a.C.", cidades:"Pataliputra", texto:"Primeiro império de quase toda a Índia. Depois da guerra de Kalinga, Ashoka adotou o budismo e gravou seus éditos em pilares de pedra."},
-  {keys:["Gupta Empire"], pt:"Império Gupta", periodo:"c. 320 – 550 d.C.", cidades:"Pataliputra", texto:"Considerado a era clássica da Índia. A notação decimal com zero, que depois chegou à Europa pelos árabes, vem desse ambiente."},
+  {keys:["Gupta Empire"], pt:"Império Gupta", periodo:"c. 320 – 550 d.C.", cidades:"Pataliputra", texto:"Considerado a era clássica da Índia. A matemática indiana desse período e do seguinte, com o zero tratado como número por Brahmagupta em 628, chegou depois à Europa pelos árabes."},
   {keys:["Axum"], pt:"Reino de Axum", periodo:"c. 100 – 940 d.C.", cidades:"Axum, Adulis", texto:"Potência comercial entre o Mar Vermelho e o Índico. Cunhou moedas, ergueu estelas gigantes e foi um dos primeiros Estados cristãos."},
   {keys:["Moche"], pt:"Moches", periodo:"c. 100 – 800 d.C.", cidades:"Huacas del Sol y de la Luna, Sipán", texto:"Na costa norte do Peru, deixaram cerâmicas-retrato muito realistas e as tumbas intactas do Senhor de Sipán."},
   {keys:["Nazca"], pt:"Nazcas", periodo:"c. 100 a.C. – 800 d.C.", cidades:"Cahuachi", texto:"Autores das linhas e figuras gigantes traçadas no deserto do sul do Peru e de aquedutos subterrâneos que ainda funcionam."},
@@ -536,7 +550,7 @@ const CIVS = [
   {keys:["Khmer Empire"], pt:"Império Khmer", periodo:"802 – 1431 d.C.", cidades:"Angkor", texto:"Angkor tinha uma rede hidráulica gigantesca. Angkor Wat é o maior monumento religioso do mundo."},
   {keys:["Mongol Empire","Great Khanate"], pt:"Império Mongol", periodo:"1206 – 1368 d.C.", cidades:"Karakorum, Khanbaliq", texto:"O maior império contíguo da história, da Coreia à Hungria. Conectou o comércio da Eurásia inteira."},
   {keys:["Abbasid Caliphate"], pt:"Califado Abássida", periodo:"750 – 1258 d.C.", cidades:"Bagdá", texto:"A Casa da Sabedoria de Bagdá traduziu e desenvolveu a ciência grega, persa e indiana. Foi a era de ouro islâmica."},
-  {keys:["Great Zimbabwe"], pt:"Grande Zimbábue", periodo:"c. 1100 – 1450 d.C.", cidades:"Grande Zimbábue", texto:"Muralhas de pedra seca sem argamassa e comércio de ouro que chegava até a China."},
+  {keys:["Great Zimbabwe"], pt:"Grande Zimbábue", periodo:"c. 1100 – 1450 d.C.", cidades:"Grande Zimbábue", texto:"Muralhas de pedra seca sem argamassa e um comércio de ouro pelo Índico que trazia até cerâmica chinesa."},
   {keys:["Mali"], pt:"Império do Mali", periodo:"c. 1235 – 1600 d.C.", cidades:"Niani, Timbuktu, Djenné", texto:"Mansa Musa, talvez o homem mais rico da história, fez de Timbuktu um centro de saber islâmico."},
   {keys:["Ghana","Empire of Ghana"], pt:"Império de Gana", periodo:"c. 300 – 1200 d.C.", cidades:"Koumbi Saleh", texto:"Enriqueceu controlando o ouro do comércio transaariano. Não fica no Gana atual, e sim entre Mali e Mauritânia."},
   {keys:["Ottoman Empire"], pt:"Império Otomano", periodo:"1299 – 1922 d.C.", cidades:"Bursa, Constantinopla/Istambul", texto:"Tomou Constantinopla em 1453 e governou o Oriente Médio, os Bálcãs e o norte da África por séculos."},
@@ -547,7 +561,7 @@ const CIVS = [
   {keys:["Saba"], pt:"Reino de Sabá", periodo:"c. 1000 a.C. – 275 d.C.", cidades:"Marib", texto:"No Iêmen, enriqueceu com incenso e mirra. A represa de Marib foi uma das obras de engenharia mais impressionantes da Antiguidade."},
   {keys:["Kingdom of David and Solomon"], pt:"Israel e Judá", periodo:"c. 1000 – 586 a.C.", cidades:"Jerusalém, Samaria", texto:"O tamanho e a natureza do reino unido de Davi e Salomão são muito debatidos na arqueologia. Os reinos de Israel e Judá estão bem atestados."},
   {keys:["Tang Empire"], pt:"Dinastia Tang", periodo:"618 – 907 d.C.", cidades:"Chang'an", texto:"Chang'an era a maior cidade do mundo. Foi a idade de ouro da poesia chinesa e da Rota da Seda."},
-  {keys:["Song Empire"], pt:"Dinastia Song", periodo:"960 – 1279 d.C.", cidades:"Kaifeng, Hangzhou", texto:"Pólvora, bússola, imprensa de tipos móveis e papel-moeda: uma das sociedades mais avançadas do seu tempo."},
+  {keys:["Song Empire"], pt:"Dinastia Song", periodo:"960 – 1279 d.C.", cidades:"Kaifeng, Hangzhou", texto:"Pólvora usada em armas, bússola na navegação, tipos móveis e papel-moeda: uma das sociedades mais avançadas do seu tempo."},
   {keys:["Srivijaya Empire"], pt:"Srivijaya", periodo:"c. 650 – 1377 d.C.", cidades:"Palembang", texto:"Talassocracia budista que controlava o estreito de Malaca, centro do comércio entre a China e a Índia."},
 ];
 
@@ -1232,6 +1246,95 @@ $('#tNext').onclick = () => tour.i === tour.t.steps.length - 1 ? endTour() : tou
 $('#tAuto').onclick = () => { tour.auto = !tour.auto; schedule(); };
 $('#tClose').onclick = endTour;
 window.__tour = (id, i = 0) => { startTour(TOURS.find(t => t.id === id)); if (i) tourStep(i); };
+
+// ---------- busca ----------
+const norm = x => x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+function parsePeriodo(p){
+  const parts = p.replace(/^c\.\s*/, '').split('–').map(x => x.trim());
+  if (parts.length < 2) return null;
+  const num = x => { const m = x.match(/([\d.]+)\s*(mil)?/); if (!m) return null; return parseInt(m[1].replace(/\./g, '')) * (m[2] ? 1000 : 1); };
+  const bc2 = /a\.C\./.test(parts[1]);
+  const bc1 = /a\.C\./.test(parts[0]) ? true : /d\.C\./.test(parts[0]) ? false : bc2;
+  const a = num(parts[0]), b = num(parts[1]); if (a == null || b == null) return null;
+  return [bc1 ? -a : a, bc2 ? -b : b];
+}
+function bestSnapForName(names, mid){
+  const ys = [...new Set(names.flatMap(n => OCC[n] || []))].sort((a, b) => a - b);
+  if (!ys.length) return snapFor(mid ?? 0);
+  if (mid == null) return SNAP_YEARS.indexOf(ys[Math.floor(ys.length / 2)]);
+  let best = ys[0]; ys.forEach(y => { if (Math.abs(y - mid) < Math.abs(best - mid)) best = y; });
+  return SNAP_YEARS.indexOf(best);
+}
+let SEARCH = null;
+function buildSearch(){
+  const items = [], seen = new Set();
+  CIVS.forEach(c => {
+    const pr = parsePeriodo(c.periodo), mid = pr ? (pr[0] + pr[1]) / 2 : null;
+    items.push({kind:'Civilização', label:c.pt, sub:c.periodo, keys:[c.pt, ...c.keys], go:() => goCiv(c.keys, mid)});
+    c.keys.forEach(k => seen.add(k));
+  });
+  PLACES.forEach(p => items.push({kind: p.k === 's' ? 'Sítio' : 'Cidade', label:p.n, sub:p.p + ' · ' + fmtYear(p.y), keys:[p.n], go:() => goPlace(p)}));
+  EVENTS.forEach(ev => items.push({kind:'Evento', label:ev.n, sub:fmtRange(ev.y, ev.e), keys:[ev.n, ...(ev.pts || []).map(x => x.l)], go:() => { go(firstSnap(ev.y, ev.e)); setTimeout(() => openEvent(ev, true), 50); }}));
+  ROUTES.forEach(rt => items.push({kind:'Rota', label:rt.n, sub:fmtRange(rt.y, rt.e), keys:[rt.n, rt.bens], go:() => { if (!showRoutes) { showRoutes = true; $('#tRoutes').checked = true; } go(firstSnap(rt.y, rt.e)); setTimeout(() => openRoute(rt, true), 50); }}));
+  TOURS.forEach(t => items.push({kind:'Passeio', label:t.n, sub:`${t.steps.length} paradas`, keys:[t.n, t.d], go:() => startTour(t)}));
+  Object.keys(OCC).forEach(n => { if (!seen.has(n) && n.trim().length > 2) items.push({kind:'Região', label:ptName(n), sub:rangeText(n), keys:[n, ptName(n)], go:() => goCiv([n], null), low:true}); });
+  items.forEach(it => it.nk = it.keys.map(norm));
+  SEARCH = items;
+}
+function firstSnap(y, e){ for (let i = 0; i < N; i++) if (overlapsSnap(y, e, i)) return i; return snapFor(y); }
+function goCiv(keys, mid){
+  const i = bestSnapForName(keys, mid); go(i);
+  const f = features(SNAP_YEARS[i]).find(f => keys.includes(f.properties.NAME.trim()));
+  if (f) {
+    const b = d3.geoBounds(f);
+    const pts = b[1][0] - b[0][0] > 180 || b[1][0] < b[0][0] ? [d3.geoCentroid(f)] : [b[0], b[1]];
+    flyTo(pts, pts.length === 1 ? 3 : null);
+    openCiv(f.properties.NAME.trim());
+  }
+}
+function goPlace(p){
+  let i = snapFor(p.y); while (i < N - 1 && !placeVisible(p, i)) i++;
+  go(i); flyTo([[p.lon, p.lat]], p.g === 'tt' ? 110 : 6);
+  openPlace(p);
+}
+function runSearch(q){
+  const box = $('#sResults'); box.innerHTML = '';
+  const nq = norm(q.trim()); if (nq.length < 2) { box.innerHTML = '<div class="s-hint">Digite o nome de uma civilização, cidade, sítio, evento ou rota.</div>'; return; }
+  const scored = [];
+  for (const it of SEARCH) {
+    let sc = 0;
+    for (const k of it.nk) {
+      if (k === nq) sc = Math.max(sc, 100);
+      else if (k.startsWith(nq)) sc = Math.max(sc, 80);
+      else if (k.split(/[\s(,:'-]+/).some(w => w.startsWith(nq))) sc = Math.max(sc, 60);
+      else if (k.includes(nq)) sc = Math.max(sc, 30);
+    }
+    if (sc) scored.push([sc - (it.low ? 25 : 0) - (it.kind === 'Rota' && sc < 60 ? 10 : 0), it]);
+  }
+  scored.sort((a, b) => b[0] - a[0]);
+  if (!scored.length) { box.innerHTML = '<div class="s-hint">Nada encontrado.</div>'; return; }
+  scored.slice(0, 12).forEach(([, it], j) => {
+    const b = document.createElement('button'); b.className = 's-item' + (j === 0 ? ' on' : '');
+    b.innerHTML = '<span class="s-k"></span><b></b><span class="s-sub"></span>';
+    b.querySelector('.s-k').textContent = it.kind; b.querySelector('b').textContent = it.label; b.querySelector('.s-sub').textContent = it.sub || '';
+    b.onclick = () => { closeSearch(); if (tour) endTour(); it.go(); };
+    box.append(b);
+  });
+}
+function openSearch(){ if (!SEARCH) buildSearch(); $('#search').classList.add('open'); const i = $('#sInput'); i.value = ''; runSearch(''); setTimeout(() => i.focus(), 30); }
+function closeSearch(){ $('#search').classList.remove('open'); }
+$('#btnSearch').onclick = openSearch;
+$('#sInput').addEventListener('input', e => runSearch(e.target.value));
+$('#sInput').addEventListener('keydown', e => {
+  const items = [...document.querySelectorAll('.s-item')]; let k = items.findIndex(x => x.classList.contains('on'));
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (items[k]) items[k].classList.remove('on'); k = Math.max(0, Math.min(items.length - 1, k + (e.key === 'ArrowDown' ? 1 : -1))); if (items[k]) { items[k].classList.add('on'); items[k].scrollIntoView({block:'nearest'}); } }
+  if (e.key === 'Enter' && items[k]) items[k].click();
+  if (e.key === 'Escape') closeSearch();
+  e.stopPropagation();
+});
+$('#search').addEventListener('click', e => { if (e.target.id === 'search') closeSearch(); });
+document.addEventListener('keydown', e => { if ((e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) && !$('#search').classList.contains('open')) { e.preventDefault(); openSearch(); } });
+window.__search = q => { openSearch(); $('#sInput').value = q; runSearch(q); };
 
 // ---------- zoom e toque ----------
 const zoom = d3.zoom().scaleExtent([1, 180]).on('zoom', e => { transform = e.transform; redraw(); });

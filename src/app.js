@@ -661,6 +661,95 @@ $('#tAuto').onclick = () => { tour.auto = !tour.auto; schedule(); };
 $('#tClose').onclick = endTour;
 window.__tour = (id, i = 0) => { startTour(TOURS.find(t => t.id === id)); if (i) tourStep(i); };
 
+// ---------- busca ----------
+const norm = x => x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+function parsePeriodo(p){
+  const parts = p.replace(/^c\.\s*/, '').split('–').map(x => x.trim());
+  if (parts.length < 2) return null;
+  const num = x => { const m = x.match(/([\d.]+)\s*(mil)?/); if (!m) return null; return parseInt(m[1].replace(/\./g, '')) * (m[2] ? 1000 : 1); };
+  const bc2 = /a\.C\./.test(parts[1]);
+  const bc1 = /a\.C\./.test(parts[0]) ? true : /d\.C\./.test(parts[0]) ? false : bc2;
+  const a = num(parts[0]), b = num(parts[1]); if (a == null || b == null) return null;
+  return [bc1 ? -a : a, bc2 ? -b : b];
+}
+function bestSnapForName(names, mid){
+  const ys = [...new Set(names.flatMap(n => OCC[n] || []))].sort((a, b) => a - b);
+  if (!ys.length) return snapFor(mid ?? 0);
+  if (mid == null) return SNAP_YEARS.indexOf(ys[Math.floor(ys.length / 2)]);
+  let best = ys[0]; ys.forEach(y => { if (Math.abs(y - mid) < Math.abs(best - mid)) best = y; });
+  return SNAP_YEARS.indexOf(best);
+}
+let SEARCH = null;
+function buildSearch(){
+  const items = [], seen = new Set();
+  CIVS.forEach(c => {
+    const pr = parsePeriodo(c.periodo), mid = pr ? (pr[0] + pr[1]) / 2 : null;
+    items.push({kind:'Civilização', label:c.pt, sub:c.periodo, keys:[c.pt, ...c.keys], go:() => goCiv(c.keys, mid)});
+    c.keys.forEach(k => seen.add(k));
+  });
+  PLACES.forEach(p => items.push({kind: p.k === 's' ? 'Sítio' : 'Cidade', label:p.n, sub:p.p + ' · ' + fmtYear(p.y), keys:[p.n], go:() => goPlace(p)}));
+  EVENTS.forEach(ev => items.push({kind:'Evento', label:ev.n, sub:fmtRange(ev.y, ev.e), keys:[ev.n, ...(ev.pts || []).map(x => x.l)], go:() => { go(firstSnap(ev.y, ev.e)); setTimeout(() => openEvent(ev, true), 50); }}));
+  ROUTES.forEach(rt => items.push({kind:'Rota', label:rt.n, sub:fmtRange(rt.y, rt.e), keys:[rt.n, rt.bens], go:() => { if (!showRoutes) { showRoutes = true; $('#tRoutes').checked = true; } go(firstSnap(rt.y, rt.e)); setTimeout(() => openRoute(rt, true), 50); }}));
+  TOURS.forEach(t => items.push({kind:'Passeio', label:t.n, sub:`${t.steps.length} paradas`, keys:[t.n, t.d], go:() => startTour(t)}));
+  Object.keys(OCC).forEach(n => { if (!seen.has(n) && n.trim().length > 2) items.push({kind:'Região', label:ptName(n), sub:rangeText(n), keys:[n, ptName(n)], go:() => goCiv([n], null), low:true}); });
+  items.forEach(it => it.nk = it.keys.map(norm));
+  SEARCH = items;
+}
+function firstSnap(y, e){ for (let i = 0; i < N; i++) if (overlapsSnap(y, e, i)) return i; return snapFor(y); }
+function goCiv(keys, mid){
+  const i = bestSnapForName(keys, mid); go(i);
+  const f = features(SNAP_YEARS[i]).find(f => keys.includes(f.properties.NAME.trim()));
+  if (f) {
+    const b = d3.geoBounds(f);
+    const pts = b[1][0] - b[0][0] > 180 || b[1][0] < b[0][0] ? [d3.geoCentroid(f)] : [b[0], b[1]];
+    flyTo(pts, pts.length === 1 ? 3 : null);
+    openCiv(f.properties.NAME.trim());
+  }
+}
+function goPlace(p){
+  let i = snapFor(p.y); while (i < N - 1 && !placeVisible(p, i)) i++;
+  go(i); flyTo([[p.lon, p.lat]], p.g === 'tt' ? 110 : 6);
+  openPlace(p);
+}
+function runSearch(q){
+  const box = $('#sResults'); box.innerHTML = '';
+  const nq = norm(q.trim()); if (nq.length < 2) { box.innerHTML = '<div class="s-hint">Digite o nome de uma civilização, cidade, sítio, evento ou rota.</div>'; return; }
+  const scored = [];
+  for (const it of SEARCH) {
+    let sc = 0;
+    for (const k of it.nk) {
+      if (k === nq) sc = Math.max(sc, 100);
+      else if (k.startsWith(nq)) sc = Math.max(sc, 80);
+      else if (k.split(/[\s(,:'-]+/).some(w => w.startsWith(nq))) sc = Math.max(sc, 60);
+      else if (k.includes(nq)) sc = Math.max(sc, 30);
+    }
+    if (sc) scored.push([sc - (it.low ? 25 : 0) - (it.kind === 'Rota' && sc < 60 ? 10 : 0), it]);
+  }
+  scored.sort((a, b) => b[0] - a[0]);
+  if (!scored.length) { box.innerHTML = '<div class="s-hint">Nada encontrado.</div>'; return; }
+  scored.slice(0, 12).forEach(([, it], j) => {
+    const b = document.createElement('button'); b.className = 's-item' + (j === 0 ? ' on' : '');
+    b.innerHTML = '<span class="s-k"></span><b></b><span class="s-sub"></span>';
+    b.querySelector('.s-k').textContent = it.kind; b.querySelector('b').textContent = it.label; b.querySelector('.s-sub').textContent = it.sub || '';
+    b.onclick = () => { closeSearch(); if (tour) endTour(); it.go(); };
+    box.append(b);
+  });
+}
+function openSearch(){ if (!SEARCH) buildSearch(); $('#search').classList.add('open'); const i = $('#sInput'); i.value = ''; runSearch(''); setTimeout(() => i.focus(), 30); }
+function closeSearch(){ $('#search').classList.remove('open'); }
+$('#btnSearch').onclick = openSearch;
+$('#sInput').addEventListener('input', e => runSearch(e.target.value));
+$('#sInput').addEventListener('keydown', e => {
+  const items = [...document.querySelectorAll('.s-item')]; let k = items.findIndex(x => x.classList.contains('on'));
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (items[k]) items[k].classList.remove('on'); k = Math.max(0, Math.min(items.length - 1, k + (e.key === 'ArrowDown' ? 1 : -1))); if (items[k]) { items[k].classList.add('on'); items[k].scrollIntoView({block:'nearest'}); } }
+  if (e.key === 'Enter' && items[k]) items[k].click();
+  if (e.key === 'Escape') closeSearch();
+  e.stopPropagation();
+});
+$('#search').addEventListener('click', e => { if (e.target.id === 'search') closeSearch(); });
+document.addEventListener('keydown', e => { if ((e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) && !$('#search').classList.contains('open')) { e.preventDefault(); openSearch(); } });
+window.__search = q => { openSearch(); $('#sInput').value = q; runSearch(q); };
+
 // ---------- zoom e toque ----------
 const zoom = d3.zoom().scaleExtent([1, 180]).on('zoom', e => { transform = e.transform; redraw(); });
 d3.select(canvas).call(zoom).on('dblclick.zoom', null);
