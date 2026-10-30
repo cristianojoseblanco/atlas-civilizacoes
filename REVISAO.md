@@ -148,3 +148,10 @@ Fontes F328–F415. Agora 410 itens têm fonte, 96 estão revisados sem fonte e 
 - **Passeios (20) e artes (3):** com fonte. O passeio de Alexandre também passou a dizer "pouco mais de dez anos".
 - **Temas:** os de lugares (260) e sincronias (30) foram sugeridos por palavras-chave e depois revisados um a um (173 lugares e as 30 sincronias corrigidos). Os das civilizações, rotas, eventos e passeios foram escolhidos item a item.
 - Afirmações que as fontes não cobrem ficaram anotadas em `notas_revisao` de cada linha.
+
+## 30/10/2026: Aprender história
+
+- `passeios`, `passeios_paradas`, `perguntas` e `perguntas_casos` viraram `trilhas` (tipo passeio ou debate) e `trilhas_paradas`.
+- Botão único "Aprender história", com nível (iniciante, colégio, graduação, completo, personalizado por temas).
+- Iniciante: só as paradas marcadas como iniciante, com `texto_iniciante` (15 textos novos, mais simples, sobre os mesmos fatos e as mesmas fontes).
+- Debates ficam a partir do nível colégio. A trilha de Taş Tepeler também.

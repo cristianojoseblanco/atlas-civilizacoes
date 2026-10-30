@@ -10,9 +10,8 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | civilizacoes | 88 | 88 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | eventos | 31 | 31 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | rotas | 10 | 10 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
-| passeios_paradas | 28 | 28 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
-| perguntas | 3 | 3 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
-| perguntas_casos | 23 | 23 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
+| trilhas | 3 | 3 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
+| trilhas_paradas | 51 | 51 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | sincronias | 30 | 30 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | artes_estilos | 34 | 33 (97%) | 1 (3%) | 0 (0%) | 0 (0%) |
 | **total** | **507** | **505 (100%)** | **1 (0%)** | **0 (0%)** | **1 (0%)** |
@@ -482,8 +481,8 @@ Preparação para os modos de ensino (ver `ROADMAP.md`).
 | civilizacoes | 88 | 88 | 88 |
 | eventos | 31 | 31 | 31 |
 | rotas | 10 | 10 | 10 |
-| passeios_paradas | 28 | 28 | 28 |
-| perguntas_casos | 23 | 23 | 23 |
+| trilhas | 6 | 6 | 6 |
+| trilhas_paradas | 51 | 51 | 51 |
 | sincronias | 30 | 30 | 30 |
 
 ## Erros (0)

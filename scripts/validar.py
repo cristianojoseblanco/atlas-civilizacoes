@@ -73,16 +73,24 @@ for r in rot:
     if traj[('rota', r['id'])] < 2: erros.append(f"rotas {r['id']}: trajeto com menos de 2 pontos")
 for r in tab('trajetos'): checa_coord('trajetos', r['item_id'], r['lon'], r['lat'])
 lug_nomes = set(nomes_lug)
-for r in tab('passeios_paradas'):
-    rid = f"{r['passeio_id']}#{r['ordem']}"; checa_fontes('passeios_paradas', rid, r)
-    if r['evento'] and r['evento'] not in ev_ids: erros.append(f'passeios_paradas {rid}: evento inexistente {r["evento"]}')
-    if r['rota'] and r['rota'] not in rot_ids: erros.append(f'passeios_paradas {rid}: rota inexistente {r["rota"]}')
-    if r['lugar'] and r['lugar'] not in lug_nomes: erros.append(f'passeios_paradas {rid}: lugar inexistente {r["lugar"]}')
-for r in tab('perguntas'): checa_fontes('perguntas', r['id'], r)
+TRI = {r['id']: r for r in tab('trilhas')}
 lados = {r['id'] for r in tab('lados')}
-for r in tab('perguntas_casos'):
-    rid = f"{r['pergunta_id']}#{r['ordem']}"; checa_fontes('perguntas_casos', rid, r); checa_coord('perguntas_casos', rid, r['lon'], r['lat'])
-    if r['lado'] not in lados: erros.append(f'perguntas_casos {rid}: lado inválido {r["lado"]}')
+for r in TRI.values():
+    if r['tipo'] not in ('passeio', 'debate'): erros.append(f"trilhas {r['id']}: tipo inválido {r['tipo']}")
+    if r['tipo'] == 'debate': checa_fontes('trilhas', r['id'], r)  # passeios: descrição editorial, como as épocas
+for r in tab('trilhas_paradas'):
+    rid = f"{r['trilha_id']}#{r['ordem']}"; checa_fontes('trilhas_paradas', rid, r)
+    t = TRI.get(r['trilha_id'])
+    if not t: erros.append(f'trilhas_paradas {rid}: trilha inexistente'); continue
+    if t['tipo'] == 'debate':
+        checa_coord('trilhas_paradas', rid, r['lon'], r['lat'])
+        if r['lado'] not in lados: erros.append(f'trilhas_paradas {rid}: lado inválido {r["lado"]}')
+    else:
+        if not r['foco']: erros.append(f'trilhas_paradas {rid}: parada sem foco')
+        if r['evento'] and r['evento'] not in ev_ids: erros.append(f'trilhas_paradas {rid}: evento inexistente {r["evento"]}')
+        if r['rota'] and r['rota'] not in rot_ids: erros.append(f'trilhas_paradas {rid}: rota inexistente {r["rota"]}')
+        if r['lugar'] and r['lugar'] not in lug_nomes: erros.append(f'trilhas_paradas {rid}: lugar inexistente {r["lugar"]}')
+    if r['nivel'] == 'iniciante' and t['tipo'] == 'passeio' and not r['texto_iniciante']: avisos.append(f'trilhas_paradas {rid}: parada de iniciante sem texto_iniciante')
 for r in tab('sincronias'): checa_id('sincronias', r['id']); checa_fontes('sincronias', r['id'], r)
 estilos = {r['id'] for r in tab('artes_estilos')}
 for r in tab('artes_estilos'):
@@ -99,7 +107,7 @@ for r in tab('artes_regras'):
 
 # temas e níveis (vocabulário controlado em temas.csv e niveis.csv)
 TEMAS = {r['id'] for r in tab('temas')}; NIVEIS = {r['id'] for r in tab('niveis')}
-TAB_TN = ['lugares', 'civilizacoes', 'eventos', 'rotas', 'passeios_paradas', 'perguntas_casos', 'sincronias']
+TAB_TN = ['lugares', 'civilizacoes', 'eventos', 'rotas', 'trilhas', 'trilhas_paradas', 'sincronias']
 cob_tn = {}
 for n in TAB_TN:
     rows = tab(n); ct = cn = 0
@@ -114,12 +122,12 @@ for n in TAB_TN:
 
 # relatório
 def cobertura(n):
-    rows = tab(n); c = collections.Counter(r['status'] for r in rows); t = len(rows)
+    rows = [r for r in tab(n) if n != 'trilhas' or r['tipo'] == 'debate']; c = collections.Counter(r['status'] for r in rows); t = len(rows)
     return t, c
 linhas = ['# Auditoria do conteúdo', '', f'Gerado por `scripts/validar.py` em {datetime.date.today().isoformat()}.', '',
           '## Situação das fontes', '', '| Tabela | Itens | Com fonte | Revisado sem fonte | Não revisado | Contestado |', '|---|---|---|---|---|---|']
 tot = collections.Counter(); tt = 0
-for n in ['lugares', 'civilizacoes', 'eventos', 'rotas', 'passeios_paradas', 'perguntas', 'perguntas_casos', 'sincronias', 'artes_estilos']:
+for n in ['lugares', 'civilizacoes', 'eventos', 'rotas', 'trilhas', 'trilhas_paradas', 'sincronias', 'artes_estilos']:
     t, c = cobertura(n); tot.update(c); tt += t
     pct = lambda k: f"{c[k]} ({round(100 * c[k] / t)}%)" if t else '0'
     linhas.append(f"| {n} | {t} | {pct('com_fonte')} | {pct('revisado_sem_fonte')} | {pct('nao_revisado')} | {pct('contestado')} |")

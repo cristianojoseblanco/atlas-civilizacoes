@@ -35,19 +35,24 @@ def gerar():
         if r['tipo'] == 'rota': ev['path'] = traj.get(('evento', r['id']), [])
         events.append(ev)
     routes = [dict(id=r['id'], n=r['nome'], y=num(r['ano_inicio']), e=num(r['ano_fim']), cor=r['cor'], bens=r['mercadorias'], t=r['descricao'], path=traj.get(('rota', r['id']), []), **aud(r)) for r in tab('rotas')]
-    steps = {}
-    for r in sorted(tab('passeios_paradas'), key=lambda r: (r['passeio_id'], int(r['ordem']))):
-        s = dict(ano=num(r['ano']), foco=[[num(a) for a in c.split()] for c in r['foco'].split(';') if c], t=r['titulo'], txt=r['texto'], **aud(r))
-        if r['zoom']: s['k'] = num(r['zoom'])
-        for k, c in (('ev', 'evento'), ('rt', 'rota'), ('lugar', 'lugar')):
-            if r[c]: s[k] = r[c]
-        steps.setdefault(r['passeio_id'], []).append(s)
-    tours = [dict(id=r['id'], n=r['nome'], cor=r['cor'], d=r['descricao'], steps=steps.get(r['id'], [])) for r in tab('passeios')]
+    # trilhas do "Aprender história": passeios (sequência guiada) e debates (grandes perguntas)
     lados = {r['id']: dict(nome=r['nome'], cor=r['cor']) for r in tab('lados')}
-    casos = {}
-    for r in sorted(tab('perguntas_casos'), key=lambda r: (r['pergunta_id'], int(r['ordem']))):
-        casos.setdefault(r['pergunta_id'], []).append(dict(n=r['nome'], at=[num(r['lon']), num(r['lat'])], y=num(r['ano']), lado=r['lado'], t=r['descricao'], **aud(r)))
-    themes = [dict(id=r['id'], n=r['pergunta'], ano=num(r['ano']), intro=r['introducao'], casos=casos.get(r['id'], []), **aud(r)) for r in tab('perguntas')]
+    tri = tab('trilhas'); tipo = {r['id']: r['tipo'] for r in tri}
+    steps, casos = {}, {}
+    for r in sorted(tab('trilhas_paradas'), key=lambda r: (r['trilha_id'], int(r['ordem']))):
+        base = dict(nivel=r['nivel'], temas=lst(r['temas']), **aud(r))
+        if tipo[r['trilha_id']] == 'passeio':
+            s = dict(ano=num(r['ano']), foco=[[num(a) for a in c.split()] for c in r['foco'].split(';') if c], t=r['titulo'], txt=r['texto'], **base)
+            if r['texto_iniciante']: s['ti'] = r['texto_iniciante']
+            if r['zoom']: s['k'] = num(r['zoom'])
+            for k, c in (('ev', 'evento'), ('rt', 'rota'), ('lugar', 'lugar')):
+                if r[c]: s[k] = r[c]
+            steps.setdefault(r['trilha_id'], []).append(s)
+        else:
+            casos.setdefault(r['trilha_id'], []).append(dict(n=r['titulo'], at=[num(r['lon']), num(r['lat'])], y=num(r['ano']), lado=r['lado'], t=r['texto'], **base))
+    tours = [dict(id=r['id'], n=r['nome'], cor=r['cor'], d=r['descricao'], nivel=r['nivel'], temas=lst(r['temas']), steps=steps.get(r['id'], [])) for r in tri if r['tipo'] == 'passeio']
+    themes = [dict(id=r['id'], n=r['nome'], ano=num(r['ano']), intro=r['descricao'], nivel=r['nivel'], temas=lst(r['temas']), casos=casos.get(r['id'], []), **aud(r)) for r in tri if r['tipo'] == 'debate']
+    temas_js = [dict(id=r['id'], n=r['nome']) for r in tab('temas')]
     sync = [dict(id=r['id'], y=num(r['ano']), t=r['texto'], **aud(r)) for r in tab('sincronias')]
     fontes_js = {k: dict(titulo=v['titulo'], autores=v['autores'], ano=v['ano'], veiculo=v['veiculo_editora'], url=v['url'], tipo=v['tipo'], conf=v['confiabilidade'], consulta=v['consulta']) for k, v in fontes.items()}
     art = {r['id']: dict(nome=r['nome'], trad=r['tradicao'], insp=r['inspiracao'], w=num(r['largura']), h=num(r['altura']), d=r['svg'], peca=r['peca'], local=r['peca_local'], pf=r['peca_fonte'], cores=r['cores'].split(';'), **aud(r)) for r in tab('artes_estilos')}
@@ -60,5 +65,5 @@ def gerar():
         if r['ano_min'] != '': q['a'] = num(r['ano_min'])
         if r['ano_max'] != '': q['b'] = num(r['ano_max'])
         regras.append(q)
-    out = dict(ART=art, ART_RULES=regras, FONTES=fontes_js, CIVS=civs, ERAS=eras, PLACES=places, EVENT_CATS=cats, EVENTS=events, ROUTES=routes, TOURS=tours, LADOS=lados, THEMES=themes, SYNC=sync)
+    out = dict(ART=art, ART_RULES=regras, FONTES=fontes_js, CIVS=civs, ERAS=eras, PLACES=places, EVENT_CATS=cats, EVENTS=events, ROUTES=routes, TOURS=tours, LADOS=lados, THEMES=themes, SYNC=sync, TEMAS=temas_js)
     return ''.join(f'const {k}={json.dumps(v, ensure_ascii=False, separators=(",", ":"))};\n' for k, v in out.items())

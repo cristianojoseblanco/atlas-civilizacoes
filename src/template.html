@@ -129,6 +129,11 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
 .tm-item b{display:block;font-family:Cinzel,serif;font-size:16px;margin-bottom:4px}
 .tm-d{display:block;font-size:13px;color:var(--mute);line-height:1.45}
 .tm-n{display:block;font-size:11px;color:var(--gold);margin-top:6px}
+.tm-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
+.tm-chip{font:600 12px Inter,system-ui,sans-serif;background:rgba(255,255,255,.05);color:var(--ink);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:6px 12px;cursor:pointer}
+.tm-chip.sm{font-size:11px;padding:4px 10px}
+.tm-chip.on{background:var(--gold);color:#1a1405;border-color:var(--gold)}
+.tm-help{font-size:12px;color:var(--mute);margin:4px 0 8px;line-height:1.45}
 #cSrcBox,.srcbox{margin-top:12px;font-size:12px;color:var(--mute)}
 #cSrcBox summary,.srcbox summary{cursor:pointer;color:var(--gold);font-weight:600;list-style:none}
 #cSrcBox summary::before,.srcbox summary::before{content:"▸ "}
@@ -141,7 +146,7 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
 .src-x{margin-top:6px;font-style:italic}
 .credit{position:fixed;right:8px;bottom:2px;font-size:9px;color:rgba(160,170,170,.5);pointer-events:auto}
 .credit a{color:inherit}
-@media (max-width:600px){ header h1{font-size:14px;white-space:nowrap} header h1 small{display:none} .tourbtn{padding:6px 10px;font-size:12px} .toggles{gap:6px;position:relative} .layersbtn{display:block} #layers{display:none;position:absolute;right:0;top:38px;flex-direction:column;align-items:stretch;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px} #layers.open{display:flex} #layers label{border:none;background:none} .toggles label{padding:5px 8px;font-size:11px} }
+@media (max-width:600px){ .hide-sm{display:none} header h1{font-size:14px;white-space:nowrap} header h1 small{display:none} .tourbtn{padding:6px 10px;font-size:12px} .toggles{gap:6px;position:relative} .layersbtn{display:block} #layers{display:none;position:absolute;right:0;top:38px;flex-direction:column;align-items:stretch;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px} #layers.open{display:flex} #layers label{border:none;background:none} .toggles label{padding:5px 8px;font-size:11px} }
 @media (min-width:760px){ #theme{left:auto;right:16px;top:64px;max-height:calc(100vh - 260px);margin:0;width:380px} #theme:not(.open){transform:translateX(120%)} #tour{left:auto;right:16px;top:64px;max-height:calc(100vh - 260px);margin:0;width:380px} #tour:not(.open){transform:translateX(120%)} #card{left:auto;right:16px;top:64px;max-height:calc(100vh - 260px);margin:0;width:380px} #card:not(.open){transform:translateX(120%)} .zoombtns{top:auto;bottom:190px} }
 </style>
 </head>
@@ -151,7 +156,7 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
   <h1>Atlas das Civilizações<small>Fronteiras do mundo ao longo do tempo</small></h1>
   <div class="toggles">
     <button id="btnSearch" class="layersbtn searchbtn" aria-label="Buscar">⌕</button>
-    <button id="btnTours" class="tourbtn">▶ Passeios</button>
+    <button id="btnTours" class="tourbtn">▶ Aprender<span class="hide-sm"> história</span></button>
     <button id="btnLayers" class="layersbtn" aria-label="Camadas">☰</button>
     <div id="layers">
     <label><input type="checkbox" id="tPlaces" checked>Lugares</label>
@@ -184,7 +189,7 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
 </div>
 <div id="tour">
   <div id="tBar"></div>
-  <div class="t-head"><span id="tName"></span><button id="tClose" aria-label="Sair do passeio">×</button></div>
+  <div class="t-head"><span id="tName"></span><button id="tClose" aria-label="Sair da trilha">×</button></div>
   <div id="tStep"></div>
   <div id="tTitle"></div>
   <div id="tText"></div>
@@ -200,7 +205,7 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
   <div id="thList"></div>
 </div>
 <div id="search"><div class="s-box"><input id="sInput" type="search" placeholder="Buscar: Uruk, Incas, Rota da Seda, Peste…" autocomplete="off"><div id="sResults"></div></div></div>
-<div id="tourMenu"><div class="tm-box"><div class="tm-top"><h2>Passeios e perguntas</h2><button id="tmClose" aria-label="Fechar">×</button></div><div id="tmList"></div></div></div>
+<div id="tourMenu"><div class="tm-box"><div class="tm-top"><h2>Aprender história</h2><button id="tmClose" aria-label="Fechar">×</button></div><div id="tmList"></div></div></div>
 <div class="credit">Fronteiras: <a href="https://github.com/aourednik/historical-basemaps" target="_blank" rel="noopener">historical-basemaps</a> (GPL-3), aproximadas · Relevo e rios: Natural Earth</div>
 
 <script>/*D3*/</script>

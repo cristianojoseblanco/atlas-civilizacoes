@@ -655,32 +655,71 @@ function renderChips(){
   box.style.display = box.children.length ? '' : 'none';
 }
 
-// ---------- passeios guiados ----------
+// ---------- trilhas guiadas (passeios) ----------
 let tour = null; // {t, i, auto, timer, t0, dur}
 const snapFor = ano => { const i = SNAP_YEARS.findIndex(y => y >= ano); return i < 0 ? N - 1 : i; };
+// ---------- aprender história: nível e temas ----------
+const NIV_RANK = {iniciante:1, colegio:2, graduacao:3, completo:9, personalizado:9};
+const NIV_OPTS = [['iniciante','Iniciante'],['colegio','Colégio'],['graduacao','Graduação'],['completo','Completo'],['personalizado','Personalizado']];
+let learn = {nivel:'colegio', temas:[]};
+try { const sv = JSON.parse(localStorage.getItem('atlas-aprender') || 'null'); if (sv && NIV_RANK[sv.nivel]) learn = {nivel:sv.nivel, temas:Array.isArray(sv.temas) ? sv.temas : []}; } catch (e) {}
+function saveLearn(){ try { localStorage.setItem('atlas-aprender', JSON.stringify(learn)); } catch (e) {} }
+const temaOk = ts => learn.nivel !== 'personalizado' || !learn.temas.length || (ts || []).some(x => learn.temas.includes(x));
+function stepOk(s){ return learn.nivel === 'iniciante' ? s.nivel === 'iniciante' : NIV_RANK[s.nivel || 'colegio'] <= NIV_RANK[learn.nivel]; }
+function tourFor(t){
+  const steps = t.steps.filter(stepOk).map(s => learn.nivel === 'iniciante' && s.ti ? {...s, txt:s.ti} : s);
+  return {...t, steps};
+}
+function trilhaOk(t){ return NIV_RANK[t.nivel || 'colegio'] <= NIV_RANK[learn.nivel] && temaOk(t.temas); }
 function openTourMenu(){
   const list = $('#tmList'); list.innerHTML = '';
-  TOURS.forEach(t => {
+  const lv = document.createElement('div'); lv.className = 'tm-chips';
+  NIV_OPTS.forEach(([id, nome]) => {
+    const c = document.createElement('button'); c.className = 'tm-chip' + (learn.nivel === id ? ' on' : ''); c.textContent = nome;
+    c.onclick = () => { learn.nivel = id; saveLearn(); openTourMenu(); }; lv.append(c);
+  });
+  const lh = document.createElement('h3'); lh.className = 'tm-sec'; lh.textContent = 'Nível'; list.append(lh, lv);
+  const desc = {iniciante:'Só as etapas mais conhecidas, com texto simples.', colegio:'O que costuma cair no ensino médio, no ENEM e nos vestibulares.', graduacao:'Mais detalhes, debates e sítios menos conhecidos.', completo:'Todas as paradas, com o texto completo.', personalizado:'Escolha os temas que quer estudar.'}[learn.nivel];
+  const dp = document.createElement('p'); dp.className = 'tm-help'; dp.textContent = desc; list.append(dp);
+  if (learn.nivel === 'personalizado') {
+    const tc = document.createElement('div'); tc.className = 'tm-chips';
+    TEMAS.forEach(tm => {
+      const c = document.createElement('button'); c.className = 'tm-chip sm' + (learn.temas.includes(tm.id) ? ' on' : ''); c.textContent = tm.n;
+      c.onclick = () => { learn.temas = learn.temas.includes(tm.id) ? learn.temas.filter(x => x !== tm.id) : [...learn.temas, tm.id]; saveLearn(); openTourMenu(); };
+      tc.append(c);
+    });
+    list.append(tc);
+  }
+  const h1 = document.createElement('h3'); h1.className = 'tm-sec'; h1.textContent = 'Trilhas'; list.append(h1);
+  let n = 0;
+  TOURS.filter(trilhaOk).forEach(t0 => {
+    const t = tourFor(t0); if (!t.steps.length) return; n++;
     const b = document.createElement('button'); b.className = 'tm-item';
     b.innerHTML = `<span class="tm-bar" style="background:${t.cor}"></span><b></b><span class="tm-d"></span><span class="tm-n"></span>`;
     b.querySelector('b').textContent = t.n; b.querySelector('.tm-d').textContent = t.d;
-    b.querySelector('.tm-n').textContent = `${t.steps.length} paradas · cerca de ${Math.round(t.steps.reduce((a, s) => a + stepDur(s), 0) / 60000)} min`;
-    b.onclick = () => { $('#tourMenu').classList.remove('open'); startTour(t); };
+    b.querySelector('.tm-n').textContent = `${t.steps.length} paradas · cerca de ${Math.max(1, Math.round(t.steps.reduce((a, s) => a + stepDur(s), 0) / 60000))} min`;
+    b.onclick = () => { $('#tourMenu').classList.remove('open'); startTour(t0); };
     list.append(b);
   });
-  const h = document.createElement('h3'); h.className = 'tm-sec'; h.textContent = 'Grandes perguntas'; list.append(h);
-  THEMES.forEach(th => {
-    const b = document.createElement('button'); b.className = 'tm-item';
-    b.innerHTML = `<span class="tm-bar" style="background:linear-gradient(${LADOS.classico.cor},${LADOS.contra.cor})"></span><b></b><span class="tm-d"></span><span class="tm-n"></span>`;
-    b.querySelector('b').textContent = th.n; b.querySelector('.tm-d').textContent = th.intro.split('. ')[0] + '.';
-    b.querySelector('.tm-n').textContent = `${th.casos.length} casos no mapa`;
-    b.onclick = () => { $('#tourMenu').classList.remove('open'); startTheme(th); };
-    list.append(b);
-  });
+  const ths = THEMES.filter(trilhaOk);
+  if (ths.length) {
+    const h = document.createElement('h3'); h.className = 'tm-sec'; h.textContent = 'Grandes perguntas'; list.append(h);
+    ths.forEach(th => {
+      n++;
+      const b = document.createElement('button'); b.className = 'tm-item';
+      b.innerHTML = `<span class="tm-bar" style="background:linear-gradient(${LADOS.classico.cor},${LADOS.contra.cor})"></span><b></b><span class="tm-d"></span><span class="tm-n"></span>`;
+      b.querySelector('b').textContent = th.n; b.querySelector('.tm-d').textContent = th.intro.split('. ')[0] + '.';
+      b.querySelector('.tm-n').textContent = `${th.casos.length} casos no mapa`;
+      b.onclick = () => { $('#tourMenu').classList.remove('open'); startTheme(th); };
+      list.append(b);
+    });
+  }
+  if (!n) { const e = document.createElement('p'); e.className = 'tm-help'; e.textContent = 'Nenhuma trilha para essa escolha ainda. Novas trilhas estão a caminho.'; list.append(e); }
   $('#tourMenu').classList.add('open');
 }
 function stepDur(st){ return 5000 + st.txt.length * 42; }
 function startTour(t){
+  t = tourFor(t); if (!t.steps.length) return;
   if (playTimer) stopPlay();
   if (theme) endTheme();
   closeCard();
@@ -732,7 +771,7 @@ $('#tPrev').onclick = () => tourStep(tour.i - 1);
 $('#tNext').onclick = () => tour.i === tour.t.steps.length - 1 ? endTour() : tourStep(tour.i + 1);
 $('#tAuto').onclick = () => { tour.auto = !tour.auto; schedule(); };
 $('#tClose').onclick = endTour;
-window.__tour = (id, i = 0) => { startTour(TOURS.find(t => t.id === id)); if (i) tourStep(i); };
+window.__tour = (id, i = 0, nivel) => { if (nivel) learn.nivel = nivel; startTour(TOURS.find(t => t.id === id)); if (i) tourStep(i); };
 
 // ---------- enquanto isso ----------
 let syncI = 0;
@@ -839,7 +878,8 @@ function buildSearch(){
   PLACES.forEach(p => items.push({kind: p.k === 's' ? 'Sítio' : 'Cidade', label:p.n, sub:p.p + ' · ' + fmtYear(p.y), keys:[p.n], go:() => goPlace(p)}));
   EVENTS.forEach(ev => items.push({kind:'Evento', label:ev.n, sub:fmtRange(ev.y, ev.e), keys:[ev.n, ...(ev.pts || []).map(x => x.l)], go:() => { go(firstSnap(ev.y, ev.e)); setTimeout(() => openEvent(ev, true), 50); }}));
   ROUTES.forEach(rt => items.push({kind:'Rota', label:rt.n, sub:fmtRange(rt.y, rt.e), keys:[rt.n, rt.bens], go:() => { if (!showRoutes) { showRoutes = true; $('#tRoutes').checked = true; } go(firstSnap(rt.y, rt.e)); setTimeout(() => openRoute(rt, true), 50); }}));
-  TOURS.forEach(t => items.push({kind:'Passeio', label:t.n, sub:`${t.steps.length} paradas`, keys:[t.n, t.d], go:() => startTour(t)}));
+  TOURS.forEach(t => items.push({kind:'Trilha', label:t.n, sub:`${t.steps.length} paradas`, keys:[t.n, t.d], go:() => startTour(t)}));
+  THEMES.forEach(th => items.push({kind:'Grande pergunta', label:th.n, sub:`${th.casos.length} casos`, keys:[th.n], go:() => startTheme(th)}));
   Object.keys(OCC).forEach(n => { if (!seen.has(n) && n.trim().length > 2) items.push({kind:'Região', label:ptName(n), sub:rangeText(n), keys:[n, ptName(n)], go:() => goCiv([n], null), low:true}); });
   items.forEach(it => it.nk = it.keys.map(norm));
   SEARCH = items;
