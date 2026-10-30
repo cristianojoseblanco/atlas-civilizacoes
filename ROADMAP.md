@@ -27,6 +27,15 @@ Tabela nova, `desenvolvimentos.csv`, no mesmo padrão das outras:
 - As trilhas são passeios maiores, organizados por nível e tema, com texto, animações no mapa e referências.
 - **Quizzes** gerados dos próprios dados ("o que veio primeiro?", "onde fica?", "quem era contemporâneo de quem?"). Cada pergunta herda a fonte do item de onde saiu.
 
+### Decisões de 30/10/2026
+
+- "Passeios" e "Perguntas" deixam de existir como botões separados: tudo vira **trilhas** dentro do Aprender história.
+  - Tabelas `trilhas` (id, nome, tipo = passeio ou debate, tema, nível mínimo, descrição, fontes) e `trilhas_paradas`.
+  - As grandes perguntas viram trilhas do tipo debate, com os dois lados e as evidências.
+- **Nível iniciante:** mesma trilha, com **texto mais simples** e menos informação difícil, focado nas etapas mais conhecidas da história. Cada parada ganha um campo `texto_iniciante`; os outros níveis usam o texto completo.
+- **Base de conhecimento:** livros didáticos em PDF (um do ensino médio brasileiro, um universitário de história mundial, opcionalmente um de história da matemática) servem de índice e de fonte citada com página. Nenhum trecho é copiado para o site; preferir livros de licença aberta (ex.: OpenStax World History).
+- Trilhas novas previstas: Egito, Grécia e Roma, Rota da Seda, Américas pré-colombianas, África medieval, história da matemática.
+
 ## Modo "Preparo para provas"
 
 - Montar uma base de **temas cobrados** por prova e ano (ENEM, Fuvest, Unicamp, outras), a partir das provas e gabaritos públicos do INEP e das bancas.
