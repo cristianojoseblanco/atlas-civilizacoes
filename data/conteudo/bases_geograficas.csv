@@ -1,0 +1,6 @@
+arquivo,descricao,fonte,licenca,processamento
+data/borders/*.json,Fronteiras de 54 épocas,F001,GPL-3.0,"scripts/build_data.sh (recorte no litoral land-50m, simplificação 12%)"
+data/ne_custom.json; data/ne_meta.json,"Oriente Próximo 3500–1500 a.C., desenhado para o atlas",,GPL-3.0 (este projeto),scripts/ne_borders.py + scripts/build_ne.js
+data/relief_world.jpg; data/relief_hi.jpg,Relevo sombreado reprojetado,F002,Domínio público,scripts/relief.py
+data/rivers.json; data/lakes.json,Rios e lagos 1:50m,F002,Domínio público,scripts/build_data.sh
+"(land-10m, land-50m)",Contorno das terras para recortes e máscara do oceano,F003,ISC,scripts/fetch_raw.sh

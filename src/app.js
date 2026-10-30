@@ -364,6 +364,22 @@ function rangeText(name){
   return ys.length === 1 ? `No mapa em ${fmtYear(ys[0])}` : `No mapa de ${fmtYear(ys[0])} a ${fmtYear(ys[ys.length-1])}`;
 }
 function setBar(color){ $('#cBar').style.background = color; }
+// ---------- fontes e status ----------
+const STATUS_TXT = {com_fonte:['Com fonte','ok'], revisado_sem_fonte:['Revisado, ainda sem fonte ligada','mid'], nao_revisado:['Ainda não revisado','no'], contestado:['Contestado entre as fontes','bad']};
+const esc = x => String(x ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+function srcHtml(fontes, status, extra){
+  const st = STATUS_TXT[status] || STATUS_TXT.nao_revisado;
+  let h = `<div class="src-st ${st[1]}">${st[0]}</div>`;
+  const ids = (fontes || []).filter(f => FONTES[f]);
+  if (ids.length) {
+    h += '<ul class="src-list">' + ids.map(f => { const F = FONTES[f];
+      const t = `${esc(F.autores)}${F.ano ? ' (' + esc(F.ano) + ')' : ''}. <i>${esc(F.titulo)}</i>. ${esc(F.veiculo)}`;
+      return `<li><span class="src-id">${f}·${esc(F.conf)}</span> ${F.url ? `<a href="${esc(F.url)}" target="_blank" rel="noopener">${t} ↗</a>` : t}</li>`; }).join('') + '</ul>';
+  }
+  if (extra) h += `<div class="src-x">${extra}</div>`;
+  return h;
+}
+function setSrc(fontes, status, extra){ $('#cSrc').innerHTML = srcHtml(fontes, status, extra); }
 function setArt(lon, lat, y, g, color){
   const st = artStyle(lon, lat, y, g);
   $('#cArt').style.backgroundImage = `url("data:image/svg+xml;utf8,${encodeURIComponent(artTile(st, color))}")`;
@@ -380,6 +396,8 @@ function openCiv(name, quiet){
     `<span class="muted">${rangeText(name)}${here ? '' : ' · não existe nesta data'}</span>` +
     (CUSTOM_NAMES.has(name) ? '<br><span class="muted">Fronteira desenhada para este atlas, aproximada.</span>' : '');
   $('#cText').textContent = civ ? civ.texto : 'Ainda sem descrição própria no atlas.';
+  setSrc(civ ? civ.fontes : [], civ ? civ.status : 'nao_revisado',
+    CUSTOM_NAMES.has(name) ? 'Fronteira: desenhada para este atlas (scripts/ne_borders.py).' : 'Fronteira: historical-basemaps (A. Ourednik, GPL-3).');
   $('#cLink').href = wiki(civ ? civ.pt : name);
   const ys = OCC[name] || [];
   $('#cJump').style.display = ys.length && !here ? '' : 'none';
@@ -399,6 +417,7 @@ function openPlace(pl){
   $('#cMeta').innerHTML = pl.k === 's' ? `<b>Desde:</b> c. ${fmtYear(pl.y)}` :
     `<b>Habitada:</b> c. ${fmtYear(pl.y)} – ${pl.e == null ? 'hoje' : 'c. ' + fmtYear(pl.e)}`;
   $('#cText').textContent = pl.t;
+  setSrc(pl.fontes, pl.status);
   $('#cLink').href = wiki(pl.n.replace(/ \(.*/, ''));
   $('#cJump').style.display = 'none';
   setBar(pl.k === 's' ? 'linear-gradient(90deg,#f0c454,#b8862b)' : 'linear-gradient(90deg,#fff6df,#c9b48a)');
@@ -590,6 +609,7 @@ function openEvent(ev, fly){
     $('#cText').append(ol);
   }
   $('#cLink').href = wiki(ev.n);
+  setSrc(ev.fontes, ev.status);
   $('#cJump').style.display = 'none';
   setBar(cat.cor);
   { const p0 = evPoints(ev)[0]; setArt(p0[0], p0[1], ev.y, null, cat.cor); }
@@ -604,6 +624,7 @@ function openRoute(rt, fly){
   $('#cSub').textContent = '';
   $('#cMeta').innerHTML = `<b>Ativa:</b> ${fmtRange(rt.y, rt.e)}<br><b>Mercadorias:</b> ${rt.bens}`;
   $('#cText').textContent = rt.t;
+  setSrc(rt.fontes, rt.status, 'Traçado esquemático.');
   $('#cLink').href = wiki(rt.n.replace(/:.*/, ''));
   $('#cJump').style.display = 'none';
   setBar(rt.cor);
@@ -675,6 +696,7 @@ function tourStep(i){
   flyTo(st.foco, st.k);
   $('#tStep').textContent = `${i + 1} / ${t.steps.length} · ${fmtYear(st.ano)}`;
   $('#tTitle').textContent = st.t; $('#tText').textContent = st.txt;
+  $('#tSrc').innerHTML = srcHtml(st.fontes, st.status);
   $('#tPrev').disabled = i === 0; $('#tNext').textContent = i === t.steps.length - 1 ? 'Fim' : '›';
   $('#tour').scrollTop = 0;
   schedule();
@@ -730,6 +752,7 @@ function startTheme(th){
   const si = snapFor(th.ano); if (si !== idx) go(si);
   document.body.classList.add('theming');
   $('#thTitle').textContent = th.n; $('#thIntro').textContent = th.intro;
+  $('#thSrc').innerHTML = srcHtml(th.fontes, th.status);
   const used = [...new Set(th.casos.map(c => c.lado))];
   $('#thLegend').innerHTML = '';
   ['classico', 'contra', 'variante', 'aberto'].filter(l => used.includes(l)).forEach(l => {
@@ -758,6 +781,7 @@ function openCase(c, fly){
   $('#cTitle').textContent = c.n; $('#cSub').textContent = theme ? theme.n : '';
   $('#cMeta').innerHTML = `<b>Quando:</b> c. ${fmtYear(c.y)}`;
   $('#cText').textContent = c.t;
+  setSrc(c.fontes, c.status);
   $('#cLink').href = wiki(c.n.replace(/:.*/, '').replace(/'/g, ''));
   $('#cJump').style.display = 'none';
   setBar(L.cor); setArt(c.at[0], c.at[1], c.y, null, L.cor); showCard();

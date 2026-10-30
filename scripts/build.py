@@ -1,5 +1,7 @@
 """Monta index.html (um arquivo só, autocontido) a partir de src/ e data/."""
-import base64, json, os, pathlib, re
+import base64, json, os, pathlib, re, sys
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import conteudo
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 src, data, nm = ROOT / 'src', ROOT / 'data', ROOT / 'node_modules'
 
@@ -27,8 +29,8 @@ parts = {
     'TOPO': (nm / 'topojson-client/dist/topojson-client.min.js').read_text(),
     'SNAPS': snaps(),
     'GEO': geo(),
-    'PLACES': (src / 'places.js').read_text() + '\n' + (src / 'places_world.js').read_text() + '\n' + (src / 'events.js').read_text() + '\n' + (src / 'tours.js').read_text() + '\n' + (src / 'themes.js').read_text() + '\n' + (src / 'sync.js').read_text(),
-    'CONTENT': (src / 'content.js').read_text() + '\n' + (src / 'art.js').read_text(),
+    'PLACES': conteudo.gerar(),
+    'CONTENT': (src / 'art.js').read_text(),
     'APP': (src / 'app.js').read_text(),
 }
 html = (src / 'template.html').read_text()

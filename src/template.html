@@ -123,6 +123,16 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
 .tm-item b{display:block;font-family:Cinzel,serif;font-size:16px;margin-bottom:4px}
 .tm-d{display:block;font-size:13px;color:var(--mute);line-height:1.45}
 .tm-n{display:block;font-size:11px;color:var(--gold);margin-top:6px}
+#cSrcBox,.srcbox{margin-top:12px;font-size:12px;color:var(--mute)}
+#cSrcBox summary,.srcbox summary{cursor:pointer;color:var(--gold);font-weight:600;list-style:none}
+#cSrcBox summary::before,.srcbox summary::before{content:"▸ "}
+#cSrcBox[open] summary::before,.srcbox[open] summary::before{content:"▾ "}
+.src-st{display:inline-block;margin:8px 0 4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+.src-st.ok{background:rgba(70,190,120,.18);color:#7fe0a5}.src-st.mid{background:rgba(240,190,80,.16);color:#f0c454}.src-st.no{background:rgba(200,200,200,.12);color:#c9c9c9}.src-st.bad{background:rgba(230,80,80,.18);color:#ff9a9a}
+.src-list{margin:6px 0 0 0;padding:0;list-style:none}.src-list li{margin:5px 0;line-height:1.4}
+.src-list a{color:#cfd8dc;text-decoration:none}.src-list a:hover{text-decoration:underline}
+.src-id{font-family:ui-monospace,monospace;font-size:10px;color:var(--gold);border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-right:4px}
+.src-x{margin-top:6px;font-style:italic}
 .credit{position:fixed;right:8px;bottom:2px;font-size:9px;color:rgba(160,170,170,.5);pointer-events:auto}
 .credit a{color:inherit}
 @media (max-width:600px){ header h1{font-size:14px;white-space:nowrap} header h1 small{display:none} .tourbtn{padding:6px 10px;font-size:12px} .toggles{gap:6px;position:relative} .layersbtn{display:block} #layers{display:none;position:absolute;right:0;top:38px;flex-direction:column;align-items:stretch;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px} #layers.open{display:flex} #layers label{border:none;background:none} .toggles label{padding:5px 8px;font-size:11px} }
@@ -163,6 +173,7 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
   <div id="cSub"></div>
   <div id="cMeta"></div>
   <div id="cText"></div>
+  <details id="cSrcBox"><summary>Fontes e verificação</summary><div id="cSrc"></div></details>
   <div class="cact"><a id="cLink" target="_blank" rel="noopener">Ler na Wikipédia ↗</a><button id="cJump">Ir para quando surge</button></div>
 </div>
 <div id="tour">
@@ -171,12 +182,14 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
   <div id="tStep"></div>
   <div id="tTitle"></div>
   <div id="tText"></div>
+  <details class="srcbox"><summary>Fontes e verificação</summary><div id="tSrc"></div></details>
   <div class="t-ctrl"><button id="tPrev" aria-label="Parada anterior">‹</button><button id="tAuto" aria-label="Pausar ou continuar">❚❚</button><button id="tNext" aria-label="Próxima parada">›</button><div class="t-prog"><i id="tProg"></i></div></div>
 </div>
 <div id="theme">
   <div class="t-head"><span class="th-kick">Grande pergunta</span><button id="thClose" aria-label="Sair">×</button></div>
   <div id="thTitle"></div>
   <div id="thIntro"></div>
+  <details class="srcbox"><summary>Fontes e verificação</summary><div id="thSrc"></div></details>
   <div id="thLegend"></div>
   <div id="thList"></div>
 </div>

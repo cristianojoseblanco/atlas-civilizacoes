@@ -20,29 +20,33 @@ Mapa interativo das civilizações ao longo do tempo, de 123 mil a.C. até hoje:
 
 O resultado é um único `index.html` autocontido, que funciona offline e no celular.
 
+## Fontes e auditoria
+
+Todo o conteúdo fica em tabelas CSV em `data/conteudo/`, com fontes ligadas e status de verificação em cada item. A bibliografia está em `fontes.csv`, com nível de confiabilidade e forma de consulta. O `AUDITORIA.md` mostra quanto do conteúdo já tem fonte, e o `DADOS.md` explica as tabelas e as regras. No atlas, cada cartão mostra as fontes e o selo de verificação.
+
 ## Estrutura
 
 ```
-src/        código e conteúdo editorial
+src/        código
   app.js        renderização do mapa (canvas + d3)
   template.html layout e estilos
-  content.js    civilizações e épocas
-  places.js     cidades e sítios
-  places_world.js  pólis gregas e lugares das outras regiões
   art.js        padrões de arte por cultura
-  events.js     eventos animados e rotas comerciais
-  tours.js      passeios guiados
-  themes.js     grandes perguntas
-  sync.js       "Enquanto isso…"
-data/       dados já processados (versionados)
-scripts/    download dos dados brutos, processamento e build
+data/
+  conteudo/     TODO o conteúdo em CSV (fonte única), com fontes e status
+  borders/ …    dados geográficos processados
+scripts/
+  conteudo.py   lê os CSVs e gera o JavaScript
+  validar.py    confere as tabelas e gera AUDITORIA.md
+  build.py      monta o index.html
+  …             download e processamento dos dados geográficos
 ```
 
 ## Rodar
 
 ```bash
 npm install
-npm run build        # gera index.html a partir de src/ e data/
+npm run validar      # confere as tabelas e atualiza AUDITORIA.md
+npm run build        # valida e gera index.html
 ```
 
 Para regenerar `data/` do zero (fronteiras, rios, relevo): `npm run data` (precisa de Python com numpy e Pillow).
@@ -52,7 +56,7 @@ Para regenerar `data/` do zero (fronteiras, rios, relevo): `npm run data` (preci
 - Fronteiras do Oriente Próximo entre 3500 e 1500 a.C.: desenhadas para este atlas (`scripts/ne_borders.py`), aproximadas.
 - Fronteiras históricas: [historical-basemaps](https://github.com/aourednik/historical-basemaps), de A. Ourednik (GPL-3.0). São aproximadas, sobretudo antes de 1000 a.C.
 - Relevo sombreado, litoral, rios e lagos: [Natural Earth](https://www.naturalearthdata.com/) (domínio público).
-- Textos, datas de cidades e sítios: redação própria, aproximada e em revisão.
+- Textos, datas de cidades e sítios: redação própria. As fontes ligadas e o status de cada item estão nas tabelas (veja `AUDITORIA.md`).
 
 ## Licença
 

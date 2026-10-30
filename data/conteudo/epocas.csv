@@ -1,0 +1,16 @@
+id,ate_ano,nome,descricao,status
+P01,-10001,Era do Gelo,"Todos os humanos vivem de caça e coleta. Ainda não há agricultura, aldeias permanentes nem escrita.",revisado_sem_fonte
+P02,-8001,Fim da Era do Gelo,"O clima esquenta, e caçadores-coletores erguem os primeiros monumentos, como Göbekli Tepe.",revisado_sem_fonte
+P03,-5001,Neolítico,A agricultura surge de forma independente em vários lugares. Aparecem as primeiras aldeias grandes.,revisado_sem_fonte
+P04,-3001,Primeiras cidades,"Na Mesopotâmia nascem as cidades, o Estado e, por volta de 3300 a.C., a escrita.",revisado_sem_fonte
+P05,-1201,Idade do Bronze,"Egito, Mesopotâmia, Indo, Creta e China: palácios, comércio de longa distância e diplomacia entre reis.",revisado_sem_fonte
+P06,-801,Colapso e Idade do Ferro,"Por volta de 1200 a.C. várias civilizações do Mediterrâneo caem juntas. Depois, o ferro se espalha.",revisado_sem_fonte
+P07,-201,Era Axial,"Grandes impérios (persa, máuria, Qin) e, ao mesmo tempo, filosofias e religiões que duram até hoje.",revisado_sem_fonte
+P08,399,Impérios clássicos,"Roma, Pártia, Han e Kushan ligam a Eurásia de ponta a ponta pela Rota da Seda.",revisado_sem_fonte
+P09,999,Antiguidade tardia,"Roma se divide, o islã se expande, e Tang, maias e Wari florescem.",revisado_sem_fonte
+P10,1399,Idade Média,"Mongóis, cruzadas, Mali, Khmer e Song: um mundo cada vez mais conectado.",revisado_sem_fonte
+P11,1599,Grandes navegações,"Os europeus chegam às Américas, e os impérios asteca e inca caem.",revisado_sem_fonte
+P12,1799,Impérios coloniais,"Impérios europeus, otomano, mogol e Qing dividem o mundo.",revisado_sem_fonte
+P13,1913,Industrialização e imperialismo,"Os Estados nacionais se consolidam, e a Europa partilha a África.",revisado_sem_fonte
+P14,1945,Guerras mundiais,Dois conflitos globais redesenham as fronteiras.,revisado_sem_fonte
+P15,99999,Mundo contemporâneo,"Descolonização, Guerra Fria e o mapa de países de hoje.",revisado_sem_fonte

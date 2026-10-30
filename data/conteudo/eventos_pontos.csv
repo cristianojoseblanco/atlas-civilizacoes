@@ -1,0 +1,57 @@
+evento_id,ordem,ano,lon,lat,rotulo
+agri,1,-9500,39.8,37.7,"Crescente Fértil (Karacadağ): trigo, cevada"
+agri,2,-7000,112,34.5,Rio Amarelo: painço
+agri,3,-7000,118,30.5,Yangtzé: arroz
+agri,4,-7000,144.5,-6,"Nova Guiné: taro, banana"
+agri,5,-8000,-97.5,18,"Mesoamérica: abóbora, depois milho"
+agri,6,-6000,-74,-12,"Andes: batata, quinoa"
+escrita,1,-3300,45.636,31.322,Uruk: cuneiforme
+escrita,2,-3200,31.25,29.85,Egito: hieróglifos
+escrita,3,-1200,114.31,36.12,China: ossos oraculares
+colapso,1,-1185,35.78,35.6,Ugarit destruída
+colapso,2,-1180,34.615,40.02,Hattusa abandonada
+colapso,3,-1180,26.24,39.96,Troia VIIa incendiada
+colapso,4,-1150,22.756,37.731,Micenas cai
+colapso,5,-1177,31.5,30.9,Egito repele os Povos do Mar
+colonizacao,1,-775,13.9,40.74,Pitecusas
+colonizacao,2,-734,15.27,37.82,Naxos (Sicília)
+colonizacao,3,-733,15.29,37.08,Siracusa
+colonizacao,4,-706,17.24,40.47,Taras
+colonizacao,5,-660,28.98,41.01,Bizâncio
+colonizacao,6,-631,21.86,32.82,Cirene
+colonizacao,7,-600,31.9,46.69,Olbia
+colonizacao,8,-600,5.37,43.3,Massália
+colonizacao,9,-575,3.12,42.13,Empórion
+medicas,1,-490,23.96,38.15,Maratona
+medicas,2,-480,22.54,38.8,Termópilas
+medicas,3,-480,23.52,37.95,Salamina
+medicas,4,-479,23.27,38.21,Plateias
+peloponeso,1,-431,23.726,37.971,Começa a guerra; peste em Atenas
+peloponeso,2,-415,15.29,37.08,Desastre ateniense na Sicília
+peloponeso,3,-405,26.68,40.33,Egospótamos
+peloponeso,4,-404,22.42,37.08,Atenas se rende a Esparta
+islam,1,630,39.82,21.42,Meca
+islam,2,634,36.29,33.51,Damasco
+islam,3,637,44.58,33.09,Ctesifonte
+islam,4,638,35.23,31.78,Jerusalém
+islam,5,641,29.92,31.2,Alexandria
+islam,6,698,10.32,36.85,Cartago
+islam,7,711,-4.02,39.86,Toledo
+islam,8,712,66.97,39.65,Samarcanda
+islam,9,732,0.69,47.39,Tours: fim do avanço
+mongois,1,1206,102.8,47.2,Gengis Khan unifica os mongóis
+mongois,2,1215,116.4,39.9,Zhongdu (Pequim)
+mongois,3,1220,66.97,39.65,Samarcanda
+mongois,4,1240,30.52,50.45,Kiev
+mongois,5,1241,19,47.5,Hungria
+mongois,6,1258,44.36,33.31,Bagdá
+mongois,7,1260,35.3,32.55,Ain Jalut: derrota mongol
+peste,1,1346,35.38,45.03,Caffa (Crimeia)
+peste,2,1347,28.98,41.01,Constantinopla
+peste,3,1347,15.55,38.19,Messina
+peste,4,1348,31.2,30.05,Cairo
+peste,5,1347,5.37,43.3,Marselha
+peste,6,1348,2.35,48.86,Paris
+peste,7,1348,-0.13,51.5,Londres
+peste,8,1349,5.32,60.39,Bergen
+peste,9,1352,37.62,55.75,Moscou
