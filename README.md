@@ -10,6 +10,7 @@ Mapa interativo das civilizações ao longo do tempo, de 123 mil a.C. até hoje:
 - **Fronteiras** recortadas no litoral real e desenhadas translúcidas sobre o relevo.
 - **Cidades** (como Uruk, Lagash, Dilmun, Jiroft, Mohenjo-daro e Teotihuacan) que aparecem e somem conforme existiram.
 - **Eventos animados** (campanhas de Alexandre, Peste Negra, colapso do Bronze, navegações) e **rotas comerciais** com fluxo (lápis-lazúli, rede do Golfo, Rota da Seda).
+- **Passeios guiados** em modo documentário: Taş Tepeler (Göbekli Tepe, Karahan Tepe, Sayburç e os outros sítios), Mesopotâmia e "Como o mundo se conectou".
 - **Cartões** em português com período, centros e contexto de cada civilização, cidade ou sítio.
 
 O resultado é um único `index.html` autocontido, que funciona offline e no celular.
@@ -22,6 +23,8 @@ src/        código e conteúdo editorial
   template.html layout e estilos
   content.js    civilizações e épocas
   places.js     cidades e sítios
+  events.js     eventos animados e rotas comerciais
+  tours.js      passeios guiados
 data/       dados já processados (versionados)
 scripts/    download dos dados brutos, processamento e build
 ```

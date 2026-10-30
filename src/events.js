@@ -14,7 +14,7 @@ const EVENTS = [
    t:"Caçadores-coletores erguem os recintos de Göbekli Tepe, com pilares de até 5 metros. A construção é anterior à agricultura na região."},
   {id:'agri', tipo:'seq', cat:'cultura', y:-9500, e:-5000, n:"A agricultura surge várias vezes",
    t:"A domesticação de plantas não foi uma invenção única: aconteceu de forma independente em pelo menos sete regiões, ao longo de milênios.",
-   pts:[{at:[38.5,36.5], y:-9500, l:"Crescente Fértil: trigo, cevada"}, {at:[112,34.5], y:-7000, l:"Rio Amarelo: painço"}, {at:[118,30.5], y:-7000, l:"Yangtzé: arroz"},
+   pts:[{at:[39.8,37.7], y:-9500, l:"Crescente Fértil (Karacadağ): trigo, cevada"}, {at:[112,34.5], y:-7000, l:"Rio Amarelo: painço"}, {at:[118,30.5], y:-7000, l:"Yangtzé: arroz"},
         {at:[144.5,-6], y:-7000, l:"Nova Guiné: taro, banana"}, {at:[-97.5,18], y:-7000, l:"Mesoamérica: abóbora, milho"}, {at:[-74,-12], y:-6000, l:"Andes: batata, quinoa"}, {at:[-86,36], y:-5000, l:"Leste da América do Norte"}]},
   {id:'escrita', tipo:'seq', cat:'cultura', y:-3300, e:-1200, n:"A escrita é inventada",
    t:"A escrita surgiu do zero em poucos lugares. Na Mesopotâmia, ela nasceu da contabilidade de templos.",

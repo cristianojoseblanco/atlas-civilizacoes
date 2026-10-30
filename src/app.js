@@ -124,11 +124,16 @@ function placeIsNew(pl){ return idx > 0 && pl.y > SNAP_YEARS[idx-1] && pl.y <= S
 // ---------- desenho ----------
 function drawRelief(){
   const s = projection.scale(), t = projection.translate();
+  // com muito zoom os pixels do relevo ficam visíveis: suaviza proporcionalmente
+  const blur = transform.k > 25 ? Math.min(3.5, (transform.k - 25) / 30) / transform.k : 0;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.filter = blur ? `blur(${(blur * transform.k * 1.6).toFixed(1)}px)` : 'none';
   for (const key of ['world', 'hi']) {
     const im = IMG[key]; if (!im) continue;
     const b = RELIEF_META[key];
     ctx.drawImage(im, t[0] + s*b.x0, t[1] - s*b.y1, s*(b.x1 - b.x0), s*(b.y1 - b.y0));
   }
+  ctx.filter = 'none';
 }
 function drawPolities(list, alpha, k){
   ctx.globalAlpha = alpha;
@@ -320,6 +325,7 @@ $('#play').onclick = () => {
   playTimer = setTimeout(playStep, 600);
 };
 document.addEventListener('keydown', e => {
+  if (tour) { if (e.key === 'ArrowRight') tourStep(tour.i + 1); if (e.key === 'ArrowLeft') tourStep(tour.i - 1); if (e.key === 'Escape') endTour(); return; }
   if (e.key === 'ArrowRight') go(idx + 1);
   if (e.key === 'ArrowLeft') go(idx - 1);
   if (e.key === 'Escape') closeCard();
@@ -359,7 +365,7 @@ function openCiv(name, quiet){
   $('#cJump').style.display = ys.length && !here ? '' : 'none';
   $('#cJump').onclick = () => go(SNAP_YEARS.indexOf(ys[0]));
   setBar(`linear-gradient(90deg, hsl(${h},70%,55%), hsl(${(h+40)%360},70%,45%))`);
-  card.classList.add('open');
+  showCard();
   if (!quiet) redraw();
 }
 function openPlace(pl){
@@ -373,10 +379,11 @@ function openPlace(pl){
   $('#cLink').href = wiki(pl.n.replace(/ \(.*/, ''));
   $('#cJump').style.display = 'none';
   setBar(pl.k === 's' ? 'linear-gradient(90deg,#f0c454,#b8862b)' : 'linear-gradient(90deg,#fff6df,#c9b48a)');
-  card.classList.add('open');
+  showCard();
   redraw();
 }
-function closeCard(){ card.classList.remove('open'); selected = null; redraw(); }
+function showCard(){ card.classList.add('open'); $('#tour').classList.add('behind'); }
+function closeCard(){ card.classList.remove('open'); $('#tour').classList.remove('behind'); selected = null; redraw(); }
 $('#cClose').onclick = closeCard;
 
 // ---------- eventos e rotas (camada animada) ----------
@@ -505,7 +512,7 @@ function drawOverlay(t){
       sctx.beginPath(); sctx.arc(P[0], P[1], 7 + ph * 22, 0, 7); sctx.strokeStyle = c; sctx.globalAlpha = (1 - ph) * .85; sctx.lineWidth = 2; sctx.stroke(); sctx.globalAlpha = 1;
       const grow = Math.min(1, local / 400);
       star(P[0], P[1], (sel ? 11 : 9) * grow, c);
-      if (showLabels) haloText(ev.n, P[0] + 13, P[1], '#fff', font);
+      if (showLabels) haloText(ev.n, P[0], P[1] - 19, '#fff', font, 'center'); // acima, para não cobrir o nome do lugar
       overlayTargets.push({kind:'ev', ev, x:P[0], y:P[1]});
     }
   });
@@ -525,7 +532,7 @@ function fmtRange(y, e){
   if (y < 0 && e < 0) return `c. ${Math.abs(y)} – ${fmtYear(e)}`;
   return `c. ${fmtYear(y)} – ${fmtYear(e)}`;
 }
-function flyTo(lonlats){
+function flyTo(lonlats, kFixed){
   const P = lonlats.map(c => projection(c)).filter(Boolean); if (!P.length) return;
   const xs = P.map(p => p[0]), ys = P.map(p => p[1]);
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
@@ -533,7 +540,7 @@ function flyTo(lonlats){
   const vw = portrait ? W : W - 420, vh = portrait ? H * 0.28 : H - 300;
   const cx = portrait ? W / 2 : (W - 400) / 2, cy = portrait ? H * 0.6 : 60 + (H - 290) / 2;
   let k = P.length === 1 ? 4 : Math.min(vw * 0.8 / Math.max(1, x1 - x0), vh * 0.8 / Math.max(1, y1 - y0));
-  k = Math.max(1.2, Math.min(7, k));
+  k = kFixed || Math.max(1.2, Math.min(7, k));
   const T = d3.zoomIdentity.translate(cx - (x0 + x1) / 2 * k, cy - (y0 + y1) / 2 * k).scale(k);
   d3.select(canvas).transition().duration(1500).call(zoom.transform, T);
 }
@@ -554,7 +561,7 @@ function openEvent(ev, fly){
   $('#cLink').href = wiki(ev.n);
   $('#cJump').style.display = 'none';
   setBar(cat.cor);
-  card.classList.add('open');
+  showCard();
   evOverride[ev.id] = performance.now();
   if (fly) flyTo(evPoints(ev));
 }
@@ -568,7 +575,7 @@ function openRoute(rt, fly){
   $('#cLink').href = wiki(rt.n.replace(/:.*/, ''));
   $('#cJump').style.display = 'none';
   setBar(rt.cor);
-  card.classList.add('open');
+  showCard();
   if (fly) flyTo(rt.path);
 }
 function renderChips(){
@@ -586,8 +593,76 @@ function renderChips(){
   box.style.display = box.children.length ? '' : 'none';
 }
 
+// ---------- passeios guiados ----------
+let tour = null; // {t, i, auto, timer, t0, dur}
+const snapFor = ano => { const i = SNAP_YEARS.findIndex(y => y >= ano); return i < 0 ? N - 1 : i; };
+function openTourMenu(){
+  const list = $('#tmList'); list.innerHTML = '';
+  TOURS.forEach(t => {
+    const b = document.createElement('button'); b.className = 'tm-item';
+    b.innerHTML = `<span class="tm-bar" style="background:${t.cor}"></span><b></b><span class="tm-d"></span><span class="tm-n"></span>`;
+    b.querySelector('b').textContent = t.n; b.querySelector('.tm-d').textContent = t.d;
+    b.querySelector('.tm-n').textContent = `${t.steps.length} paradas · cerca de ${Math.round(t.steps.reduce((a, s) => a + stepDur(s), 0) / 60000)} min`;
+    b.onclick = () => { $('#tourMenu').classList.remove('open'); startTour(t); };
+    list.append(b);
+  });
+  $('#tourMenu').classList.add('open');
+}
+function stepDur(st){ return 5000 + st.txt.length * 42; }
+function startTour(t){
+  if (playTimer) stopPlay();
+  closeCard();
+  tour = {t, i: -1, auto: true, timer: null};
+  $('#tour').classList.add('open'); document.body.classList.add('touring');
+  $('#tName').textContent = t.n; $('#tName').style.color = t.cor; $('#tBar').style.background = t.cor;
+  tourStep(0);
+}
+function tourStep(i){
+  if (!tour) return;
+  const t = tour.t; if (i < 0 || i >= t.steps.length) return;
+  tour.i = i; const st = t.steps[i];
+  clearTimeout(tour.timer);
+  closeCard();
+  const si = snapFor(st.ano); if (si !== idx) go(si);
+  if (st.rt) { if (!showRoutes) { showRoutes = true; $('#tRoutes').checked = true; } selected = {type:'rt', name: st.rt}; }
+  else if (st.lugar) selected = {type:'place', name: st.lugar};
+  else selected = null;
+  redraw();
+  if (st.ev) evOverride[st.ev] = performance.now() + 1300;
+  flyTo(st.foco, st.k);
+  $('#tStep').textContent = `${i + 1} / ${t.steps.length} · ${fmtYear(st.ano)}`;
+  $('#tTitle').textContent = st.t; $('#tText').textContent = st.txt;
+  $('#tPrev').disabled = i === 0; $('#tNext').textContent = i === t.steps.length - 1 ? 'Fim' : '›';
+  $('#tour').scrollTop = 0;
+  schedule();
+}
+function schedule(){
+  clearTimeout(tour.timer);
+  const bar = $('#tProg');
+  bar.style.transition = 'none'; bar.style.width = '0%';
+  $('#tAuto').textContent = tour.auto ? '❚❚' : '▶';
+  if (!tour.auto) return;
+  const dur = stepDur(tour.t.steps[tour.i]);
+  requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = `width ${dur}ms linear`; bar.style.width = '100%'; }));
+  tour.timer = setTimeout(() => { if (tour.i < tour.t.steps.length - 1) tourStep(tour.i + 1); else { tour.auto = false; schedule(); } }, dur);
+}
+function endTour(){
+  if (!tour) return;
+  clearTimeout(tour.timer); tour = null;
+  $('#tour').classList.remove('open'); document.body.classList.remove('touring');
+  selected = null; redraw();
+}
+$('#btnTours').onclick = openTourMenu;
+$('#tmClose').onclick = () => $('#tourMenu').classList.remove('open');
+$('#tourMenu').addEventListener('click', e => { if (e.target.id === 'tourMenu') $('#tourMenu').classList.remove('open'); });
+$('#tPrev').onclick = () => tourStep(tour.i - 1);
+$('#tNext').onclick = () => tour.i === tour.t.steps.length - 1 ? endTour() : tourStep(tour.i + 1);
+$('#tAuto').onclick = () => { tour.auto = !tour.auto; schedule(); };
+$('#tClose').onclick = endTour;
+window.__tour = (id, i = 0) => { startTour(TOURS.find(t => t.id === id)); if (i) tourStep(i); };
+
 // ---------- zoom e toque ----------
-const zoom = d3.zoom().scaleExtent([1, 60]).on('zoom', e => { transform = e.transform; redraw(); });
+const zoom = d3.zoom().scaleExtent([1, 180]).on('zoom', e => { transform = e.transform; redraw(); });
 d3.select(canvas).call(zoom).on('dblclick.zoom', null);
 let down = null;
 canvas.addEventListener('pointerdown', e => down = [e.clientX, e.clientY]);
@@ -629,4 +704,11 @@ d3.select(canvas).call(zoom.transform, initialView());
 evStart = performance.now();
 requestAnimationFrame(tick);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
+})();
+
+// menu de camadas no celular
+(() => {
+  const b = document.getElementById('btnLayers'), box = document.getElementById('layers');
+  b.onclick = e => { e.stopPropagation(); box.classList.toggle('open'); };
+  document.addEventListener('click', e => { if (!box.contains(e.target) && e.target !== b) box.classList.remove('open'); });
 })();
