@@ -1,5 +1,7 @@
 # Atlas das Civilizações
 
+**[Abrir o atlas →](https://cristianojoseblanco.github.io/atlas-civilizacoes/)**
+
 Mapa interativo das civilizações ao longo do tempo, de 123 mil a.C. até hoje: fronteiras, relevo, rios, cidades antigas com datas de fundação e abandono e sítios arqueológicos.
 
 ## Como funciona
@@ -7,6 +9,7 @@ Mapa interativo das civilizações ao longo do tempo, de 123 mil a.C. até hoje:
 - **Linha do tempo** com 54 momentos históricos e transições animadas entre eles.
 - **Fronteiras** recortadas no litoral real e desenhadas translúcidas sobre o relevo.
 - **Cidades** (como Uruk, Lagash, Dilmun, Jiroft, Mohenjo-daro e Teotihuacan) que aparecem e somem conforme existiram.
+- **Eventos animados** (campanhas de Alexandre, Peste Negra, colapso do Bronze, navegações) e **rotas comerciais** com fluxo (lápis-lazúli, rede do Golfo, Rota da Seda).
 - **Cartões** em português com período, centros e contexto de cada civilização, cidade ou sítio.
 
 O resultado é um único `index.html` autocontido, que funciona offline e no celular.
