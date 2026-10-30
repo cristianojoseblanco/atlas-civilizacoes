@@ -1,0 +1,17 @@
+id,nome,descricao
+politica,Política e Estado,"Reinos, impérios, leis, governos"
+guerra,Guerra,"Batalhas, conquistas, exércitos"
+religiao,Religião e mito,"Templos, cultos, crenças"
+filosofia,Filosofia,Escolas de pensamento e ideias
+arte,Arte,"Pintura, escultura, música, literatura"
+arquitetura,Arquitetura e engenharia,"Monumentos, cidades planejadas, obras"
+escrita,Escrita e registro,"Sistemas de escrita, arquivos, calendários"
+matematica,Matemática,"Números, geometria, astronomia matemática"
+ciencia,Ciência e medicina,"Observação da natureza, medicina, astronomia"
+tecnologia,Tecnologia,"Metalurgia, ferramentas, navegação, técnicas"
+agricultura,Agricultura e domesticação,"Plantas, animais, irrigação"
+comercio,Comércio e trocas,"Rotas, mercadorias, moedas"
+exploracao,Exploração e migração,"Viagens, povoamento, navegações"
+cotidiano,Vida cotidiana,"Casa, alimentação, trabalho"
+desastre,Desastres e epidemias,"Erupções, pestes, colapsos"
+arqueologia,Arqueologia e descobertas,Como sabemos o que sabemos

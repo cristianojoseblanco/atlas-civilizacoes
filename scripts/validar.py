@@ -97,6 +97,21 @@ for r in tab('artes_regras'):
     if r['estilo'] not in estilos: erros.append(f"artes_regras {r['ordem']}: estilo inexistente {r['estilo']}")
     if r['lon_min'] != '': checa_coord('artes_regras', r['ordem'], r['lon_min'], r['lat_min']); checa_coord('artes_regras', r['ordem'], r['lon_max'], r['lat_max'])
 
+# temas e níveis (vocabulário controlado em temas.csv e niveis.csv)
+TEMAS = {r['id'] for r in tab('temas')}; NIVEIS = {r['id'] for r in tab('niveis')}
+TAB_TN = ['lugares', 'civilizacoes', 'eventos', 'rotas', 'passeios_paradas', 'perguntas_casos', 'sincronias']
+cob_tn = {}
+for n in TAB_TN:
+    rows = tab(n); ct = cn = 0
+    for i, r in enumerate(rows):
+        rid = r.get('id') or f"linha {i + 2}"
+        ts = [t for t in (r.get('temas') or '').split(';') if t]
+        for t in ts:
+            if t not in TEMAS: erros.append(f"{n} {rid}: tema desconhecido {t}")
+        if r.get('nivel') and r['nivel'] not in NIVEIS: erros.append(f"{n} {rid}: nível desconhecido {r['nivel']}")
+        ct += bool(ts); cn += bool(r.get('nivel'))
+    cob_tn[n] = (len(rows), ct, cn)
+
 # relatório
 def cobertura(n):
     rows = tab(n); c = collections.Counter(r['status'] for r in rows); t = len(rows)
@@ -116,6 +131,8 @@ for f, n in usadas.most_common():
     linhas.append(f"| {f} | {n} | {fontes[f]['confiabilidade']} | {fontes[f]['titulo']} |")
 sem_uso = [k for k in fontes if not usadas[k]]
 if sem_uso: linhas += ['', 'Fontes cadastradas sem uso por nenhum item: ' + ', '.join(sem_uso) + ' (bases geográficas aparecem em `bases_geograficas.csv`).']
+linhas += ['', '## Temas e níveis', '', 'Preparação para os modos de ensino (ver `ROADMAP.md`).', '', '| Tabela | Itens | Com tema | Com nível |', '|---|---|---|---|']
+for n, (t, ct, cn) in cob_tn.items(): linhas.append(f"| {n} | {t} | {ct} | {cn} |")
 linhas += ['', f'## Erros ({len(erros)})', ''] + ([f'- {e}' for e in erros] or ['Nenhum.'])
 linhas += ['', f'## Avisos ({len(avisos)})', ''] + ([f'- {a}' for a in avisos] or ['Nenhum.'])
 (ROOT / 'AUDITORIA.md').write_text('\n'.join(linhas) + '\n', encoding='utf-8')

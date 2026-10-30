@@ -422,6 +422,20 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 
 Fontes cadastradas sem uso por nenhum item: F001, F002, F003, F037 (bases geográficas aparecem em `bases_geograficas.csv`).
 
+## Temas e níveis
+
+Preparação para os modos de ensino (ver `ROADMAP.md`).
+
+| Tabela | Itens | Com tema | Com nível |
+|---|---|---|---|
+| lugares | 260 | 0 | 260 |
+| civilizacoes | 88 | 0 | 0 |
+| eventos | 31 | 31 | 31 |
+| rotas | 10 | 10 | 10 |
+| passeios_paradas | 28 | 0 | 0 |
+| perguntas_casos | 23 | 0 | 0 |
+| sincronias | 30 | 0 | 0 |
+
 ## Erros (0)
 
 Nenhum.
