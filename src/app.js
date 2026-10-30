@@ -1,6 +1,8 @@
 (() => {
 const $ = s => document.querySelector(s);
-const canvas = $('#map'), ctx = canvas.getContext('2d');
+const canvas = $('#map'), sctx = canvas.getContext('2d');
+// o mapa estático é desenhado numa tela fora da página; só as animações são redesenhadas a cada quadro
+const base = document.createElement('canvas'), ctx = base.getContext('2d');
 const N = SNAP_YEARS.length;
 
 // ---------- utilidades ----------
@@ -92,7 +94,7 @@ function layer(year){
 function setup(){
   dpr = Math.min(window.devicePixelRatio || 1, 2);
   W = canvas.clientWidth; H = canvas.clientHeight;
-  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.width = base.width = W * dpr; canvas.height = base.height = H * dpr;
   projection = d3.geoNaturalEarth1().fitExtent([[8, 8], [W - 8, H - 8]], {type:'Sphere'});
   path = d3.geoPath(projection);
   sphereP = new Path2D(path({type:'Sphere'}));
@@ -100,6 +102,7 @@ function setup(){
   const rv = topojson.feature(RIVERS, RIVERS.objects[Object.keys(RIVERS.objects)[0]]);
   riversP = [1,2,3,4,5,6].map(sr => new Path2D(path({type:'FeatureCollection', features: rv.features.filter(f => (f.properties.scalerank||6) === sr)}) || ''));
   cache.clear();
+  buildGeoms();
   zoom.extent([[0,0],[W,H]]).translateExtent([[-W*0.15, -H*0.25], [W*1.15, H*1.25]]);
 }
 
@@ -107,7 +110,7 @@ function setup(){
 let idx = SNAP_YEARS.indexOf(-3000);
 let prevIdx = null, fade = 1, fadeStart = 0, pulseStart = 0;
 let selected = null; // {type:'civ'|'place', name}
-let showPlaces = true, showLabels = true;
+let showPlaces = true, showLabels = true, showRoutes = true, evStart = 0;
 const FADE_MS = 650, PULSE_MS = 1800;
 
 function placeVisible(pl, i = idx){
@@ -254,15 +257,19 @@ function drawPlaces(now, boxes){
     ctx.fillStyle = pl.k === 's' ? '#5a3c00' : '#1f150b'; ctx.fillText(pl.n, x, y);
   }
 }
-let raf = null, animating = false;
-function redraw(){ if (!raf && !animating) raf = requestAnimationFrame(() => { raf = null; draw(); }); }
-function loop(t){
-  fade = Math.min(1, (t - fadeStart) / FADE_MS);
-  draw(t);
-  if (fade < 1 || t - pulseStart < PULSE_MS) requestAnimationFrame(loop);
-  else { prevIdx = null; animating = false; }
+let baseDirty = true;
+function redraw(){ baseDirty = true; }
+function startAnim(){ fadeStart = pulseStart = evStart = performance.now(); }
+function tick(t){
+  const fading = prevIdx !== null;
+  if (fading) fade = Math.min(1, (t - fadeStart) / FADE_MS);
+  const pulsing = t - pulseStart < PULSE_MS;
+  if (baseDirty || fading || pulsing) { draw(t); baseDirty = false; if (fading && fade >= 1) prevIdx = null; }
+  sctx.setTransform(1, 0, 0, 1, 0, 0);
+  sctx.drawImage(base, 0, 0);
+  drawOverlay(t);
+  requestAnimationFrame(tick);
 }
-function startAnim(){ fadeStart = pulseStart = performance.now(); if (!animating) { animating = true; requestAnimationFrame(loop); } }
 
 // ---------- tempo ----------
 const slider = $('#slider'); slider.max = N - 1;
@@ -275,6 +282,7 @@ function go(i){
   updateHUD(true);
   startAnim();
   if (selected && selected.type === 'civ') openCiv(selected.name, true);
+  else if (selected && (selected.type === 'ev' || selected.type === 'rt')) closeCard();
 }
 function updateHUD(anim){
   const y = SNAP_YEARS[idx], e = eraFor(y);
@@ -290,6 +298,7 @@ function updateHUD(anim){
     if (f < 1) yearTween = requestAnimationFrame(step); else shownYear = to;
   };
   yearTween = requestAnimationFrame(step);
+  renderChips();
   const novos = PLACES.filter(placeIsNew);
   $('#news').textContent = novos.length ? 'Surgem: ' + novos.slice(0, 4).map(p => p.n.replace(/ \(.*/, '')).join(', ') + (novos.length > 4 ? ` e mais ${novos.length - 4}` : '') : '';
 }
@@ -297,11 +306,18 @@ slider.addEventListener('input', () => go(+slider.value));
 $('#prev').onclick = () => go(idx - 1);
 $('#next').onclick = () => go(idx + 1);
 let playTimer = null;
+function stopPlay(){ clearTimeout(playTimer); playTimer = null; $('#play').textContent = '▶'; }
+function playStep(){
+  if (idx >= N - 1) return stopPlay();
+  go(idx + 1);
+  const evs = activeEvents().length;
+  playTimer = setTimeout(playStep, 2400 + Math.min(evs, 3) * 1600);
+}
 $('#play').onclick = () => {
-  if (playTimer) { clearInterval(playTimer); playTimer = null; $('#play').textContent = '▶'; return; }
+  if (playTimer) return stopPlay();
   if (idx === N - 1) go(0);
   $('#play').textContent = '❚❚';
-  playTimer = setInterval(() => { if (idx >= N - 1) { $('#play').click(); return; } go(idx + 1); }, 2200);
+  playTimer = setTimeout(playStep, 600);
 };
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') go(idx + 1);
@@ -310,6 +326,7 @@ document.addEventListener('keydown', e => {
 });
 $('#tPlaces').onchange = e => { showPlaces = e.target.checked; redraw(); };
 $('#tLabels').onchange = e => { showLabels = e.target.checked; redraw(); };
+$('#tRoutes').onchange = e => { showRoutes = e.target.checked; };
 
 const ticks = $('#ticks');
 [-10000, -1, 1000, 1500, 1900].forEach(y => {
@@ -362,6 +379,213 @@ function openPlace(pl){
 function closeCard(){ card.classList.remove('open'); selected = null; redraw(); }
 $('#cClose').onclick = closeCard;
 
+// ---------- eventos e rotas (camada animada) ----------
+const geoms = new Map(); // id -> {pts:[[x,y,brk]], cum:[], total}
+function sample(coords){
+  const pts = [];
+  for (let i = 0; i < coords.length - 1; i++) {
+    const a = coords[i], b = coords[i + 1], f = d3.geoInterpolate(a, b);
+    const n = Math.max(2, Math.ceil(d3.geoDistance(a, b) / 0.01));
+    for (let j = i === 0 ? 0 : 1; j <= n; j++) { const p = projection(f(j / n)); if (p) pts.push([p[0], p[1], false]); }
+  }
+  const cum = [0]; let total = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0] - pts[i-1][0], dy = pts[i][1] - pts[i-1][1];
+    if (Math.abs(dx) > W * 0.4) { pts[i][2] = true; cum.push(total); continue; }
+    total += Math.hypot(dx, dy); cum.push(total);
+  }
+  return {pts, cum, total};
+}
+function buildGeoms(){
+  geoms.clear();
+  ROUTES.forEach(r => geoms.set('rt:' + r.id, sample(r.path)));
+  EVENTS.forEach(ev => { if (ev.tipo === 'rota') geoms.set('ev:' + ev.id, sample(ev.path)); });
+}
+function overlapsSnap(y, e, i = idx){
+  const cur = SNAP_YEARS[i], prev = i > 0 ? SNAP_YEARS[i-1] : -Infinity;
+  return y <= cur && e > prev;
+}
+const activeEvents = () => EVENTS.filter(ev => overlapsSnap(ev.y, ev.e));
+const activeRoutes = () => showRoutes ? ROUTES.filter(r => overlapsSnap(r.y, r.e) || (r.y <= SNAP_YEARS[idx] && r.e >= SNAP_YEARS[idx])) : [];
+const evOverride = {};
+const S = (x, y) => [x * transform.k + transform.x, y * transform.k + transform.y];
+function evPoints(ev){ return ev.tipo === 'rota' ? ev.path : ev.tipo === 'seq' ? ev.pts.map(p => p.at) : [ev.at]; }
+
+function strokeGeom(g, upto){
+  // desenha a linha até o comprimento 'upto' (em unidades da projeção); devolve [ponta, ângulo]
+  sctx.beginPath();
+  let head = null, ang = 0;
+  for (let i = 0; i < g.pts.length; i++) {
+    const [x, y, brk] = g.pts[i];
+    if (g.cum[i] > upto && i > 0 && !brk) {
+      const [px, py] = g.pts[i-1], f = (upto - g.cum[i-1]) / (g.cum[i] - g.cum[i-1] || 1);
+      const P = S(px + (x - px) * f, py + (y - py) * f); sctx.lineTo(P[0], P[1]);
+      const Q = S(px, py); head = P; ang = Math.atan2(P[1] - Q[1], P[0] - Q[0]); break;
+    }
+    if (g.cum[i] > upto) break;
+    const P = S(x, y);
+    if (i === 0 || brk) sctx.moveTo(P[0], P[1]); else { if (head) ang = Math.atan2(P[1] - head[1], P[0] - head[0]); sctx.lineTo(P[0], P[1]); }
+    head = P;
+  }
+  sctx.stroke();
+  return [head, ang];
+}
+function haloText(text, x, y, color, font, align = 'left'){
+  if (y > hudTop - 8) return; // não escreve atrás da barra do tempo
+  sctx.font = font; sctx.textAlign = align; sctx.textBaseline = 'middle';
+  sctx.lineJoin = 'round'; sctx.lineWidth = 3.5; sctx.strokeStyle = 'rgba(8,12,16,.85)'; sctx.strokeText(text, x, y);
+  sctx.fillStyle = color; sctx.fillText(text, x, y);
+}
+function star(x, y, r, color){
+  sctx.beginPath();
+  for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4 - Math.PI / 2, rr = i % 2 ? r * 0.45 : r; sctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+  sctx.closePath(); sctx.fillStyle = color; sctx.fill(); sctx.lineWidth = 1.5; sctx.strokeStyle = '#fff'; sctx.stroke();
+}
+let overlayTargets = [], hudTop = 1e9;
+function drawOverlay(t){
+  sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  overlayTargets = [];
+  hudTop = H - ($('#hud').offsetHeight || 0) * 0.72;
+  const k = transform.k;
+  // rotas comerciais: linha tracejada que flui
+  for (const rt of activeRoutes()) {
+    const g = geoms.get('rt:' + rt.id); if (!g) continue;
+    const sel = selected && selected.type === 'rt' && selected.name === rt.id;
+    sctx.lineCap = 'round'; sctx.lineJoin = 'round';
+    sctx.globalAlpha = sel ? .45 : .22; sctx.strokeStyle = rt.cor; sctx.lineWidth = sel ? 10 : 7; strokeGeom(g, Infinity);
+    sctx.globalAlpha = .95; sctx.setLineDash([7, 9]); sctx.lineDashOffset = -(t * 0.025) % 16; sctx.lineWidth = sel ? 3 : 2.2; strokeGeom(g, Infinity);
+    sctx.setLineDash([]); sctx.globalAlpha = 1;
+    for (const i of [0, g.pts.length - 1]) { const P = S(g.pts[i][0], g.pts[i][1]); sctx.beginPath(); sctx.arc(P[0], P[1], 3.2, 0, 7); sctx.fillStyle = rt.cor; sctx.fill(); sctx.lineWidth = 1.2; sctx.strokeStyle = '#fff'; sctx.stroke(); }
+    if (showLabels && (k > 2.2 || sel)) { const m = g.pts[Math.floor(g.pts.length / 2)], P = S(m[0], m[1]); haloText(rt.n, P[0] + 6, P[1] - 10, rt.cor, 'italic 600 12px Inter, system-ui, sans-serif'); }
+  }
+  // eventos
+  activeEvents().forEach((ev, i) => {
+    const c = EVENT_CATS[ev.cat].cor;
+    const local = evOverride[ev.id] != null ? t - evOverride[ev.id] : t - evStart - i * 900;
+    if (local < 0) return;
+    const sel = selected && selected.type === 'ev' && selected.name === ev.id;
+    const font = '700 12px Inter, system-ui, sans-serif';
+    if (ev.tipo === 'rota') {
+      const g = geoms.get('ev:' + ev.id); if (!g) return;
+      const p = Math.min(1, local / 4200), ease = 1 - Math.pow(1 - p, 2);
+      sctx.lineCap = 'round'; sctx.lineJoin = 'round';
+      sctx.globalAlpha = .3; sctx.strokeStyle = c; sctx.lineWidth = 8; strokeGeom(g, ease * g.total);
+      sctx.globalAlpha = 1; sctx.lineWidth = sel ? 3.6 : 2.8; const [head, ang] = strokeGeom(g, ease * g.total);
+      const P0 = S(g.pts[0][0], g.pts[0][1]);
+      sctx.beginPath(); sctx.arc(P0[0], P0[1], 4, 0, 7); sctx.fillStyle = '#fff'; sctx.fill(); sctx.lineWidth = 2; sctx.strokeStyle = c; sctx.stroke();
+      if (head) {
+        if (p < 1) { const pr = 6 + 3 * Math.sin(t / 120); sctx.beginPath(); sctx.arc(head[0], head[1], pr, 0, 7); sctx.fillStyle = c; sctx.fill(); sctx.lineWidth = 2; sctx.strokeStyle = '#fff'; sctx.stroke(); }
+        else { sctx.save(); sctx.translate(head[0], head[1]); sctx.rotate(ang); sctx.beginPath(); sctx.moveTo(8, 0); sctx.lineTo(-6, -6); sctx.lineTo(-6, 6); sctx.closePath(); sctx.fillStyle = c; sctx.fill(); sctx.lineWidth = 1.5; sctx.strokeStyle = '#fff'; sctx.stroke(); sctx.restore(); }
+        if (showLabels) haloText(ev.n, P0[0] + 8, P0[1] - 12, '#fff', font);
+      }
+      overlayTargets.push({kind:'ev', ev, x:P0[0], y:P0[1]});
+      if (head) overlayTargets.push({kind:'ev', ev, x:head[0], y:head[1]});
+    } else if (ev.tipo === 'seq') {
+      const pts = ev.pts.filter(p => p.y <= SNAP_YEARS[idx]).sort((a, b) => a.y - b.y);
+      let prevP = null;
+      pts.forEach((pt, j) => {
+        const age = local - j * 700; if (age < 0) return;
+        const p = projection(pt.at); if (!p) return; const P = S(p[0], p[1]);
+        if (prevP) { sctx.setLineDash([2, 5]); sctx.lineWidth = 1.5; sctx.strokeStyle = c; sctx.globalAlpha = .7; sctx.beginPath(); sctx.moveTo(prevP[0], prevP[1]); sctx.lineTo(P[0], P[1]); sctx.stroke(); sctx.setLineDash([]); sctx.globalAlpha = 1; }
+        prevP = P;
+        if (age < 1400) { const f = age / 1400; sctx.beginPath(); sctx.arc(P[0], P[1], 5 + f * 26, 0, 7); sctx.strokeStyle = c; sctx.globalAlpha = 1 - f; sctx.lineWidth = 2.5; sctx.stroke(); sctx.globalAlpha = 1; }
+        sctx.beginPath(); sctx.arc(P[0], P[1], 5, 0, 7); sctx.fillStyle = c; sctx.fill(); sctx.lineWidth = 1.6; sctx.strokeStyle = '#fff'; sctx.stroke();
+        const showL = showLabels && (sel || k > 2.6 || age < 2600);
+        if (showL) { sctx.globalAlpha = sel || k > 2.6 ? 1 : Math.min(1, (2600 - age) / 500); haloText(pt.l, P[0] + 9, P[1], '#fff', '600 11px Inter, system-ui, sans-serif'); sctx.globalAlpha = 1; }
+        overlayTargets.push({kind:'ev', ev, x:P[0], y:P[1]});
+      });
+      if (showLabels && prevP && local < pts.length * 700 + 3000) {
+        const p = projection(pts[0].at), P = S(p[0], p[1]);
+        sctx.globalAlpha = Math.min(1, Math.max(0, (pts.length * 700 + 3000 - local) / 600));
+        haloText(ev.n, P[0], P[1] - 18, c, '700 13px Inter, system-ui, sans-serif', 'center'); sctx.globalAlpha = 1;
+      }
+    } else {
+      const p = projection(ev.at); if (!p) return; const P = S(p[0], p[1]);
+      const ph = (local % 2600) / 2600;
+      sctx.beginPath(); sctx.arc(P[0], P[1], 7 + ph * 22, 0, 7); sctx.strokeStyle = c; sctx.globalAlpha = (1 - ph) * .85; sctx.lineWidth = 2; sctx.stroke(); sctx.globalAlpha = 1;
+      const grow = Math.min(1, local / 400);
+      star(P[0], P[1], (sel ? 11 : 9) * grow, c);
+      if (showLabels) haloText(ev.n, P[0] + 13, P[1], '#fff', font);
+      overlayTargets.push({kind:'ev', ev, x:P[0], y:P[1]});
+    }
+  });
+}
+function overlayHit(sx, sy){
+  let best = null, bd = 16;
+  for (const o of overlayTargets) { const d = Math.hypot(o.x - sx, o.y - sy); if (d < bd) { bd = d; best = o; } }
+  if (best) return best;
+  for (const rt of activeRoutes()) {
+    const g = geoms.get('rt:' + rt.id); if (!g) continue;
+    for (const pt of g.pts) { const P = S(pt[0], pt[1]); if (Math.hypot(P[0] - sx, P[1] - sy) < 9) return {kind:'rt', rt}; }
+  }
+  return null;
+}
+function fmtRange(y, e){
+  if (y === e) return 'c. ' + fmtYear(y);
+  if (y < 0 && e < 0) return `c. ${Math.abs(y)} – ${fmtYear(e)}`;
+  return `c. ${fmtYear(y)} – ${fmtYear(e)}`;
+}
+function flyTo(lonlats){
+  const P = lonlats.map(c => projection(c)).filter(Boolean); if (!P.length) return;
+  const xs = P.map(p => p[0]), ys = P.map(p => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const portrait = H > W;
+  const vw = portrait ? W : W - 420, vh = portrait ? H * 0.28 : H - 300;
+  const cx = portrait ? W / 2 : (W - 400) / 2, cy = portrait ? H * 0.6 : 60 + (H - 290) / 2;
+  let k = P.length === 1 ? 4 : Math.min(vw * 0.8 / Math.max(1, x1 - x0), vh * 0.8 / Math.max(1, y1 - y0));
+  k = Math.max(1.2, Math.min(7, k));
+  const T = d3.zoomIdentity.translate(cx - (x0 + x1) / 2 * k, cy - (y0 + y1) / 2 * k).scale(k);
+  d3.select(canvas).transition().duration(1500).call(zoom.transform, T);
+}
+function openEvent(ev, fly){
+  selected = {type:'ev', name:ev.id};
+  const cat = EVENT_CATS[ev.cat];
+  $('#cKind').textContent = 'Evento · ' + cat.nome;
+  $('#cTitle').textContent = ev.n;
+  $('#cSub').textContent = '';
+  $('#cMeta').innerHTML = `<b>Quando:</b> ${fmtRange(ev.y, ev.e)}`;
+  $('#cText').innerHTML = '';
+  $('#cText').append(document.createTextNode(ev.t));
+  if (ev.tipo === 'seq') {
+    const ol = document.createElement('ol'); ol.className = 'steps';
+    ev.pts.slice().sort((a, b) => a.y - b.y).forEach(p => { const li = document.createElement('li'); li.textContent = `${fmtYear(p.y)}: ${p.l}`; ol.append(li); });
+    $('#cText').append(ol);
+  }
+  $('#cLink').href = wiki(ev.n);
+  $('#cJump').style.display = 'none';
+  setBar(cat.cor);
+  card.classList.add('open');
+  evOverride[ev.id] = performance.now();
+  if (fly) flyTo(evPoints(ev));
+}
+function openRoute(rt, fly){
+  selected = {type:'rt', name:rt.id};
+  $('#cKind').textContent = 'Rota comercial';
+  $('#cTitle').textContent = rt.n;
+  $('#cSub').textContent = '';
+  $('#cMeta').innerHTML = `<b>Ativa:</b> ${fmtRange(rt.y, rt.e)}<br><b>Mercadorias:</b> ${rt.bens}`;
+  $('#cText').textContent = rt.t;
+  $('#cLink').href = wiki(rt.n.replace(/:.*/, ''));
+  $('#cJump').style.display = 'none';
+  setBar(rt.cor);
+  card.classList.add('open');
+  if (fly) flyTo(rt.path);
+}
+function renderChips(){
+  const box = $('#chips'); box.innerHTML = '';
+  activeEvents().forEach(ev => {
+    const b = document.createElement('button'); b.className = 'chip';
+    b.innerHTML = `<i style="background:${EVENT_CATS[ev.cat].cor}"></i>`; b.append(document.createTextNode(ev.n));
+    b.onclick = () => openEvent(ev, true); box.append(b);
+  });
+  ROUTES.filter(r => overlapsSnap(r.y, r.e) || (r.y <= SNAP_YEARS[idx] && r.e >= SNAP_YEARS[idx])).forEach(rt => {
+    const b = document.createElement('button'); b.className = 'chip route';
+    b.innerHTML = `<i style="background:${rt.cor}"></i>`; b.append(document.createTextNode(rt.n));
+    b.onclick = () => { if (!showRoutes) { showRoutes = true; $('#tRoutes').checked = true; } openRoute(rt, true); }; box.append(b);
+  });
+  box.style.display = box.children.length ? '' : 'none';
+}
+
 // ---------- zoom e toque ----------
 const zoom = d3.zoom().scaleExtent([1, 60]).on('zoom', e => { transform = e.transform; redraw(); });
 d3.select(canvas).call(zoom).on('dblclick.zoom', null);
@@ -370,6 +594,8 @@ canvas.addEventListener('pointerdown', e => down = [e.clientX, e.clientY]);
 canvas.addEventListener('pointerup', e => {
   if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return;
   const r = canvas.getBoundingClientRect(), sx = e.clientX - r.left, sy = e.clientY - r.top;
+  const oh = overlayHit(sx, sy);
+  if (oh) return oh.kind === 'ev' ? openEvent(oh.ev) : openRoute(oh.rt);
   if (showPlaces) {
     let best = null, bd = 15;
     for (const o of placeScreen) { const d = Math.hypot(o.x - sx, o.y - sy); if (d < bd) { bd = d; best = o.pl; } }
@@ -400,6 +626,7 @@ window.__go = i => go(i);
 window.addEventListener('resize', () => { setup(); redraw(); });
 setup(); slider.value = idx; updateHUD(false);
 d3.select(canvas).call(zoom.transform, initialView());
-draw();
+evStart = performance.now();
+requestAnimationFrame(tick);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
 })();

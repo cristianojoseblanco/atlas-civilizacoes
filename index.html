@@ -24,6 +24,14 @@ header h1 small{display:block;font-family:Inter;font-weight:400;font-size:11px;l
 #year{font-family:Cinzel,serif;font-size:32px;font-weight:700;line-height:1;color:var(--ink)}
 #era{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-top:4px}
 #eratext{font-size:13px;color:var(--mute);max-width:900px;margin:6px auto 2px;line-height:1.4}
+#chips{max-width:900px;margin:6px auto 4px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;display:flex;align-items:center;gap:6px;font:500 12px Inter,system-ui,sans-serif;color:var(--ink);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+.chip:hover{background:rgba(255,255,255,.12)}
+.chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.chip.route{border-style:dashed}
+.chip.route i{border-radius:2px;width:12px;height:3px}
+.steps{margin:10px 0 0 18px;font-size:13px;line-height:1.55;color:var(--mute)}
 #news{font-size:12px;color:#ffd680;max-width:900px;margin:0 auto 10px;min-height:16px;font-style:italic}
 .ctrl{display:flex;gap:6px}
 .ctrl #play{background:var(--gold);color:#1a1405;border:none;font-size:15px}
@@ -60,6 +68,7 @@ header h1 small{display:block;font-family:Inter;font-weight:400;font-size:11px;l
   <h1>Atlas das Civilizações<small>Fronteiras do mundo ao longo do tempo</small></h1>
   <div class="toggles">
     <label><input type="checkbox" id="tPlaces" checked>Lugares</label>
+    <label><input type="checkbox" id="tRoutes" checked>Rotas</label>
     <label><input type="checkbox" id="tLabels" checked>Nomes</label>
   </div>
 </header>
@@ -70,7 +79,7 @@ header h1 small{display:block;font-family:Inter;font-weight:400;font-size:11px;l
     <div><div id="year"></div><div id="era"></div></div>
     <div class="ctrl"><button id="prev" aria-label="Anterior">‹</button><button id="play" aria-label="Reproduzir">▶</button><button id="next" aria-label="Próximo">›</button></div>
   </div>
-  <div id="eratext"></div><div id="news"></div>
+  <div id="eratext"></div><div id="chips"></div><div id="news"></div>
   <div class="track"><input type="range" id="slider" min="0" step="1"><div id="ticks"></div></div>
   <div class="legend"><span><i style="background:hsl(30 70% 58%)"></i>Estados e impérios</span><span><i style="background:transparent;border:1px dashed #9a8f7a"></i>Povos e culturas</span><span><i style="background:#fff6df;border-radius:50%;border:2px solid #2a1c0e"></i>Cidades</span><span><i style="background:#f0c454;transform:rotate(45deg) scale(.8)"></i>Sítios</span></div>
 </div>
@@ -227,6 +236,121 @@ const PLACES = [
   {k:'s', n:"Rapa Nui", p:"Chile (Ilha de Páscoa)", lat:-27.125, lon:-109.277, y:1250, w:2, t:"Quase mil moai esculpidos pelos polinésios no lugar habitado mais isolado do planeta."},
   {k:'s', n:"Machu Picchu", p:"Peru", lat:-13.163, lon:-72.545, y:1450, w:3, t:"Propriedade real inca nos Andes, que o mundo exterior só conheceu em 1911."},
 ];
+
+// Eventos históricos animados. Aparecem na época cujo intervalo (época anterior, época atual] cruza [y, e].
+// tipo: 'rota' = trajeto que se desenha; 'seq' = pontos que acendem em ordem; 'ponto' = um lugar.
+// cat: guerra | politica | cultura | desastre | exploracao
+// Coordenadas em [lon, lat].
+const EVENT_CATS = {
+  guerra:     {cor:'#e0473c', nome:'Guerra'},
+  politica:   {cor:'#9b6cf0', nome:'Política'},
+  cultura:    {cor:'#3fa7e0', nome:'Cultura'},
+  desastre:   {cor:'#f08a24', nome:'Desastre'},
+  exploracao: {cor:'#2fc49a', nome:'Exploração'},
+};
+const EVENTS = [
+  {id:'gobekli', tipo:'ponto', cat:'cultura', y:-9600, e:-9500, n:"Primeiros monumentos", at:[38.922, 37.223],
+   t:"Caçadores-coletores erguem os recintos de Göbekli Tepe, com pilares de até 5 metros. A construção é anterior à agricultura na região."},
+  {id:'agri', tipo:'seq', cat:'cultura', y:-9500, e:-5000, n:"A agricultura surge várias vezes",
+   t:"A domesticação de plantas não foi uma invenção única: aconteceu de forma independente em pelo menos sete regiões, ao longo de milênios.",
+   pts:[{at:[38.5,36.5], y:-9500, l:"Crescente Fértil: trigo, cevada"}, {at:[112,34.5], y:-7000, l:"Rio Amarelo: painço"}, {at:[118,30.5], y:-7000, l:"Yangtzé: arroz"},
+        {at:[144.5,-6], y:-7000, l:"Nova Guiné: taro, banana"}, {at:[-97.5,18], y:-7000, l:"Mesoamérica: abóbora, milho"}, {at:[-74,-12], y:-6000, l:"Andes: batata, quinoa"}, {at:[-86,36], y:-5000, l:"Leste da América do Norte"}]},
+  {id:'escrita', tipo:'seq', cat:'cultura', y:-3300, e:-1200, n:"A escrita é inventada",
+   t:"A escrita surgiu do zero em poucos lugares. Na Mesopotâmia, ela nasceu da contabilidade de templos.",
+   pts:[{at:[45.636,31.322], y:-3300, l:"Uruk: cuneiforme"}, {at:[31.25,29.85], y:-3200, l:"Egito: hieróglifos"}, {at:[114.31,36.12], y:-1200, l:"China: ossos oraculares"}]},
+  {id:'egito', tipo:'ponto', cat:'politica', y:-3100, e:-3100, n:"Unificação do Egito", at:[31.25, 29.85],
+   t:"O Alto e o Baixo Egito são unidos sob um só rei, segundo a tradição, Narmer, com capital em Mênfis."},
+  {id:'golfo', tipo:'ponto', cat:'cultura', y:-2600, e:-2400, n:"Tumbas reais de Ur", at:[46.103, 30.962],
+   t:"Ouro, lápis-lazúli do Afeganistão e cornalina do Indo nas tumbas de Ur provam uma rede de trocas de milhares de quilômetros."},
+  {id:'sargao', tipo:'ponto', cat:'politica', y:-2334, e:-2154, n:"Sargão e o Império Acádio", at:[44.4, 33.1],
+   t:"Sargão de Akkad cria o que muitos chamam de primeiro império: Estados conquistados e governados a partir de uma capital. A localização de Akkad ainda é desconhecida."},
+  {id:'hamurabi', tipo:'ponto', cat:'politica', y:-1754, e:-1754, n:"Código de Hamurabi", at:[44.421, 32.536],
+   t:"Hamurabi da Babilônia grava cerca de 280 leis numa estela de basalto. Não é o primeiro código de leis, mas é o mais completo que sobreviveu."},
+  {id:'kadesh', tipo:'ponto', cat:'guerra', y:-1274, e:-1259, n:"Batalha de Kadesh", at:[36.52, 34.57],
+   t:"Egípcios de Ramsés II e hititas de Muwatalli travam talvez a maior batalha de carros de guerra da história. Anos depois, as duas potências assinam um tratado de paz."},
+  {id:'colapso', tipo:'seq', cat:'desastre', y:-1200, e:-1150, n:"Colapso da Idade do Bronze",
+   t:"Em poucas décadas, cidades e reinos do Mediterrâneo oriental caem em sequência. A causa ainda é debatida: secas, terremotos, rupturas comerciais e os 'Povos do Mar'.",
+   pts:[{at:[35.78,35.6], y:-1185, l:"Ugarit destruída"}, {at:[34.615,40.02], y:-1180, l:"Hattusa abandonada"}, {at:[26.24,39.96], y:-1180, l:"Troia VIIa incendiada"}, {at:[22.756,37.731], y:-1150, l:"Micenas cai"}, {at:[31.5,30.9], y:-1177, l:"Egito repele os Povos do Mar"}]},
+  {id:'ciro', tipo:'ponto', cat:'politica', y:-539, e:-539, n:"Ciro toma a Babilônia", at:[44.421, 32.536],
+   t:"Ciro, o Grande, entra na Babilônia quase sem luta e funda o maior império visto até então. O Cilindro de Ciro anuncia a volta dos povos deportados."},
+  {id:'alexandre', tipo:'rota', cat:'guerra', y:-334, e:-323, n:"As campanhas de Alexandre",
+   t:"Em 11 anos, Alexandre marcha da Macedônia ao Indo, derrota o Império Persa e funda dezenas de cidades. Morre na Babilônia aos 32 anos.",
+   path:[[22.52,40.76],[26.4,40.2],[27.3,40.1],[36.2,36.84],[35.2,33.27],[29.92,31.2],[25.5,29.2],[31.25,29.85],[36.2,36.2],[43.25,36.36],[44.42,32.54],[48.26,32.19],[52.89,29.94],[48.52,34.8],[61.2,31],[66.9,36.75],[66.97,39.65],[69.2,34.5],[72.82,33.75],[73.6,32.7],[71.5,30.5],[68.1,25.4],[64.5,25.8],[58.3,27.2],[52.89,29.94],[48.26,32.19],[44.42,32.54]]},
+  {id:'qin', tipo:'ponto', cat:'politica', y:-221, e:-221, n:"Qin unifica a China", at:[108.7, 34.35],
+   t:"O rei de Qin vence os outros Estados Combatentes e se torna Qin Shi Huang, o primeiro imperador. Padroniza a escrita, as moedas e o tamanho dos eixos das carroças."},
+  {id:'anibal', tipo:'rota', cat:'guerra', y:-218, e:-216, n:"Aníbal atravessa os Alpes",
+   t:"O general cartaginês leva um exército com elefantes da Hispânia até a Itália pelos Alpes e esmaga os romanos em Canas.",
+   path:[[-0.98,37.6],[0.8,40.8],[2.9,42.3],[4.7,43.9],[6.0,45.0],[6.9,45.2],[7.7,45.07],[9.6,45.05],[12.1,43.2],[16.15,41.3]]},
+  {id:'vesuvio', tipo:'ponto', cat:'desastre', y:79, e:79, n:"Erupção do Vesúvio", at:[14.43, 40.82],
+   t:"Pompeia e Herculano são soterradas. As cinzas preservaram a vida cotidiana romana como nenhuma outra fonte."},
+  {id:'roma410', tipo:'ponto', cat:'guerra', y:410, e:476, n:"Queda de Roma no Ocidente", at:[12.49, 41.89],
+   t:"Os visigodos saqueiam Roma em 410, e em 476 o último imperador do Ocidente é deposto. A metade oriental, Bizâncio, segue por mais mil anos."},
+  {id:'islam', tipo:'seq', cat:'politica', y:632, e:750, n:"A expansão islâmica",
+   t:"Em pouco mais de um século, os califados conquistam do Atlântico ao Indo e criam uma das maiores redes culturais e comerciais da história.",
+   pts:[{at:[39.82,21.42], y:630, l:"Meca"}, {at:[36.29,33.51], y:634, l:"Damasco"}, {at:[44.58,33.09], y:637, l:"Ctesifonte"}, {at:[35.23,31.78], y:638, l:"Jerusalém"}, {at:[29.92,31.2], y:641, l:"Alexandria"}, {at:[10.32,36.85], y:698, l:"Cartago"}, {at:[-4.02,39.86], y:711, l:"Toledo"}, {at:[66.97,39.65], y:712, l:"Samarcanda"}, {at:[0.69,47.39], y:732, l:"Tours: fim do avanço"}]},
+  {id:'mongois', tipo:'seq', cat:'guerra', y:1206, e:1260, n:"As conquistas mongóis",
+   t:"Gengis Khan e seus herdeiros criam o maior império contíguo da história, com devastação enorme e, depois, comércio intenso pela Eurásia.",
+   pts:[{at:[102.8,47.2], y:1206, l:"Gengis Khan unifica os mongóis"}, {at:[116.4,39.9], y:1215, l:"Zhongdu (Pequim)"}, {at:[66.97,39.65], y:1220, l:"Samarcanda"}, {at:[30.52,50.45], y:1240, l:"Kiev"}, {at:[19.0,47.5], y:1241, l:"Hungria"}, {at:[44.36,33.31], y:1258, l:"Bagdá"}, {at:[35.3,32.55], y:1260, l:"Ain Jalut: derrota mongol"}]},
+  {id:'peste', tipo:'seq', cat:'desastre', y:1346, e:1353, n:"A Peste Negra",
+   t:"A peste chega da Ásia pelas rotas comerciais e mata entre um terço e metade da população da Europa em cerca de sete anos.",
+   pts:[{at:[35.38,45.03], y:1346, l:"Caffa (Crimeia)"}, {at:[28.98,41.01], y:1347, l:"Constantinopla"}, {at:[15.55,38.19], y:1347, l:"Messina"}, {at:[31.2,30.05], y:1347, l:"Cairo"}, {at:[5.37,43.3], y:1348, l:"Marselha"}, {at:[2.35,48.86], y:1348, l:"Paris"}, {at:[-0.13,51.5], y:1348, l:"Londres"}, {at:[5.32,60.39], y:1349, l:"Bergen"}, {at:[37.62,55.75], y:1352, l:"Moscou"}]},
+  {id:'constantinopla', tipo:'ponto', cat:'guerra', y:1453, e:1453, n:"Queda de Constantinopla", at:[28.98, 41.01],
+   t:"Os otomanos de Mehmed II tomam a cidade com canhões gigantes, encerrando o Império Bizantino."},
+  {id:'colombo', tipo:'rota', cat:'exploracao', y:1492, e:1492, n:"A viagem de Colombo",
+   t:"Tentando chegar à Ásia pelo oeste, Colombo atinge as Bahamas em 12 de outubro de 1492. A troca entre os dois lados do Atlântico muda o mundo e devasta os povos americanos.",
+   path:[[-6.89,37.23],[-15.4,28.1],[-40,26],[-60,25],[-74.5,24.06]]},
+  {id:'gama', tipo:'rota', cat:'exploracao', y:1497, e:1498, n:"Vasco da Gama chega à Índia",
+   t:"A primeira rota marítima direta da Europa à Ásia contorna a África e quebra o monopólio das rotas de especiarias pelo Oriente Médio.",
+   path:[[-9.14,38.71],[-23.5,15],[-25,-10],[-5,-30],[18.47,-34.36],[32.5,-27],[40.73,-15.03],[40.12,-3.22],[60,8],[75.78,11.25]]},
+  {id:'cabral', tipo:'rota', cat:'exploracao', y:1500, e:1500, n:"Cabral chega ao Brasil",
+   t:"A frota de Pedro Álvares Cabral, a caminho da Índia, desvia para oeste e chega a Porto Seguro em 22 de abril de 1500.",
+   path:[[-9.14,38.71],[-15.4,28.1],[-23.5,15],[-30,-5],[-39.06,-16.45]]},
+  {id:'astecas', tipo:'ponto', cat:'guerra', y:1521, e:1533, n:"Queda dos astecas e incas", at:[-99.13, 19.43],
+   t:"Tenochtitlán cai em 1521, e o Império Inca desmorona depois de Cajamarca, em 1532. Epidemias de varíola mataram mais que as armas."},
+  {id:'magalhaes', tipo:'rota', cat:'exploracao', y:1519, e:1522, n:"Primeira volta ao mundo",
+   t:"A expedição de Fernão de Magalhães, concluída por Elcano depois da morte de Magalhães nas Filipinas, é a primeira a circunavegar a Terra. Dos 270 homens, voltaram 18.",
+   path:[[-6.35,36.78],[-15.4,28.1],[-35,-5],[-43.2,-22.9],[-58,-35],[-67.7,-49.3],[-70.9,-53.5],[-76,-50],[-90,-30],[-130,-15],[-160,0],[145,13.5],[123.9,10.3],[124,7],[127.4,0.8],[115,-8.5],[95,-15],[60,-30],[18.47,-34.36],[0,0],[-15.4,28.1],[-6.35,36.78]]},
+  {id:'revfr', tipo:'ponto', cat:'politica', y:1789, e:1799, n:"Revolução Francesa", at:[2.35, 48.86],
+   t:"A queda da monarquia absoluta espalha as ideias de cidadania, nação e direitos que moldam os Estados modernos."},
+  {id:'ww1', tipo:'ponto', cat:'guerra', y:1914, e:1918, n:"Primeira Guerra Mundial", at:[18.41, 43.86],
+   t:"O assassinato em Sarajevo desencadeia uma guerra que derruba quatro impérios: o alemão, o austro-húngaro, o russo e o otomano."},
+  {id:'ww2', tipo:'ponto', cat:'guerra', y:1939, e:1945, n:"Segunda Guerra Mundial", at:[13.4, 52.52],
+   t:"O conflito mais mortal da história termina com a Europa dividida e o início da Guerra Fria e da descolonização."},
+];
+
+// Rotas comerciais. Ficam visíveis enquanto ativas, com fluxo animado.
+const ROUTES = [
+  {id:'lapis', n:"Rota do lápis-lazúli", y:-3200, e:-1500, cor:'#3d6fe0', bens:"lápis-lazúli, estanho, clorita esculpida",
+   t:"O lápis-lazúli de Badaquistão, no Afeganistão, era a única fonte conhecida da pedra. Passava por Shahr-i Sokhta e Jiroft até Susa e Ur, onde aparece nas tumbas reais.",
+   path:[[70.8,36.2],[66.9,36.75],[61.33,30.6],[57.79,28.43],[52.42,29.99],[48.26,32.19],[46.103,30.962]]},
+  {id:'golfo', n:"Rede do Golfo: Dilmun, Magan e Meluhha", y:-2600, e:-1700, cor:'#e0a23d', bens:"cobre, cornalina, pérolas, madeira, marfim",
+   t:"Navios ligavam a Mesopotâmia a Dilmun (Bahrein), Magan (Omã) e Meluhha (o Vale do Indo). Selos do Indo foram achados em Ur, e pesos padronizados do Indo foram achados em Dilmun.",
+   path:[[46.103,30.962],[48.6,29.4],[50.52,26.233],[53.5,25.5],[56.3,26.6],[58.5,23.6],[59.8,22.4],[62,24.5],[66.5,24.8],[68.9,24.2],[70.21,23.89],[72.25,22.52]]},
+  {id:'bronze', n:"Cobre e estanho do Bronze", y:-1600, e:-1200, cor:'#c9773a', bens:"lingotes de cobre de Chipre, estanho, vidro, marfim",
+   t:"O naufrágio de Uluburun (c. 1300 a.C.) levava 10 toneladas de cobre cipriota e 1 tonelada de estanho. Era a liga de bronze de um exército inteiro.",
+   path:[[33.2,35.1],[35.78,35.6],[33.5,34.7],[29.68,36.13],[27.4,36.4],[25.163,35.298],[23.5,36.6],[22.756,37.731]]},
+  {id:'fenicia', n:"Rotas fenícias", y:-900, e:-200, cor:'#b04fd0', bens:"púrpura, cedro, vidro, prata da Ibéria",
+   t:"Os fenícios de Tiro levaram o alfabeto e o comércio por todo o Mediterrâneo, fundando Cartago e chegando a Gadir (Cádiz), além de Gibraltar.",
+   path:[[35.2,33.27],[33.6,34.9],[28,35],[24,35.4],[15.5,36.5],[12.6,37.6],[10.32,36.853],[5,37.5],[0,37.5],[-5.6,36.0],[-6.29,36.53]]},
+  {id:'incenso', n:"Rota do incenso", y:-800, e:200, cor:'#d8b24a', bens:"incenso, mirra, especiarias",
+   t:"Caravanas de camelos levavam incenso e mirra de Sabá, no Iêmen, até Petra e Gaza. Os nabateus enriqueceram controlando os oásis do caminho.",
+   path:[[45.3,15.4],[44.1,17.5],[42.5,19.8],[40.5,22.5],[39.6,24.5],[37.9,26.6],[36.6,28.4],[35.444,30.329],[34.45,31.5]]},
+  {id:'seda', n:"Rota da Seda", y:-130, e:1450, cor:'#e8505b', bens:"seda, papel, especiarias, cavalos, vidro, ideias e religiões",
+   t:"Não era uma estrada só, e sim uma rede de caravanas entre a China e o Mediterrâneo. Por ela passaram o budismo, o papel, a pólvora e também a Peste Negra.",
+   path:[[108.94,34.27],[103.8,36.06],[100.4,38.9],[94.66,40.14],[89.2,42.9],[82.9,41.7],[75.99,39.47],[71.5,40.4],[66.97,39.65],[64.4,39.77],[62.19,37.66],[54.4,36.8],[48.52,34.8],[44.58,33.09],[38.27,34.55],[36.16,36.2]]},
+  {id:'indico', n:"Rotas das monções no Índico", y:-100, e:1500, cor:'#2fb7c4', bens:"pimenta, algodão, pedras preciosas, ouro, cerâmica chinesa",
+   t:"Os ventos das monções invertem a direção duas vezes por ano, permitindo cruzar o Índico em semanas. Roma comprava tanta pimenta de Muziris que Plínio reclamava da sangria de ouro.",
+   path:[[35.5,23.9],[38.5,19],[42.5,14],[45.03,12.8],[52,13.5],[60,12.5],[68,11],[76.2,10.2]]},
+  {id:'ambar', n:"Rota do âmbar", y:-100, e:400, cor:'#f0b030', bens:"âmbar do Báltico",
+   t:"O âmbar do Báltico descia até Aquileia, no norte da Itália, onde era trabalhado e vendido para todo o Império Romano.",
+   path:[[20.5,54.7],[18.6,53.0],[17.0,51.1],[16.6,49.2],[16.4,48.2],[16.6,47.7],[15.6,46.6],[14.5,46.05],[13.37,45.77]]},
+  {id:'transaariana', n:"Rotas transaarianas", y:800, e:1600, cor:'#e07b39', bens:"ouro, sal, escravizados, livros",
+   t:"Caravanas atravessavam o Saara trocando o sal das minas de Taghaza pelo ouro da África Ocidental. Foi isso que fez a riqueza de Gana, do Mali e de Timbuktu.",
+   path:[[-4.27,31.28],[-4.5,27.5],[-5.0,23.6],[-3.9,19.5],[-3.008,16.775],[-0.04,16.27]]},
+  {id:'maritima', n:"Rota marítima da Seda", y:700, e:1500, cor:'#ff6f91', bens:"porcelana, seda, especiarias, incenso",
+   t:"Juncos chineses e dhows árabes ligavam Cantão ao Golfo Pérsico e à África. As viagens de Zheng He (1405–1433) chegaram ao Quênia com navios gigantes.",
+   path:[[113.26,23.13],[109,18],[106,10],[104,2.5],[102.25,2.2],[98,5],[90,7],[80.3,6.5],[75.78,11.25],[66,17],[58.5,23.6],[56.3,26.6]]},
+];
 </script>
 <script>// Conteúdo editorial do atlas. Cada civilização mapeia um ou mais nomes da base (historical-basemaps).
 const CIVS = [
@@ -314,7 +438,9 @@ const ERAS = [
 </script>
 <script>(() => {
 const $ = s => document.querySelector(s);
-const canvas = $('#map'), ctx = canvas.getContext('2d');
+const canvas = $('#map'), sctx = canvas.getContext('2d');
+// o mapa estático é desenhado numa tela fora da página; só as animações são redesenhadas a cada quadro
+const base = document.createElement('canvas'), ctx = base.getContext('2d');
 const N = SNAP_YEARS.length;
 
 // ---------- utilidades ----------
@@ -406,7 +532,7 @@ function layer(year){
 function setup(){
   dpr = Math.min(window.devicePixelRatio || 1, 2);
   W = canvas.clientWidth; H = canvas.clientHeight;
-  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.width = base.width = W * dpr; canvas.height = base.height = H * dpr;
   projection = d3.geoNaturalEarth1().fitExtent([[8, 8], [W - 8, H - 8]], {type:'Sphere'});
   path = d3.geoPath(projection);
   sphereP = new Path2D(path({type:'Sphere'}));
@@ -414,6 +540,7 @@ function setup(){
   const rv = topojson.feature(RIVERS, RIVERS.objects[Object.keys(RIVERS.objects)[0]]);
   riversP = [1,2,3,4,5,6].map(sr => new Path2D(path({type:'FeatureCollection', features: rv.features.filter(f => (f.properties.scalerank||6) === sr)}) || ''));
   cache.clear();
+  buildGeoms();
   zoom.extent([[0,0],[W,H]]).translateExtent([[-W*0.15, -H*0.25], [W*1.15, H*1.25]]);
 }
 
@@ -421,7 +548,7 @@ function setup(){
 let idx = SNAP_YEARS.indexOf(-3000);
 let prevIdx = null, fade = 1, fadeStart = 0, pulseStart = 0;
 let selected = null; // {type:'civ'|'place', name}
-let showPlaces = true, showLabels = true;
+let showPlaces = true, showLabels = true, showRoutes = true, evStart = 0;
 const FADE_MS = 650, PULSE_MS = 1800;
 
 function placeVisible(pl, i = idx){
@@ -568,15 +695,19 @@ function drawPlaces(now, boxes){
     ctx.fillStyle = pl.k === 's' ? '#5a3c00' : '#1f150b'; ctx.fillText(pl.n, x, y);
   }
 }
-let raf = null, animating = false;
-function redraw(){ if (!raf && !animating) raf = requestAnimationFrame(() => { raf = null; draw(); }); }
-function loop(t){
-  fade = Math.min(1, (t - fadeStart) / FADE_MS);
-  draw(t);
-  if (fade < 1 || t - pulseStart < PULSE_MS) requestAnimationFrame(loop);
-  else { prevIdx = null; animating = false; }
+let baseDirty = true;
+function redraw(){ baseDirty = true; }
+function startAnim(){ fadeStart = pulseStart = evStart = performance.now(); }
+function tick(t){
+  const fading = prevIdx !== null;
+  if (fading) fade = Math.min(1, (t - fadeStart) / FADE_MS);
+  const pulsing = t - pulseStart < PULSE_MS;
+  if (baseDirty || fading || pulsing) { draw(t); baseDirty = false; if (fading && fade >= 1) prevIdx = null; }
+  sctx.setTransform(1, 0, 0, 1, 0, 0);
+  sctx.drawImage(base, 0, 0);
+  drawOverlay(t);
+  requestAnimationFrame(tick);
 }
-function startAnim(){ fadeStart = pulseStart = performance.now(); if (!animating) { animating = true; requestAnimationFrame(loop); } }
 
 // ---------- tempo ----------
 const slider = $('#slider'); slider.max = N - 1;
@@ -589,6 +720,7 @@ function go(i){
   updateHUD(true);
   startAnim();
   if (selected && selected.type === 'civ') openCiv(selected.name, true);
+  else if (selected && (selected.type === 'ev' || selected.type === 'rt')) closeCard();
 }
 function updateHUD(anim){
   const y = SNAP_YEARS[idx], e = eraFor(y);
@@ -604,6 +736,7 @@ function updateHUD(anim){
     if (f < 1) yearTween = requestAnimationFrame(step); else shownYear = to;
   };
   yearTween = requestAnimationFrame(step);
+  renderChips();
   const novos = PLACES.filter(placeIsNew);
   $('#news').textContent = novos.length ? 'Surgem: ' + novos.slice(0, 4).map(p => p.n.replace(/ \(.*/, '')).join(', ') + (novos.length > 4 ? ` e mais ${novos.length - 4}` : '') : '';
 }
@@ -611,11 +744,18 @@ slider.addEventListener('input', () => go(+slider.value));
 $('#prev').onclick = () => go(idx - 1);
 $('#next').onclick = () => go(idx + 1);
 let playTimer = null;
+function stopPlay(){ clearTimeout(playTimer); playTimer = null; $('#play').textContent = '▶'; }
+function playStep(){
+  if (idx >= N - 1) return stopPlay();
+  go(idx + 1);
+  const evs = activeEvents().length;
+  playTimer = setTimeout(playStep, 2400 + Math.min(evs, 3) * 1600);
+}
 $('#play').onclick = () => {
-  if (playTimer) { clearInterval(playTimer); playTimer = null; $('#play').textContent = '▶'; return; }
+  if (playTimer) return stopPlay();
   if (idx === N - 1) go(0);
   $('#play').textContent = '❚❚';
-  playTimer = setInterval(() => { if (idx >= N - 1) { $('#play').click(); return; } go(idx + 1); }, 2200);
+  playTimer = setTimeout(playStep, 600);
 };
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') go(idx + 1);
@@ -624,6 +764,7 @@ document.addEventListener('keydown', e => {
 });
 $('#tPlaces').onchange = e => { showPlaces = e.target.checked; redraw(); };
 $('#tLabels').onchange = e => { showLabels = e.target.checked; redraw(); };
+$('#tRoutes').onchange = e => { showRoutes = e.target.checked; };
 
 const ticks = $('#ticks');
 [-10000, -1, 1000, 1500, 1900].forEach(y => {
@@ -676,6 +817,213 @@ function openPlace(pl){
 function closeCard(){ card.classList.remove('open'); selected = null; redraw(); }
 $('#cClose').onclick = closeCard;
 
+// ---------- eventos e rotas (camada animada) ----------
+const geoms = new Map(); // id -> {pts:[[x,y,brk]], cum:[], total}
+function sample(coords){
+  const pts = [];
+  for (let i = 0; i < coords.length - 1; i++) {
+    const a = coords[i], b = coords[i + 1], f = d3.geoInterpolate(a, b);
+    const n = Math.max(2, Math.ceil(d3.geoDistance(a, b) / 0.01));
+    for (let j = i === 0 ? 0 : 1; j <= n; j++) { const p = projection(f(j / n)); if (p) pts.push([p[0], p[1], false]); }
+  }
+  const cum = [0]; let total = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0] - pts[i-1][0], dy = pts[i][1] - pts[i-1][1];
+    if (Math.abs(dx) > W * 0.4) { pts[i][2] = true; cum.push(total); continue; }
+    total += Math.hypot(dx, dy); cum.push(total);
+  }
+  return {pts, cum, total};
+}
+function buildGeoms(){
+  geoms.clear();
+  ROUTES.forEach(r => geoms.set('rt:' + r.id, sample(r.path)));
+  EVENTS.forEach(ev => { if (ev.tipo === 'rota') geoms.set('ev:' + ev.id, sample(ev.path)); });
+}
+function overlapsSnap(y, e, i = idx){
+  const cur = SNAP_YEARS[i], prev = i > 0 ? SNAP_YEARS[i-1] : -Infinity;
+  return y <= cur && e > prev;
+}
+const activeEvents = () => EVENTS.filter(ev => overlapsSnap(ev.y, ev.e));
+const activeRoutes = () => showRoutes ? ROUTES.filter(r => overlapsSnap(r.y, r.e) || (r.y <= SNAP_YEARS[idx] && r.e >= SNAP_YEARS[idx])) : [];
+const evOverride = {};
+const S = (x, y) => [x * transform.k + transform.x, y * transform.k + transform.y];
+function evPoints(ev){ return ev.tipo === 'rota' ? ev.path : ev.tipo === 'seq' ? ev.pts.map(p => p.at) : [ev.at]; }
+
+function strokeGeom(g, upto){
+  // desenha a linha até o comprimento 'upto' (em unidades da projeção); devolve [ponta, ângulo]
+  sctx.beginPath();
+  let head = null, ang = 0;
+  for (let i = 0; i < g.pts.length; i++) {
+    const [x, y, brk] = g.pts[i];
+    if (g.cum[i] > upto && i > 0 && !brk) {
+      const [px, py] = g.pts[i-1], f = (upto - g.cum[i-1]) / (g.cum[i] - g.cum[i-1] || 1);
+      const P = S(px + (x - px) * f, py + (y - py) * f); sctx.lineTo(P[0], P[1]);
+      const Q = S(px, py); head = P; ang = Math.atan2(P[1] - Q[1], P[0] - Q[0]); break;
+    }
+    if (g.cum[i] > upto) break;
+    const P = S(x, y);
+    if (i === 0 || brk) sctx.moveTo(P[0], P[1]); else { if (head) ang = Math.atan2(P[1] - head[1], P[0] - head[0]); sctx.lineTo(P[0], P[1]); }
+    head = P;
+  }
+  sctx.stroke();
+  return [head, ang];
+}
+function haloText(text, x, y, color, font, align = 'left'){
+  if (y > hudTop - 8) return; // não escreve atrás da barra do tempo
+  sctx.font = font; sctx.textAlign = align; sctx.textBaseline = 'middle';
+  sctx.lineJoin = 'round'; sctx.lineWidth = 3.5; sctx.strokeStyle = 'rgba(8,12,16,.85)'; sctx.strokeText(text, x, y);
+  sctx.fillStyle = color; sctx.fillText(text, x, y);
+}
+function star(x, y, r, color){
+  sctx.beginPath();
+  for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4 - Math.PI / 2, rr = i % 2 ? r * 0.45 : r; sctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+  sctx.closePath(); sctx.fillStyle = color; sctx.fill(); sctx.lineWidth = 1.5; sctx.strokeStyle = '#fff'; sctx.stroke();
+}
+let overlayTargets = [], hudTop = 1e9;
+function drawOverlay(t){
+  sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  overlayTargets = [];
+  hudTop = H - ($('#hud').offsetHeight || 0) * 0.72;
+  const k = transform.k;
+  // rotas comerciais: linha tracejada que flui
+  for (const rt of activeRoutes()) {
+    const g = geoms.get('rt:' + rt.id); if (!g) continue;
+    const sel = selected && selected.type === 'rt' && selected.name === rt.id;
+    sctx.lineCap = 'round'; sctx.lineJoin = 'round';
+    sctx.globalAlpha = sel ? .45 : .22; sctx.strokeStyle = rt.cor; sctx.lineWidth = sel ? 10 : 7; strokeGeom(g, Infinity);
+    sctx.globalAlpha = .95; sctx.setLineDash([7, 9]); sctx.lineDashOffset = -(t * 0.025) % 16; sctx.lineWidth = sel ? 3 : 2.2; strokeGeom(g, Infinity);
+    sctx.setLineDash([]); sctx.globalAlpha = 1;
+    for (const i of [0, g.pts.length - 1]) { const P = S(g.pts[i][0], g.pts[i][1]); sctx.beginPath(); sctx.arc(P[0], P[1], 3.2, 0, 7); sctx.fillStyle = rt.cor; sctx.fill(); sctx.lineWidth = 1.2; sctx.strokeStyle = '#fff'; sctx.stroke(); }
+    if (showLabels && (k > 2.2 || sel)) { const m = g.pts[Math.floor(g.pts.length / 2)], P = S(m[0], m[1]); haloText(rt.n, P[0] + 6, P[1] - 10, rt.cor, 'italic 600 12px Inter, system-ui, sans-serif'); }
+  }
+  // eventos
+  activeEvents().forEach((ev, i) => {
+    const c = EVENT_CATS[ev.cat].cor;
+    const local = evOverride[ev.id] != null ? t - evOverride[ev.id] : t - evStart - i * 900;
+    if (local < 0) return;
+    const sel = selected && selected.type === 'ev' && selected.name === ev.id;
+    const font = '700 12px Inter, system-ui, sans-serif';
+    if (ev.tipo === 'rota') {
+      const g = geoms.get('ev:' + ev.id); if (!g) return;
+      const p = Math.min(1, local / 4200), ease = 1 - Math.pow(1 - p, 2);
+      sctx.lineCap = 'round'; sctx.lineJoin = 'round';
+      sctx.globalAlpha = .3; sctx.strokeStyle = c; sctx.lineWidth = 8; strokeGeom(g, ease * g.total);
+      sctx.globalAlpha = 1; sctx.lineWidth = sel ? 3.6 : 2.8; const [head, ang] = strokeGeom(g, ease * g.total);
+      const P0 = S(g.pts[0][0], g.pts[0][1]);
+      sctx.beginPath(); sctx.arc(P0[0], P0[1], 4, 0, 7); sctx.fillStyle = '#fff'; sctx.fill(); sctx.lineWidth = 2; sctx.strokeStyle = c; sctx.stroke();
+      if (head) {
+        if (p < 1) { const pr = 6 + 3 * Math.sin(t / 120); sctx.beginPath(); sctx.arc(head[0], head[1], pr, 0, 7); sctx.fillStyle = c; sctx.fill(); sctx.lineWidth = 2; sctx.strokeStyle = '#fff'; sctx.stroke(); }
+        else { sctx.save(); sctx.translate(head[0], head[1]); sctx.rotate(ang); sctx.beginPath(); sctx.moveTo(8, 0); sctx.lineTo(-6, -6); sctx.lineTo(-6, 6); sctx.closePath(); sctx.fillStyle = c; sctx.fill(); sctx.lineWidth = 1.5; sctx.strokeStyle = '#fff'; sctx.stroke(); sctx.restore(); }
+        if (showLabels) haloText(ev.n, P0[0] + 8, P0[1] - 12, '#fff', font);
+      }
+      overlayTargets.push({kind:'ev', ev, x:P0[0], y:P0[1]});
+      if (head) overlayTargets.push({kind:'ev', ev, x:head[0], y:head[1]});
+    } else if (ev.tipo === 'seq') {
+      const pts = ev.pts.filter(p => p.y <= SNAP_YEARS[idx]).sort((a, b) => a.y - b.y);
+      let prevP = null;
+      pts.forEach((pt, j) => {
+        const age = local - j * 700; if (age < 0) return;
+        const p = projection(pt.at); if (!p) return; const P = S(p[0], p[1]);
+        if (prevP) { sctx.setLineDash([2, 5]); sctx.lineWidth = 1.5; sctx.strokeStyle = c; sctx.globalAlpha = .7; sctx.beginPath(); sctx.moveTo(prevP[0], prevP[1]); sctx.lineTo(P[0], P[1]); sctx.stroke(); sctx.setLineDash([]); sctx.globalAlpha = 1; }
+        prevP = P;
+        if (age < 1400) { const f = age / 1400; sctx.beginPath(); sctx.arc(P[0], P[1], 5 + f * 26, 0, 7); sctx.strokeStyle = c; sctx.globalAlpha = 1 - f; sctx.lineWidth = 2.5; sctx.stroke(); sctx.globalAlpha = 1; }
+        sctx.beginPath(); sctx.arc(P[0], P[1], 5, 0, 7); sctx.fillStyle = c; sctx.fill(); sctx.lineWidth = 1.6; sctx.strokeStyle = '#fff'; sctx.stroke();
+        const showL = showLabels && (sel || k > 2.6 || age < 2600);
+        if (showL) { sctx.globalAlpha = sel || k > 2.6 ? 1 : Math.min(1, (2600 - age) / 500); haloText(pt.l, P[0] + 9, P[1], '#fff', '600 11px Inter, system-ui, sans-serif'); sctx.globalAlpha = 1; }
+        overlayTargets.push({kind:'ev', ev, x:P[0], y:P[1]});
+      });
+      if (showLabels && prevP && local < pts.length * 700 + 3000) {
+        const p = projection(pts[0].at), P = S(p[0], p[1]);
+        sctx.globalAlpha = Math.min(1, Math.max(0, (pts.length * 700 + 3000 - local) / 600));
+        haloText(ev.n, P[0], P[1] - 18, c, '700 13px Inter, system-ui, sans-serif', 'center'); sctx.globalAlpha = 1;
+      }
+    } else {
+      const p = projection(ev.at); if (!p) return; const P = S(p[0], p[1]);
+      const ph = (local % 2600) / 2600;
+      sctx.beginPath(); sctx.arc(P[0], P[1], 7 + ph * 22, 0, 7); sctx.strokeStyle = c; sctx.globalAlpha = (1 - ph) * .85; sctx.lineWidth = 2; sctx.stroke(); sctx.globalAlpha = 1;
+      const grow = Math.min(1, local / 400);
+      star(P[0], P[1], (sel ? 11 : 9) * grow, c);
+      if (showLabels) haloText(ev.n, P[0] + 13, P[1], '#fff', font);
+      overlayTargets.push({kind:'ev', ev, x:P[0], y:P[1]});
+    }
+  });
+}
+function overlayHit(sx, sy){
+  let best = null, bd = 16;
+  for (const o of overlayTargets) { const d = Math.hypot(o.x - sx, o.y - sy); if (d < bd) { bd = d; best = o; } }
+  if (best) return best;
+  for (const rt of activeRoutes()) {
+    const g = geoms.get('rt:' + rt.id); if (!g) continue;
+    for (const pt of g.pts) { const P = S(pt[0], pt[1]); if (Math.hypot(P[0] - sx, P[1] - sy) < 9) return {kind:'rt', rt}; }
+  }
+  return null;
+}
+function fmtRange(y, e){
+  if (y === e) return 'c. ' + fmtYear(y);
+  if (y < 0 && e < 0) return `c. ${Math.abs(y)} – ${fmtYear(e)}`;
+  return `c. ${fmtYear(y)} – ${fmtYear(e)}`;
+}
+function flyTo(lonlats){
+  const P = lonlats.map(c => projection(c)).filter(Boolean); if (!P.length) return;
+  const xs = P.map(p => p[0]), ys = P.map(p => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const portrait = H > W;
+  const vw = portrait ? W : W - 420, vh = portrait ? H * 0.28 : H - 300;
+  const cx = portrait ? W / 2 : (W - 400) / 2, cy = portrait ? H * 0.6 : 60 + (H - 290) / 2;
+  let k = P.length === 1 ? 4 : Math.min(vw * 0.8 / Math.max(1, x1 - x0), vh * 0.8 / Math.max(1, y1 - y0));
+  k = Math.max(1.2, Math.min(7, k));
+  const T = d3.zoomIdentity.translate(cx - (x0 + x1) / 2 * k, cy - (y0 + y1) / 2 * k).scale(k);
+  d3.select(canvas).transition().duration(1500).call(zoom.transform, T);
+}
+function openEvent(ev, fly){
+  selected = {type:'ev', name:ev.id};
+  const cat = EVENT_CATS[ev.cat];
+  $('#cKind').textContent = 'Evento · ' + cat.nome;
+  $('#cTitle').textContent = ev.n;
+  $('#cSub').textContent = '';
+  $('#cMeta').innerHTML = `<b>Quando:</b> ${fmtRange(ev.y, ev.e)}`;
+  $('#cText').innerHTML = '';
+  $('#cText').append(document.createTextNode(ev.t));
+  if (ev.tipo === 'seq') {
+    const ol = document.createElement('ol'); ol.className = 'steps';
+    ev.pts.slice().sort((a, b) => a.y - b.y).forEach(p => { const li = document.createElement('li'); li.textContent = `${fmtYear(p.y)}: ${p.l}`; ol.append(li); });
+    $('#cText').append(ol);
+  }
+  $('#cLink').href = wiki(ev.n);
+  $('#cJump').style.display = 'none';
+  setBar(cat.cor);
+  card.classList.add('open');
+  evOverride[ev.id] = performance.now();
+  if (fly) flyTo(evPoints(ev));
+}
+function openRoute(rt, fly){
+  selected = {type:'rt', name:rt.id};
+  $('#cKind').textContent = 'Rota comercial';
+  $('#cTitle').textContent = rt.n;
+  $('#cSub').textContent = '';
+  $('#cMeta').innerHTML = `<b>Ativa:</b> ${fmtRange(rt.y, rt.e)}<br><b>Mercadorias:</b> ${rt.bens}`;
+  $('#cText').textContent = rt.t;
+  $('#cLink').href = wiki(rt.n.replace(/:.*/, ''));
+  $('#cJump').style.display = 'none';
+  setBar(rt.cor);
+  card.classList.add('open');
+  if (fly) flyTo(rt.path);
+}
+function renderChips(){
+  const box = $('#chips'); box.innerHTML = '';
+  activeEvents().forEach(ev => {
+    const b = document.createElement('button'); b.className = 'chip';
+    b.innerHTML = `<i style="background:${EVENT_CATS[ev.cat].cor}"></i>`; b.append(document.createTextNode(ev.n));
+    b.onclick = () => openEvent(ev, true); box.append(b);
+  });
+  ROUTES.filter(r => overlapsSnap(r.y, r.e) || (r.y <= SNAP_YEARS[idx] && r.e >= SNAP_YEARS[idx])).forEach(rt => {
+    const b = document.createElement('button'); b.className = 'chip route';
+    b.innerHTML = `<i style="background:${rt.cor}"></i>`; b.append(document.createTextNode(rt.n));
+    b.onclick = () => { if (!showRoutes) { showRoutes = true; $('#tRoutes').checked = true; } openRoute(rt, true); }; box.append(b);
+  });
+  box.style.display = box.children.length ? '' : 'none';
+}
+
 // ---------- zoom e toque ----------
 const zoom = d3.zoom().scaleExtent([1, 60]).on('zoom', e => { transform = e.transform; redraw(); });
 d3.select(canvas).call(zoom).on('dblclick.zoom', null);
@@ -684,6 +1032,8 @@ canvas.addEventListener('pointerdown', e => down = [e.clientX, e.clientY]);
 canvas.addEventListener('pointerup', e => {
   if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return;
   const r = canvas.getBoundingClientRect(), sx = e.clientX - r.left, sy = e.clientY - r.top;
+  const oh = overlayHit(sx, sy);
+  if (oh) return oh.kind === 'ev' ? openEvent(oh.ev) : openRoute(oh.rt);
   if (showPlaces) {
     let best = null, bd = 15;
     for (const o of placeScreen) { const d = Math.hypot(o.x - sx, o.y - sy); if (d < bd) { bd = d; best = o.pl; } }
@@ -714,7 +1064,8 @@ window.__go = i => go(i);
 window.addEventListener('resize', () => { setup(); redraw(); });
 setup(); slider.value = idx; updateHUD(false);
 d3.select(canvas).call(zoom.transform, initialView());
-draw();
+evStart = performance.now();
+requestAnimationFrame(tick);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
 })();
 </script>
