@@ -894,6 +894,7 @@ function initialView(){
 window.__pt = (lon, lat) => { const p = projection([lon, lat]); return [p[0]*transform.k + transform.x, p[1]*transform.k + transform.y]; };
 window.__go = i => go(i);
 window.__ne = () => flyTo([[35,26],[62,38]]);
+window.flyTo = flyTo;
 window.addEventListener('resize', () => { setup(); redraw(); });
 setup(); slider.value = idx; updateHUD(false);
 d3.select(canvas).call(zoom.transform, initialView());
