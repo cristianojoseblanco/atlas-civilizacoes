@@ -167,95 +167,95 @@ L165,Náucratis,cidade,gr,Egito,30.9,30.59,-620,-200,1,Porto do delta do Nilo cr
 L166,Olbia Pôntica,cidade,gr,Ucrânia,46.69,31.9,-550,400,1,"Colônia de Mileto no estuário do Bug, centro do comércio de trigo com os citas.",F038,com_fonte,media,Data corrigida de c. 600 para c. 550 a.C. (F038). O vizinho entreposto de Berezan é mais antigo.
 L167,Sinope,cidade,gr,Turquia,42.03,35.15,-630,,1,"A principal colônia grega na costa sul do Mar Negro. Terra de Diógenes, o cínico.",F038,com_fonte,media,
 L168,Trapezunte (Trebizonda),cidade,gr,Turquia,41,39.72,-750,,1,"Colônia de Sinope no extremo leste do Mar Negro. A data tradicional, 756 a.C., é anterior à da própria Sinope e provavelmente cedo demais. Foi o fim da marcha dos Dez Mil de Xenofonte e, séculos depois, capital de um império bizantino.",,revisado_sem_fonte,baixa,Data tradicional (Eusébio) incoerente com a fundação de Sinope; falta fonte ligada.
-L169,Monte Verde,sitio,,Chile,-41.5,-73.2,-12500,,1,Acampamento de cerca de 14 mil e 500 anos no sul do Chile. Obrigou a revisar a ideia de que as Américas foram povoadas mais tarde.,,nao_revisado,media,
-L170,Cueva de las Manos,sitio,,Argentina,-47.15,-70.67,-7300,,1,"Centenas de mãos em negativo pintadas na Patagônia, com as mais antigas por volta de 7300 a.C.",,nao_revisado,media,
-L171,Múmias Chinchorro,sitio,,Chile,-18.48,-70.32,-5000,,1,Pescadores do deserto do Atacama mumificavam os mortos cerca de dois mil anos antes dos egípcios.,,nao_revisado,media,
-L172,Real Alto,sitio,,Equador,-2.38,-80.72,-3800,,1,"Aldeia da cultura Valdivia organizada em torno de uma praça, com uma das cerâmicas mais antigas das Américas.",,nao_revisado,media,
-L173,Sechín Bajo,sitio,,Peru,-9.47,-78.26,-3500,,1,"Uma das construções monumentais mais antigas das Américas, com uma praça circular de cerca de 3500 a.C.",,nao_revisado,media,
-L174,Tres Zapotes,cidade,,México,18.47,-95.44,-900,300,1,"Centro olmeca tardio onde foi achada a Estela C, com uma das datas em Conta Longa mais antigas.",,nao_revisado,media,
-L175,Cholula,cidade,,México,19.06,-98.3,-300,,1,Sua Grande Pirâmide é a maior do mundo em volume. Hoje está coberta de terra e tem uma igreja no topo.,,nao_revisado,media,
-L176,Caracol,cidade,,Belize,16.76,-89.12,-600,1050,1,Cidade maia que derrotou Tikal em 562 d.C. O LiDAR mostrou que ela se espalhava por quase 200 km².,,nao_revisado,media,
-L177,Xochicalco,cidade,,México,18.8,-99.3,650,900,1,"Cidade fortificada que floresceu depois da queda de Teotihuacan, com a Pirâmide da Serpente Emplumada.",,nao_revisado,media,
-L178,El Tajín,cidade,,México,20.45,-97.38,600,1200,1,Capital da costa do Golfo com a Pirâmide dos Nichos e pelo menos 17 quadras de jogo de bola.,,nao_revisado,media,
-L179,Uxmal,cidade,,México,20.36,-89.77,700,1100,1,"Obra-prima da arquitetura maia puuc, com mosaicos de pedra e a Pirâmide do Adivinho.",,nao_revisado,media,
-L180,Mayapán,cidade,,México,20.63,-89.46,1220,1450,1,"Última grande capital maia de Iucatã, uma cidade murada que governou uma confederação.",,nao_revisado,media,
-L181,Tzintzuntzan,cidade,,México,19.63,-101.58,1300,1530,1,"Capital dos purépechas, o único povo que os astecas nunca conseguiram conquistar. Eles dominavam a metalurgia do cobre.",,nao_revisado,media,
-L182,Paquimé,cidade,,México,30.37,-107.95,1200,1450,1,Centro comercial do norte do México que criava araras vermelhas e as trocava com os povos Pueblo.,,nao_revisado,media,
-L183,Mesa Verde,cidade,,EUA,37.167,-108.47,550,1300,1,"Os Pueblo ancestrais construíram vilas inteiras sob penhascos, como o Cliff Palace, no século 13.",,nao_revisado,media,
-L184,Moundville,cidade,,EUA,33.006,-87.63,1120,1450,1,"Segundo maior centro mississipiano, com 29 montes de terra em volta de uma grande praça.",,nao_revisado,media,
-L185,Etowah,cidade,,EUA,34.126,-84.81,1000,1550,1,"Centro mississipiano na Geórgia, com montes-plataforma e estatuetas de mármore.",,nao_revisado,media,
-L186,L'Anse aux Meadows,sitio,,Canadá,51.596,-55.53,1021,,1,Acampamento viking na Terra Nova. A madeira cortada ali foi datada com precisão de 1021 d.C. É a primeira presença europeia confirmada nas Américas.,,nao_revisado,media,
-L187,Huacas de Moche,cidade,,Peru,-8.15,-78.99,100,800,1,"Capital moche com a Huaca del Sol, uma das maiores pirâmides de adobe das Américas, e a Huaca de la Luna, de murais coloridos.",,nao_revisado,media,
-L188,Cahuachi,cidade,,Peru,-14.82,-75.12,-100,500,1,"Centro cerimonial dos nazcas, perto das famosas linhas.",,nao_revisado,media,
-L189,Pachacamac,cidade,,Peru,-12.26,-76.9,200,1533,1,"Santuário de um oráculo respeitado por mais de mil anos, de várias culturas até os incas.",,nao_revisado,media,
-L190,Huari,cidade,,Peru,-13.06,-74.2,600,1000,1,"Capital do Império Wari, com recintos murados gigantes no planalto de Ayacucho.",,nao_revisado,media,
-L191,Kuélap,cidade,,Peru,-6.42,-77.92,500,1570,1,"Cidadela dos chachapoyas, os 'guerreiros das nuvens', com muralhas de até 20 metros nos Andes amazônicos.",,nao_revisado,media,
-L192,Ollantaytambo,cidade,,Peru,-13.26,-72.26,1440,,1,"Cidade inca ainda habitada, com o traçado de ruas original e terraços onde Manco Inca venceu os espanhóis em 1537.",,nao_revisado,media,
-L193,Sacsayhuamán,sitio,,Peru,-13.51,-71.98,1440,,1,"Muralhas em zigue-zague acima de Cusco, com blocos de mais de 100 toneladas encaixados sem argamassa.",,nao_revisado,media,
-L194,Caverna da Pedra Pintada,sitio,,Brasil (PA),-1.98,-54.07,-9200,,1,"Em Monte Alegre, uma das ocupações humanas mais antigas da Amazônia, com pinturas rupestres e cerca de 11 mil anos.",,nao_revisado,media,
-L195,Sambaquis de Santa Catarina,sitio,,Brasil (SC),-28.6,-48.9,-6000,,1,"Morros de conchas de até 30 metros erguidos por povos pescadores ao longo de milênios, usados também como cemitérios.",,nao_revisado,media,
-L196,Geoglifos do Acre,sitio,,Brasil (AC),-9.97,-67.8,-1,,1,"Centenas de valetas geométricas, círculos e quadrados, reveladas pelo desmatamento. São obras de povos amazônicos com cerca de 2 mil anos.",,nao_revisado,media,
-L197,Santarém (cultura tapajó),cidade,,Brasil (PA),-2.44,-54.71,1000,1600,1,"Grande centro da cultura tapajó, com cerâmica de figuras elaboradas e terra preta fértil acumulada pela ocupação humana.",,nao_revisado,media,
-L198,Tassili n'Ajjer,sitio,,Argélia,25.5,9,-10000,,1,"Milhares de pinturas rupestres que registram um Saara verde, com girafas, rebanhos e rios.",,nao_revisado,media,
+L169,Monte Verde,sitio,,Chile,-41.5,-73.2,-12500,,1,"Acampamento datado em cerca de 14 mil e 500 anos, que fez rever a ideia de que as Américas foram povoadas tarde. Um estudo de 2026 propôs que o sítio teria menos de 8 mil e 200 anos, e a data está em disputa.",F150;F151,contestado,baixa,"Surovell, Latorre et al. (Science, 2026) contra Dillehay; data mantida na posição tradicional."
+L170,Cueva de las Manos,sitio,,Argentina,-47.15,-70.67,-7300,,1,"Centenas de mãos em negativo pintadas na Patagônia, com as mais antigas por volta de 7300 a.C.",F152,com_fonte,media,UNESCO: arte entre 9.300 e 1.300 anos atrás (a versão espanhola da página diz 13.000–9.500).
+L171,Múmias Chinchorro,sitio,,Chile,-18.48,-70.32,-5000,,1,Pescadores do deserto do Atacama mumificavam os mortos cerca de dois mil anos antes dos egípcios.,F153,com_fonte,alta,
+L172,Real Alto,sitio,,Equador,-2.38,-80.72,-3800,,1,"Aldeia da cultura Valdivia organizada em torno de uma praça, com uma das cerâmicas mais antigas das Américas.",F154,com_fonte,media,Início da Valdivia varia entre c. 3800 e 3500 a.C. conforme a calibração.
+L173,Sechín Bajo,sitio,,Peru,-9.47,-78.26,-3500,,1,"Uma das construções monumentais mais antigas das Américas, com uma praça circular de cerca de 3500 a.C.",F155,com_fonte,media,
+L174,Tres Zapotes,cidade,,México,18.47,-95.44,-900,300,1,"Centro olmeca tardio onde foi achada a Estela C, com uma das datas em Conta Longa mais antigas.",F156,com_fonte,alta,Estela C: 32 a.C.; só a Estela 2 de Chiapa de Corzo é mais antiga.
+L175,Cholula,cidade,,México,19.06,-98.3,-300,,1,Sua Grande Pirâmide é a maior do mundo em volume. Hoje está coberta de terra e tem uma igreja no topo.,F157,com_fonte,media,Fonte C (Guinness) para o recorde de volume.
+L176,Caracol,cidade,,Belize,16.76,-89.12,-600,1050,1,Cidade maia que derrotou Tikal em 562 d.C. O LiDAR mostrou que ela se espalhava por quase 200 km².,F158,com_fonte,alta,
+L177,Xochicalco,cidade,,México,18.8,-99.3,650,900,1,"Cidade fortificada que floresceu depois da queda de Teotihuacan, com a Pirâmide da Serpente Emplumada.",F159,com_fonte,alta,
+L178,El Tajín,cidade,,México,20.45,-97.38,600,1200,1,Capital da costa do Golfo com a Pirâmide dos Nichos e pelo menos 17 quadras de jogo de bola.,F160,com_fonte,media,UNESCO conta 17 quadras; o INAH fala em cerca de 20.
+L179,Uxmal,cidade,,México,20.36,-89.77,700,1100,1,"Obra-prima da arquitetura maia puuc, com mosaicos de pedra e a Pirâmide do Adivinho.",F161,com_fonte,media,
+L180,Mayapán,cidade,,México,20.63,-89.46,1220,1450,1,"Última grande capital maia de Iucatã, uma cidade murada que governou uma confederação.",F162,com_fonte,alta,
+L181,Tzintzuntzan,cidade,,México,19.63,-101.58,1300,1530,1,"Capital dos purépechas, o único povo que os astecas nunca conseguiram conquistar. Eles dominavam a metalurgia do cobre.",F163,com_fonte,media,"Fonte C; ""nunca conquistaram"" vale para os astecas."
+L182,Paquimé,cidade,,México,30.37,-107.95,1200,1450,1,Centro comercial do norte do México que criava araras vermelhas e as trocava com os povos Pueblo.,F164,com_fonte,media,
+L183,Mesa Verde,cidade,,EUA,37.167,-108.47,550,1300,1,"Os Pueblo ancestrais construíram vilas inteiras sob penhascos, como o Cliff Palace, no século 13.",F165,com_fonte,alta,
+L184,Moundville,cidade,,EUA,33.006,-87.63,1120,1450,1,"Segundo maior centro mississipiano, com 29 montes de terra em volta de uma grande praça.",F166,com_fonte,alta,
+L185,Etowah,cidade,,EUA,34.126,-84.81,1000,1550,1,"Centro mississipiano na Geórgia, com montes-plataforma e estatuetas de mármore.",F167,com_fonte,alta,Estatuetas de mármore sem fonte A–C ligada.
+L186,L'Anse aux Meadows,sitio,,Canadá,51.596,-55.53,1021,,1,Acampamento viking na Terra Nova. A madeira cortada ali foi datada com precisão de 1021 d.C. É a primeira presença europeia confirmada nas Américas.,F168,com_fonte,alta,
+L187,Huacas de Moche,cidade,,Peru,-8.15,-78.99,100,800,1,"Capital moche com a Huaca del Sol, uma das maiores pirâmides de adobe das Américas, e a Huaca de la Luna, de murais coloridos.",F169,com_fonte,alta,
+L188,Cahuachi,cidade,,Peru,-14.82,-75.12,-100,500,1,"Centro cerimonial dos nazcas, perto das famosas linhas.",F170,com_fonte,media,
+L189,Pachacamac,cidade,,Peru,-12.26,-76.9,200,1533,1,"Santuário de um oráculo famoso, usado da cultura Lima até os incas. Pesquisas recentes discutem se ele funcionou sem interrupção.",F171;F172,com_fonte,media,"Antes dizia ""por mais de mil anos""; continuidade contestada (Marcone, ed., 2022)."
+L190,Huari,cidade,,Peru,-13.06,-74.2,600,1000,1,"Capital do Império Wari, com recintos murados gigantes no planalto de Ayacucho.",F173,com_fonte,alta,
+L191,Kuélap,cidade,,Peru,-6.42,-77.92,500,1570,1,"Cidadela dos chachapoyas, os 'guerreiros das nuvens', com muralhas de até 19 metros nos Andes amazônicos.",F174,com_fonte,media,Ocupação chachapoya c. 500–1570; a muralha é dos séculos XI a XVI.
+L192,Ollantaytambo,cidade,,Peru,-13.26,-72.26,1440,,1,"Cidade inca ainda habitada, com o traçado de ruas original e terraços onde Manco Inca venceu os espanhóis em 1537.",F175,com_fonte,alta,
+L193,Sacsayhuamán,sitio,,Peru,-13.51,-71.98,1440,,1,"Muralhas em zigue-zague acima de Cusco, com blocos de mais de 100 toneladas encaixados sem argamassa.",F176,com_fonte,alta,
+L194,Caverna da Pedra Pintada,sitio,,Brasil (PA),-1.98,-54.07,-9200,,1,"Em Monte Alegre, uma das ocupações humanas mais antigas da Amazônia, com pinturas rupestres e cerca de 11 mil anos.",F177,com_fonte,media,Ocupação desde c. 11.200 AP; parte das pinturas é mais recente.
+L195,Sambaquis de Santa Catarina,sitio,,Brasil (SC),-28.6,-48.9,-6000,,1,"Morros de conchas de até 30 metros erguidos por povos pescadores ao longo de milênios, usados também como cemitérios.",F178,com_fonte,media,
+L196,Geoglifos do Acre,sitio,,Brasil (AC),-9.97,-67.8,-1,,1,"Centenas de valetas geométricas, círculos e quadrados, reveladas pelo desmatamento. São obras de povos amazônicos com cerca de 2 mil anos.",F179,com_fonte,media,
+L197,Santarém (cultura tapajó),cidade,,Brasil (PA),-2.44,-54.71,1000,1600,1,"Grande centro da cultura tapajó, com cerâmica de figuras elaboradas e terra preta fértil acumulada pela ocupação humana.",F180,com_fonte,alta,
+L198,Tassili n'Ajjer,sitio,,Argélia,25.5,9,-8000,,1,"Mais de 15 mil pinturas e gravuras que registram um Saara verde, com girafas, rebanhos e rios. As mais antigas têm cerca de 10 mil anos.",F181,com_fonte,media,Ano movido de -10000 para -8000: UNESCO data as pinturas mais antigas em cerca de 10 mil anos.
 L199,Pirâmide de Djoser (Sacara),sitio,,Egito,29.871,31.216,-2670,,1,"A primeira pirâmide do Egito, em degraus, projetada por Imhotep.",F112;F113,com_fonte,alta,
 L200,Abu Simbel,sitio,,Egito,22.337,31.626,-1264,,1,Templos de Ramsés II cavados na rocha. Foram desmontados e remontados nos anos 1960 para escapar da represa de Assuã.,F114,com_fonte,alta,
-L201,Cultura Nok,sitio,,Nigéria,9.5,8,-900,,1,Terracotas de figuras humanas de cerca de 900 a.C. a 1 d.C. e uma das primeiras metalurgias do ferro da África Ocidental.,,nao_revisado,media,
-L202,Garama,cidade,,Líbia,26.55,13.07,-500,700,1,"Capital dos garamantes, que irrigavam o deserto com canais subterrâneos e controlavam rotas do Saara.",,nao_revisado,media,
-L203,Léptis Magna,cidade,,Líbia,32.64,14.29,-700,650,1,"De entreposto fenício a uma das cidades romanas mais bem preservadas, terra do imperador Septímio Severo.",,nao_revisado,media,
+L201,Cultura Nok,sitio,,Nigéria,9.5,8,-900,,1,Terracotas de figuras humanas de cerca de 900 a.C. a 1 d.C. e uma das primeiras metalurgias do ferro da África Ocidental.,F182;F183,com_fonte,media,"A cultura Nok começou c. 1500 a.C.; as terracotas, no séc. IX a.C."
+L202,Garama,cidade,,Líbia,26.55,13.07,-500,700,1,"Capital dos garamantes, que irrigavam o deserto com canais subterrâneos e controlavam rotas do Saara.",F184,com_fonte,alta,
+L203,Léptis Magna,cidade,,Líbia,32.64,14.29,-700,650,1,"De entreposto fenício a uma das cidades romanas mais bem preservadas, terra do imperador Septímio Severo.",F185,com_fonte,alta,
 L204,Velha Dongola,cidade,,Sudão,18.22,30.74,500,1400,1,"Capital do reino cristão de Makuria, que barrou os árabes em 652 e firmou com eles o baqt, um acordo respeitado por mais de cinco séculos.",F115,com_fonte,media,"Antes dizia ""tratado de 600 anos""; Godlewski fala em 520 anos."
-L205,Gao,cidade,,Mali,16.27,-0.04,700,,1,"Capital do Império Songai, o maior da história da África Ocidental, no século 16.",,nao_revisado,media,
-L206,Igbo-Ukwu,sitio,,Nigéria,6.02,7.02,900,,1,"Bronzes do século 9 de complexidade espantosa, feitos com técnica de cera perdida.",,nao_revisado,media,
-L207,Ilé-Ifẹ̀,cidade,,Nigéria,7.47,4.56,1000,,1,"Cidade sagrada dos iorubás, famosa pelas cabeças naturalistas de bronze e terracota dos séculos 12 a 15.",,nao_revisado,media,
-L208,Benin,cidade,,Nigéria,6.34,5.63,1180,,1,"Capital do reino do Benin, com muralhas de terra enormes e as placas de bronze saqueadas pelos britânicos em 1897.",,nao_revisado,media,
-L209,Lalibela,sitio,,Etiópia,12.03,39.04,1200,,1,"Onze igrejas monolíticas esculpidas de cima para baixo na rocha, por volta de 1200.",,nao_revisado,media,
-L210,Mapungubwe,cidade,,África do Sul,-22.19,29.24,1075,1220,1,"Primeiro reino da África Austral, antecessor do Grande Zimbábue, famoso pelo rinoceronte de ouro.",,nao_revisado,media,
-L211,Gedi,cidade,,Quênia,-3.31,40.02,1200,1650,1,"Cidade suaíli de pedra coral com mesquitas e palácio, abandonada no século 17.",,nao_revisado,media,
-L212,Carnac,sitio,,França,47.59,-3.08,-4500,,1,"Mais de 3 mil menires alinhados na Bretanha, erguidos a partir de cerca de 4500 a.C.",,nao_revisado,media,
-L213,Necrópole de Varna,sitio,,Bulgária,43.21,27.92,-4500,,1,Tumbas de cerca de 4500 a.C. com o ouro trabalhado mais antigo do mundo e sinais claros de desigualdade social.,,nao_revisado,media,
+L205,Gao,cidade,,Mali,16.27,-0.04,700,,1,"Capital do Império Songai, um dos maiores da história da África, no auge nos séculos 15 e 16.",F186,com_fonte,media,UNESCO: Gao provavelmente fundada no fim do séc. VII.
+L206,Igbo-Ukwu,sitio,,Nigéria,6.02,7.02,900,,1,"Bronzes do século 9 de complexidade espantosa, feitos com técnica de cera perdida.",F187,com_fonte,media,A data do séc. IX ainda é discutida (Met).
+L207,Ilé-Ifẹ̀,cidade,,Nigéria,7.47,4.56,1000,,1,"Cidade sagrada dos iorubás, famosa pelas cabeças naturalistas de bronze e terracota dos séculos 12 a 15.",F188,com_fonte,alta,
+L208,Benin,cidade,,Nigéria,6.34,5.63,1180,,1,"Capital do reino do Benin, com muralhas de terra enormes e as placas de bronze saqueadas pelos britânicos em 1897.",F189;F190,com_fonte,baixa,Fundação de 1180 é tradicional; as muralhas são dos séculos VII a XIV (Met).
+L209,Lalibela,sitio,,Etiópia,12.03,39.04,1200,,1,"Onze igrejas monolíticas esculpidas de cima para baixo na rocha, por volta de 1200.",F191,com_fonte,media,
+L210,Mapungubwe,cidade,,África do Sul,-22.19,29.24,1075,1300,1,"Primeiro reino da África Austral, antecessor do Grande Zimbábue, famoso pelo rinoceronte de ouro.",F192,com_fonte,media,"UNESCO: reino de 900 a 1300, capital no morro de Mapungubwe de 1220 a 1300; fim ajustado de 1220 para 1300."
+L211,Gedi,cidade,,Quênia,-3.31,40.02,1000,1650,1,"Cidade suaíli de pedra coral com mesquitas e palácio, abandonada no século 17.",F193,com_fonte,media,UNESCO: ocupada do séc. X ao XVII; início ajustado de 1200 para 1000.
+L212,Carnac,sitio,,França,47.59,-3.08,-4500,,1,"Mais de 3 mil menires alinhados na Bretanha, erguidos a partir de cerca de 4500 a.C.",F194,com_fonte,media,Fonte C; muitos autores datam a fase principal em c. 3300 a.C.
+L213,Necrópole de Varna,sitio,,Bulgária,43.21,27.92,-4500,,1,Tumbas de cerca de 4500 a.C. com o ouro trabalhado mais antigo do mundo e sinais claros de desigualdade social.,F195,com_fonte,alta,Fonte C.
 L214,Talianki,cidade,,Ucrânia,48.8,30.37,-3950,-3650,1,"Megassítio da cultura Trypillia com casas em anéis concêntricos. As estimativas vão de cerca de 6 mil a 21 mil habitantes, sem palácio ou templo central identificados.",F030,com_fonte,media,
-L215,Newgrange,sitio,,Irlanda,53.694,-6.475,-3200,,1,Túmulo de passagem cuja câmara é iluminada pelo sol só no solstício de inverno. É mais antigo que Stonehenge e as pirâmides.,,nao_revisado,media,
-L216,Hallstatt,cidade,,Áustria,47.56,13.65,-800,-400,1,Minas de sal exploradas há milênios. Deu nome a toda uma cultura da Idade do Ferro na Europa central.,,nao_revisado,media,
-L217,Biskupin,cidade,,Polônia,52.79,17.74,-740,-500,1,"Vila fortificada de madeira numa ilha de lago, com ruas planejadas, preservada na lama.",,nao_revisado,media,
-L218,Túmulo de Vix,sitio,,França,47.9,4.54,-500,,1,"Tumba de uma mulher celta com uma cratera de bronze grega de 1,6 metro, sinal do comércio entre celtas e gregos.",,nao_revisado,media,
-L219,Manching,cidade,,Alemanha,48.72,11.5,-300,-50,1,"Um dos maiores oppida celtas, uma verdadeira cidade da Idade do Ferro ao norte dos Alpes.",,nao_revisado,media,
-L220,Bibracte,cidade,,França,46.92,4.04,-200,1,1,"Capital dos éduos na Gália. Foi ali que Vercingetórix foi aclamado chefe da revolta contra César, em 52 a.C.",,nao_revisado,media,
-L221,Tarquínia,cidade,,Itália,42.25,11.76,-900,,1,"Cidade etrusca com centenas de tumbas pintadas de banquetes, danças e jogos.",,nao_revisado,media,
-L222,Londres (Londinium),cidade,,Reino Unido,51.51,-0.12,47,,1,Fundada pelos romanos por volta de 47 d.C. às margens do Tâmisa.,,nao_revisado,media,
-L223,Paris (Lutécia),cidade,,França,48.85,2.35,-250,,1,Começou como a cidade dos parísios numa ilha do Sena e virou a Lutécia romana.,,nao_revisado,media,
-L224,Córdoba,cidade,,Espanha,37.88,-4.78,-169,,2,"Capital do califado omíada de al-Andalus, uma das maiores e mais cultas cidades da Europa no século 10, com sua Grande Mesquita.",,nao_revisado,media,
-L225,Hedeby,cidade,,Alemanha,54.49,9.57,770,1066,1,"O maior entreposto viking, ligando o Báltico ao Mar do Norte.",,nao_revisado,media,
-L226,Birka,cidade,,Suécia,59.33,17.54,750,975,1,"Cidade comercial viking num lago perto de Estocolmo, com moedas árabes e seda vindas do Oriente.",,nao_revisado,media,
-L227,Jelling,sitio,,Dinamarca,55.756,9.42,965,,1,"Pedras rúnicas do rei Haroldo Dente-Azul, que se gaba de ter unido a Dinamarca e a tornado cristã.",,nao_revisado,media,
-L228,Novgorod,cidade,,Rússia,58.52,31.27,859,,1,"República mercantil medieval governada por uma assembleia, o veche. Os moradores escreviam cartas em casca de bétula.",,nao_revisado,media,
-L229,Kiev,cidade,,Ucrânia,50.45,30.52,500,,1,"Capital da Rus de Kiev, que adotou o cristianismo ortodoxo com Vladimir em 988.",,nao_revisado,media,
-L230,Jiahu,sitio,,China,33.6,113.7,-7000,,1,"Flautas de osso ainda tocáveis e sinais gravados em cascos de tartaruga, de cerca de 7000 a.C.",,nao_revisado,media,
-L231,Hemudu,sitio,,China,30.02,121.35,-5000,,1,Aldeia de casas sobre estacas com alguns dos vestígios mais antigos de cultivo de arroz.,,nao_revisado,media,
-L232,Banpo,sitio,,China,34.27,109.05,-4500,,1,"Aldeia neolítica da cultura Yangshao, com casas redondas, fossos e cerâmica pintada.",,nao_revisado,media,
-L233,Taosi,cidade,,China,35.88,111.5,-2300,-1900,1,"Grande cidade murada do Neolítico tardio, com uma possível estrutura de observação do sol.",,nao_revisado,media,
-L234,Shimao,cidade,,China,38.52,110.27,-2300,-1800,1,Cidade de pedra com mais de 4 km² e uma pirâmide de terraços decorada com rostos esculpidos. Mudou a visão das origens da civilização chinesa.,,nao_revisado,media,
-L235,Zhengzhou (Erligang),cidade,,China,34.75,113.65,-1600,,1,Cidade Shang inicial cercada por muralhas de terra batida com cerca de 7 km.,,nao_revisado,media,
-L236,Jinsha,cidade,,China,30.68,104.01,-1200,-500,1,"Herdeira de Sanxingdui, famosa pelo disco de ouro do 'pássaro do sol'.",,nao_revisado,media,
-L237,Ban Chiang,sitio,,Tailândia,17.41,103.24,-2000,,1,Cerâmica pintada e bronzes que mostram uma metalurgia antiga no Sudeste Asiático. As datas exatas ainda são debatidas.,,nao_revisado,media,
-L238,Óc Eo,cidade,,Vietnã,10.25,105.15,100,600,1,"Porto do reino de Funan onde foram achadas moedas romanas, sinal do comércio entre o Mediterrâneo e a Ásia.",,nao_revisado,media,
-L239,Sukhothai,cidade,,Tailândia,17.02,99.7,1238,1438,1,"Primeira capital do reino tailandês, considerada o berço da escrita tailandesa.",,nao_revisado,media,
-L240,Ayutthaya,cidade,,Tailândia,14.35,100.57,1351,1767,1,"Capital cosmopolita do Sião por quatro séculos, destruída pelos birmaneses em 1767.",,nao_revisado,media,
-L241,Anuradhapura,cidade,,Sri Lanka,8.34,80.41,-400,1000,1,"Capital cingalesa por mais de mil anos, com estupas gigantes e reservatórios de irrigação.",,nao_revisado,media,
-L242,Sanchi,sitio,,Índia,23.48,77.74,-250,,1,"A Grande Estupa, iniciada na época de Ashoka, com portões esculpidos com a vida do Buda.",,nao_revisado,media,
-L243,Ajanta,sitio,,Índia,20.55,75.7,-200,,1,Mosteiros budistas escavados na rocha com pinturas murais do século 2 a.C. ao 6 d.C.,,nao_revisado,media,
-L244,Nalanda,cidade,,Índia,25.14,85.44,427,1200,1,Grande universidade budista que atraía estudantes da China e da Coreia. Foi destruída por volta de 1200.,,nao_revisado,media,
-L245,Hampi (Vijayanagara),cidade,,Índia,15.33,76.46,1336,1565,1,"Capital do Império de Vijayanagara, uma das maiores cidades do mundo por volta de 1500, saqueada em 1565.",,nao_revisado,media,
-L246,Templo de Brihadeeswarar,sitio,,Índia,10.78,79.13,1010,,1,"Templo chola em Thanjavur com uma torre de granito de cerca de 66 metros, concluído em 1010.",,nao_revisado,media,
-L247,Pasárgada,sitio,,Irã,30.19,53.17,-546,,1,"Primeira capital de Ciro, o Grande. Ali está o túmulo tradicionalmente atribuído a ele.",F111,com_fonte,media,
-L248,Marib,cidade,,Iêmen,15.42,45.34,-1000,575,1,"Capital de Sabá, com a grande represa cujo rompimento, por volta de 570 d.C., ficou na memória árabe.",,nao_revisado,media,
-L249,Hegra (Mada'in Salih),sitio,,Arábia Saudita,26.79,37.95,-1,,1,"Mais de cem túmulos nabateus monumentais esculpidos na rocha, no sul do reino de Petra.",,nao_revisado,media,
-L250,Bukhara,cidade,,Uzbequistão,39.77,64.42,-500,,1,"Oásis da Rota da Seda e centro do saber islâmico, terra de Avicena.",,nao_revisado,media,
-L251,Karakorum,cidade,,Mongólia,47.2,102.82,1220,1388,1,"Capital do Império Mongol no tempo de Ogedei, com embaixadores, mercadores e templos de várias religiões.",,nao_revisado,media,
-L252,Yoshinogari,cidade,,Japão,33.32,130.38,-400,300,1,"Grande aldeia murada do período Yayoi, quando o arroz irrigado e o metal chegaram ao Japão.",,nao_revisado,media,
-L253,Nara,cidade,,Japão,34.68,135.8,710,,1,"Primeira capital permanente do Japão, inspirada em Chang'an, com o grande Buda do Tōdai-ji.",,nao_revisado,media,
-L254,Quioto (Heian-kyō),cidade,,Japão,35.01,135.77,794,,1,"Capital imperial por mais de mil anos, cenário de O Conto de Genji.",,nao_revisado,media,
-L255,Gyeongju,cidade,,Coreia do Sul,35.84,129.21,-57,,1,"Capital do reino de Silla por quase mil anos, com túmulos reais cheios de coroas de ouro.",,nao_revisado,media,
-L256,Murujuga,sitio,,Austrália,-20.58,116.79,-40000,,1,"Talvez a maior concentração de arte rupestre do mundo, com mais de um milhão de gravuras. Algumas podem ter dezenas de milhares de anos.",,nao_revisado,media,
-L257,Pântano de Kuk,sitio,,Papua-Nova Guiné,-5.78,144.33,-7000,,1,Canais de drenagem e montes de cultivo que mostram uma agricultura independente na Nova Guiné há milhares de anos.,,nao_revisado,media,
-L258,Budj Bim,sitio,,Austrália,-38.08,141.93,-4600,,1,"Sistema de canais e armadilhas de pedra para enguias do povo gunditjmara, com cerca de 6 mil e 600 anos.",,nao_revisado,media,
-L259,Taputapuātea,sitio,,Polinésia Francesa,-16.83,-151.36,1000,,1,"Marae sagrado de Raiatea, centro religioso de onde partiam as viagens polinésias.",,nao_revisado,media,
-L260,Nan Madol,cidade,,Micronésia,6.84,158.33,1180,1628,1,"Capital da dinastia Saudeleur, construída sobre cerca de cem ilhotas artificiais de basalto num recife de coral.",,nao_revisado,media,
+L215,Newgrange,sitio,,Irlanda,53.694,-6.475,-3200,,1,Túmulo de passagem cuja câmara é iluminada pelo sol só no solstício de inverno. É mais antigo que Stonehenge e as pirâmides.,F126;F210,com_fonte,alta,
+L216,Hallstatt,cidade,,Áustria,47.56,13.65,-800,-400,1,Minas de sal exploradas há milênios. Deu nome a toda uma cultura da Idade do Ferro na Europa central.,F211,com_fonte,alta,
+L217,Biskupin,cidade,,Polônia,52.79,17.74,-740,-590,1,"Vila fortificada de madeira numa ilha de lago, com ruas planejadas, preservada na lama.",F196,com_fonte,alta,"Dendrocronologia: fundação c. 738 a.C., uso por cerca de 150 anos; fim ajustado para -590."
+L218,Túmulo de Vix,sitio,,França,47.9,4.54,-500,,1,"Tumba de uma mulher celta com uma cratera de bronze grega de 1,6 metro, sinal do comércio entre celtas e gregos.",F197,com_fonte,alta,"Cratera de 1,64 m, feita c. 530 a.C."
+L219,Manching,cidade,,Alemanha,48.72,11.5,-300,-50,1,"Um dos maiores oppida celtas, uma verdadeira cidade da Idade do Ferro ao norte dos Alpes.",F198,com_fonte,alta,
+L220,Bibracte,cidade,,França,46.92,4.04,-200,1,1,"Capital dos éduos na Gália. Foi ali que Vercingetórix foi aclamado chefe da revolta contra César, em 52 a.C.",F199,com_fonte,media,"Fundação entre o fim do séc. III e c. 120 a.C., conforme o autor."
+L221,Tarquínia,cidade,,Itália,42.25,11.76,-900,,1,"Cidade etrusca cuja necrópole tem 6 mil túmulos, cerca de 200 deles pintados com banquetes, danças e jogos.",F200,com_fonte,alta,
+L222,Londres (Londinium),cidade,,Reino Unido,51.51,-0.12,47,,1,Fundada pelos romanos por volta de 47 d.C. às margens do Tâmisa.,F201,com_fonte,alta,
+L223,Paris (Lutécia),cidade,,França,48.85,2.35,-250,,1,"César fala da Lutécia dos parísios numa ilha do Sena. Uma muralha gaulesa achada em 2026 na Île de la Cité reforçou essa localização, antes disputada com Nanterre.",F202;F203,com_fonte,media,Localização do oppidum gaulês era disputada com Nanterre; muralha gaulesa achada em 2026 na Île de la Cité.
+L224,Córdoba,cidade,,Espanha,37.88,-4.78,-169,,2,"Capital do califado omíada de al-Andalus, uma das maiores e mais cultas cidades da Europa no século 10, com sua Grande Mesquita.",F204,com_fonte,alta,
+L225,Hedeby,cidade,,Alemanha,54.49,9.57,770,1066,1,"O maior entreposto viking, ligando o Báltico ao Mar do Norte.",F205,com_fonte,alta,
+L226,Birka,cidade,,Suécia,59.33,17.54,750,975,1,"Cidade comercial viking num lago perto de Estocolmo, com moedas árabes e seda vindas do Oriente.",F206,com_fonte,alta,
+L227,Jelling,sitio,,Dinamarca,55.756,9.42,965,,1,"Pedras rúnicas do rei Haroldo Dente-Azul, que se gaba de ter unido a Dinamarca e a tornado cristã.",F207,com_fonte,alta,
+L228,Novgorod,cidade,,Rússia,58.52,31.27,859,,1,"República mercantil medieval governada por uma assembleia, o veche. Os moradores escreviam cartas em casca de bétula.",F208,com_fonte,baixa,859 é data de crônica; cartas em casca de bétula sem fonte A–C ligada.
+L229,Kiev,cidade,,Ucrânia,50.45,30.52,500,,1,"Capital da Rus de Kiev, que adotou o cristianismo ortodoxo com Vladimir em 988.",F209,com_fonte,baixa,Fundação em c. 500 é tradicional.
+L230,Jiahu,sitio,,China,33.6,113.7,-7000,-5700,1,"Flautas de osso ainda tocáveis e sinais gravados em cascos de tartaruga, de cerca de 7000 a.C.",F212;F213,com_fonte,alta,Fim da ocupação c. 5700 a.C. acrescentado.
+L231,Hemudu,sitio,,China,30.02,121.35,-5000,,1,Aldeia de casas sobre estacas com alguns dos vestígios mais antigos de cultivo de arroz.,F214,com_fonte,media,
+L232,Banpo,sitio,,China,34.27,109.05,-4500,,1,"Aldeia neolítica da cultura Yangshao, com casas redondas, fossos e cerâmica pintada.",F215,com_fonte,baixa,Data (c. 4800–3600 a.C.) só em fonte D; Britannica confirma a cultura Yangshao.
+L233,Taosi,cidade,,China,35.88,111.5,-2300,-1900,1,"Grande cidade murada do Neolítico tardio, com uma possível estrutura de observação do sol.",F217;F216,com_fonte,media,Observatório datado do meio do 3º milênio a.C.; função ainda debatida.
+L234,Shimao,cidade,,China,38.52,110.27,-2300,-1800,1,Cidade de pedra com mais de 4 km² e uma pirâmide de terraços decorada com rostos esculpidos. Mudou a visão das origens da civilização chinesa.,F218;F219,com_fonte,media,
+L235,Zhengzhou (Erligang),cidade,,China,34.75,113.65,-1600,,1,Cidade Shang inicial cercada por muralhas de terra batida com cerca de 7 km.,F220;F221,com_fonte,alta,
+L236,Jinsha,cidade,,China,30.68,104.01,-1200,-500,1,"Herdeira de Sanxingdui, famosa pelo disco de ouro do 'pássaro do sol'.",F222;F223,com_fonte,baixa,Datas de c. 1200 a c. 600 a.C. variam entre as fontes.
+L237,Ban Chiang,sitio,,Tailândia,17.41,103.24,-1500,,1,Cerâmica pintada e bronzes que mostram uma metalurgia antiga no Sudeste Asiático. As datas exatas ainda são debatidas.,F224,com_fonte,media,Início movido de -2000 para -1500: UNESCO data o sítio a partir de 1495 a.C.
+L238,Óc Eo,cidade,,Vietnã,10.25,105.15,100,700,1,"Cidade portuária do reino de Funan, ativa do século 1 ao 7 no delta do Mekong.",F225,com_fonte,media,Moedas romanas não confirmadas na fonte; frase retirada. Fim movido para 700 (séc. VII).
+L239,Sukhothai,cidade,,Tailândia,17.02,99.7,1238,1438,1,"Primeira capital do reino tailandês, considerada o berço da escrita tailandesa.",F226,com_fonte,alta,
+L240,Ayutthaya,cidade,,Tailândia,14.35,100.57,1351,1767,1,"Capital cosmopolita do Sião por quatro séculos, destruída pelos birmaneses em 1767.",F227,com_fonte,alta,
+L241,Anuradhapura,cidade,,Sri Lanka,8.34,80.41,-400,993,1,"Capital cingalesa por mais de mil anos, com estupas gigantes e reservatórios de irrigação.",F228,com_fonte,alta,"Fim ajustado de 1000 para 993, ano do abandono."
+L242,Sanchi,sitio,,Índia,23.48,77.74,-250,,1,"A Grande Estupa, iniciada na época de Ashoka, com portões esculpidos com a vida do Buda.",F229,com_fonte,alta,
+L243,Ajanta,sitio,,Índia,20.55,75.7,-200,,1,Mosteiros budistas escavados na rocha com pinturas murais do século 2 a.C. ao 6 d.C.,F230,com_fonte,alta,
+L244,Nalanda,cidade,,Índia,25.14,85.44,427,1200,1,Grande universidade budista que atraía estudantes da China e da Coreia. Foi destruída por volta de 1200.,F231,com_fonte,media,
+L245,Hampi (Vijayanagara),cidade,,Índia,15.33,76.46,1336,1565,1,"Capital do Império de Vijayanagara, uma das maiores cidades do mundo por volta de 1500, saqueada em 1565.",F232,com_fonte,alta,
+L246,Templo de Brihadeeswarar,sitio,,Índia,10.78,79.13,1010,,1,"Templo chola em Thanjavur com uma torre de granito de cerca de 60 metros, concluído em 1010.",F233,com_fonte,alta,"Altura corrigida de 66 para cerca de 60 m (UNESCO: vimana de 59,82 m)."
+L247,Pasárgada,sitio,,Irã,30.19,53.17,-546,,1,"Primeira capital de Ciro, o Grande. Ali está o túmulo tradicionalmente atribuído a ele.",F234,com_fonte,alta,
+L248,Marib,cidade,,Iêmen,15.42,45.34,-1000,575,1,"Capital de Sabá, com a grande represa cujo rompimento, por volta de 570 d.C., ficou na memória árabe.",F235,com_fonte,media,Ano do rompimento final (c. 570) vem da tradição; UNESCO diz uso até o séc. VI.
+L249,Hegra (Mada'in Salih),sitio,,Arábia Saudita,26.79,37.95,-1,,1,"Mais de cem túmulos nabateus monumentais esculpidos na rocha, no sul do reino de Petra.",F236,com_fonte,alta,"UNESCO conta 111 túmulos, 94 decorados."
+L250,Bukhara,cidade,,Uzbequistão,39.77,64.42,-500,,1,Oásis da Rota da Seda com mais de 2 mil anos de história e grande centro do saber islâmico.,F237,com_fonte,media,"""Terra de Avicena"" retirada por não estar na fonte."
+L251,Karakorum,cidade,,Mongólia,47.2,102.82,1220,1388,1,"Capital do Império Mongol no tempo de Ogedei, com embaixadores, mercadores e templos de várias religiões.",F238,com_fonte,media,Fim em 1388 (destruição pelos Ming) sem fonte ligada.
+L252,Yoshinogari,cidade,,Japão,33.32,130.38,-400,300,1,"Grande aldeia murada do período Yayoi, quando o arroz irrigado e o metal chegaram ao Japão.",F239,com_fonte,media,
+L253,Nara,cidade,,Japão,34.68,135.8,710,,1,"Primeira capital permanente do Japão, inspirada em Chang'an, com o grande Buda do Tōdai-ji.",F240,com_fonte,alta,
+L254,Quioto (Heian-kyō),cidade,,Japão,35.01,135.77,794,,1,"Capital imperial por mais de mil anos, cenário de O Conto de Genji.",F241,com_fonte,alta,
+L255,Gyeongju,cidade,,Coreia do Sul,35.84,129.21,-57,,1,"Capital do reino de Silla por quase mil anos, com túmulos reais cheios de coroas de ouro.",F242,com_fonte,alta,
+L256,Murujuga,sitio,,Austrália,-20.58,116.79,-48000,,1,"A maior e mais densa concentração de petróglifos conhecida, com 1 a 2 milhões de gravuras. Algumas podem ter dezenas de milhares de anos.",F243,com_fonte,baixa,Início movido de -40000 para -48000 (UNESCO: mais de 50 mil anos); datar petróglifos é difícil.
+L257,Pântano de Kuk,sitio,,Papua-Nova Guiné,-5.78,144.33,-5000,,1,Canais de drenagem e montes de cultivo que mostram uma agricultura independente na Nova Guiné há milhares de anos.,F244,com_fonte,media,Início movido de -7000 para -5000 (7 mil anos atrás); talvez 10 mil anos.
+L258,Budj Bim,sitio,,Austrália,-38.08,141.93,-4600,,1,"Sistema de canais e armadilhas de pedra para enguias do povo gunditjmara, com cerca de 6 mil e 600 anos.",F245,com_fonte,alta,
+L259,Taputapuātea,sitio,,Polinésia Francesa,-16.83,-151.36,1000,,1,"Complexo de marae em Raiatea, centro político e religioso considerado o lar ancestral da cultura polinésia.",F246,com_fonte,media,Texto ajustado ao que a UNESCO afirma.
+L260,Nan Madol,cidade,,Micronésia,6.84,158.33,1200,1600,1,"Capital da dinastia Saudeleur, construída sobre cerca de cem ilhotas artificiais de basalto num recife de coral.",F247,com_fonte,media,Datas ajustadas para 1200–1600: construção de 1200 a 1500; fim da dinastia c. 1500–1600.

@@ -1,31 +1,31 @@
 id,ano,texto,fontes,status
-S001,-10000,"Com o mar dezenas de metros mais baixo, ainda dava para ir a pé da Grã-Bretanha ao continente por Doggerland, hoje no fundo do Mar do Norte.",,nao_revisado
-S002,-9600,Göbekli Tepe é cerca de 6 mil anos mais antigo que Stonehenge e 7 mil anos mais antigo que as pirâmides de Gizé.,,nao_revisado
-S003,-4500,"Os alinhamentos de pedras de Carnac, na França, começaram a ser erguidos por volta de 4500 a.C., muito antes das pirâmides.",,nao_revisado
-S004,-3000,"Enquanto Uruk escrevia seus primeiros tabletes, em Stonehenge era cavado o primeiro fosso circular.",,nao_revisado
-S005,-2600,"Caral, no Peru, erguia pirâmides na mesma época em que o Egito construía as de Gizé, sem nenhum contato entre os dois.",,nao_revisado
-S006,-2560,"Quando a Grande Pirâmide foi construída, ainda havia mamutes-lanosos na Ilha de Wrangel, no Ártico. Eles só desapareceram por volta de 2000 a.C.",,nao_revisado
-S007,-1754,"Quando Hamurabi gravou suas leis, os palácios minoicos de Creta viviam seu auge.",,nao_revisado
-S008,-1600,"A erupção de Tera (Santorini), por volta de 1600 a.C., uma das maiores dos últimos 10 mil anos, soterrou a cidade de Akrotiri.",,nao_revisado
-S009,-1274,"Enquanto Ramsés II enfrentava os hititas em Kadesh, os olmecas começavam a erguer San Lorenzo, no México.",,nao_revisado
-S010,-776,Os primeiros Jogos Olímpicos (776 a.C.) e a fundação lendária de Roma (753 a.C.) estão separados por apenas 23 anos.,,nao_revisado
-S011,-500,"Buda, Confúcio e os primeiros filósofos gregos viveram mais ou menos nos mesmos séculos, sem saber uns dos outros.",,nao_revisado
-S012,-323,"Quando Alexandre morreu, os maias de El Mirador construíam algumas das maiores pirâmides que já existiram.",,nao_revisado
-S013,-218,Aníbal atravessava os Alpes com elefantes três anos depois de Qin Shi Huang unificar a China.,,nao_revisado
-S014,-30,Cleópatra viveu mais perto da chegada do homem à Lua do que da construção da Grande Pirâmide.,,nao_revisado
-S015,79,"Quando o Vesúvio soterrou Pompeia, faltava um ano para a inauguração do Coliseu.",,nao_revisado
-S016,100,"Roma e a China Han somavam talvez metade da humanidade e só se conheciam por intermediários: os romanos chamavam os chineses de 'seres', o povo da seda.",,nao_revisado
-S017,537,"No ano em que a Hagia Sophia ficou pronta, Tikal e Calakmul disputavam o domínio do mundo maia.",,nao_revisado
-S018,800,"Carlos Magno foi coroado em 800 numa Europa de cidades pequenas, enquanto Bagdá e Chang'an tinham centenas de milhares de habitantes.",,nao_revisado
-S019,1000,"Por volta do ano 1000, os vikings chegaram à Terra Nova, no Canadá, quase 500 anos antes de Colombo.",,nao_revisado
-S020,1100,"Por volta de 1100, Cahokia, às margens do Mississippi, tinha uma população comparável à de Londres na mesma época.",,nao_revisado
-S021,1275,"Quando Marco Polo chegou à corte de Kublai Khan, Angkor ainda era uma das maiores cidades do mundo.",,nao_revisado
-S022,1325,"A Universidade de Oxford é mais antiga que o Império Asteca: já havia ensino lá em 1096, e Tenochtitlán só foi fundada em 1325.",,nao_revisado
-S023,1490,"Por volta de 1490, Leonardo da Vinci desenhava o Homem Vitruviano, e a dinastia Ming reconstruía a Grande Muralha em pedra.",,nao_revisado
-S024,1530,Os incas mantinham cerca de 40 mil km de estradas sem usar a roda para transporte nem animais de tração.,,nao_revisado
-S025,1616,"Shakespeare e Cervantes morreram com poucos dias de diferença, em abril de 1616.",,nao_revisado
-S026,1776,"Os samurais ainda existiam quando os Estados Unidos declararam independência, e continuaram existindo por mais de 90 anos.",,nao_revisado
-S027,1815,"No ano de Waterloo, a erupção do Tambora, na Indonésia, provocou 1816, o 'ano sem verão' no hemisfério norte.",,nao_revisado
-S028,1889,"A Nintendo foi fundada em 1889, como fábrica de baralhos, no mesmo ano da inauguração da Torre Eiffel.",,nao_revisado
-S029,1914,A Primeira Guerra Mundial começou com cargas de cavalaria e terminou com tanques e aviões.,,nao_revisado
-S030,1945,O Império Otomano tinha acabado só 23 anos antes do fim da Segunda Guerra. Muita gente viveu em um império e depois em vários países novos.,,nao_revisado
+S001,-10000,"Com o mar dezenas de metros mais baixo, ainda dava para ir a pé da Grã-Bretanha ao continente por Doggerland, hoje no fundo do Mar do Norte.",,revisado_sem_fonte
+S002,-9600,Göbekli Tepe é mais de 6 mil anos mais antigo que Stonehenge e cerca de 7 mil anos mais antigo que as pirâmides de Gizé.,,revisado_sem_fonte
+S003,-4500,"Os alinhamentos de pedras de Carnac, na França, começaram a ser erguidos por volta de 4500 a.C., muito antes das pirâmides.",F194,com_fonte
+S004,-3000,"Uruk já escrevia tabletes havia alguns séculos quando, em Stonehenge, foi cavado o primeiro fosso circular, por volta de 3000 a.C.",F076,com_fonte
+S005,-2600,"Caral, no Peru, erguia pirâmides na mesma época em que o Egito construía as de Gizé, sem nenhum contato entre os dois.",,revisado_sem_fonte
+S006,-2560,"Quando a Grande Pirâmide foi construída, ainda havia mamutes-lanosos na Ilha de Wrangel, no Ártico. Eles só desapareceram por volta de 2000 a.C.",,revisado_sem_fonte
+S007,-1754,"Quando Hamurabi gravou suas leis, os palácios minoicos de Creta viviam seu auge.",,revisado_sem_fonte
+S008,-1600,"A erupção de Tera (Santorini), por volta de 1600 a.C., uma das maiores dos últimos 10 mil anos, soterrou a cidade de Akrotiri.",,revisado_sem_fonte
+S009,-1274,"Enquanto Ramsés II enfrentava os hititas em Kadesh, San Lorenzo, no México, era o grande centro dos olmecas.",,revisado_sem_fonte
+S010,-776,Os primeiros Jogos Olímpicos (776 a.C.) e a fundação lendária de Roma (753 a.C.) estão separados por apenas 23 anos.,,revisado_sem_fonte
+S011,-500,"Buda, Confúcio e os primeiros filósofos gregos viveram mais ou menos nos mesmos séculos, sem saber uns dos outros.",,revisado_sem_fonte
+S012,-323,"Quando Alexandre morreu, os maias de El Mirador construíam algumas das maiores pirâmides que já existiram.",,revisado_sem_fonte
+S013,-218,Aníbal atravessava os Alpes com elefantes três anos depois de Qin Shi Huang unificar a China.,,revisado_sem_fonte
+S014,-30,Cleópatra viveu mais perto da chegada do homem à Lua do que da construção da Grande Pirâmide.,,revisado_sem_fonte
+S015,79,"Quando o Vesúvio soterrou Pompeia, faltava um ano para a inauguração do Coliseu.",,revisado_sem_fonte
+S016,100,"Roma e a China Han somavam talvez metade da humanidade e só se conheciam por intermediários: os romanos chamavam os chineses de 'seres', o povo da seda.",,revisado_sem_fonte
+S017,537,"No ano em que a Hagia Sophia ficou pronta, Tikal e Calakmul disputavam o domínio do mundo maia.",,revisado_sem_fonte
+S018,800,"Carlos Magno foi coroado em 800 numa Europa de cidades pequenas, enquanto Bagdá e Chang'an tinham centenas de milhares de habitantes.",,revisado_sem_fonte
+S019,1000,"Por volta do ano 1000, os vikings chegaram à Terra Nova, no Canadá, quase 500 anos antes de Colombo.",,revisado_sem_fonte
+S020,1100,"Por volta de 1100, Cahokia, às margens do Mississippi, tinha uma população comparável à de Londres na mesma época.",,revisado_sem_fonte
+S021,1275,"Quando Marco Polo chegou à corte de Kublai Khan, Angkor ainda era uma das maiores cidades do mundo.",,revisado_sem_fonte
+S022,1325,"A Universidade de Oxford é mais antiga que o Império Asteca: já havia ensino lá em 1096, e Tenochtitlán só foi fundada em 1325.",,revisado_sem_fonte
+S023,1490,"Por volta de 1490, Leonardo da Vinci desenhava o Homem Vitruviano, e a dinastia Ming reforçava a Grande Muralha.",,revisado_sem_fonte
+S024,1530,Os incas mantinham uma rede de mais de 30 mil km de estradas sem usar a roda para transporte nem animais de tração.,F250,com_fonte
+S025,1616,"Shakespeare e Cervantes morreram com poucos dias de diferença, em abril de 1616.",,revisado_sem_fonte
+S026,1776,"Os samurais ainda existiam quando os Estados Unidos declararam independência, e continuaram existindo por mais de 90 anos.",,revisado_sem_fonte
+S027,1815,"No ano de Waterloo, a erupção do Tambora, na Indonésia, provocou 1816, o 'ano sem verão' no hemisfério norte.",,revisado_sem_fonte
+S028,1889,"A Nintendo foi fundada em 1889, como fábrica de baralhos, no mesmo ano da inauguração da Torre Eiffel.",,revisado_sem_fonte
+S029,1914,A Primeira Guerra Mundial começou com cargas de cavalaria e terminou com tanques e bombardeios aéreos.,,revisado_sem_fonte
+S030,1945,O Império Otomano tinha acabado só 23 anos antes do fim da Segunda Guerra. Muita gente viveu em um império e depois em vários países novos.,,revisado_sem_fonte

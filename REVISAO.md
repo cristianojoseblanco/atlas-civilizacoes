@@ -63,3 +63,38 @@ Os 19 padrões ornamentais e a regra que escolhe o padrão de cada lugar saíram
 - Sem peça com fonte A–C nesta rodada: andino, aborígene, polinésio e etrusco (este tem peça indicada, a Tumba das Leoas, mas sem fonte ligada). Ficam `revisado_sem_fonte`.
 - Os padrões são desenhos simplificados feitos para o atlas, não cópias das peças.
 - Animação: cada ladrilho se desenha traço a traço (`pathLength` + `stroke-dashoffset`), da esquerda para a direita, alternando as cores da paleta. Respeita `prefers-reduced-motion`.
+
+## 30/10/2026: quarta rodada (Américas, África, Europa, Ásia, Oceania, casos e sincronias)
+
+Fontes F150–F255. A maior parte é da UNESCO (fichas do Patrimônio Mundial e listas indicativas), com artigos científicos (Science, Nature, Antiquity, PLOS One, Early China), museus (Met, British Museum, VMFA), o DAI, o Ministério da Cultura da França e governos locais. Com isso, nenhum item ficou como `nao_revisado`: 253 com fonte, 253 revisados sem fonte e 1 contestado.
+
+**Correções nos lugares**
+- Américas: Monte Verde passou a `contestado` (Surovell et al., Science, 2026). Pachacamac teve a continuidade suavizada. As muralhas de Kuélap agora têm 19 m. Real Alto e El Tajín ganharam notas.
+- África e Europa:
+  - Tassili começa em -8000 e Mapungubwe termina em 1300. Gedi começa em 1000 e Biskupin termina em -590.
+  - Tarquínia tem "cerca de 200 tumbas pintadas". Paris ganhou a muralha gaulesa achada em 2026 na Île de la Cité.
+  - Benin e Novgorod ficaram com confiança baixa nas datas.
+- Ásia:
+  - Ban Chiang começa em -1500 (UNESCO: 1495 a.C.). Anuradhapura termina em 993.
+  - A torre de Brihadeeswarar tem cerca de 60 m, e não 66.
+  - Óc Eo perdeu as "moedas romanas", que a fonte não confirma, e vai até o séc. VII.
+  - Bukhara perdeu "terra de Avicena", que não está na fonte. Jiahu termina em -5700.
+- Oceania:
+  - Murujuga começa em -48000 (UNESCO: mais de 50 mil anos), com 1 a 2 milhões de petróglifos.
+  - Kuk começa em -5000 (7 mil anos atrás, talvez 10 mil).
+  - Nan Madol vai de 1200 a 1600.
+  - Taputapuātea agora diz o que a UNESCO afirma (lar ancestral da cultura polinésia).
+
+**Perguntas (casos)**
+- 16 de 23 têm fonte.
+- Çatalhöyük e Cusco tiveram o texto ajustado: a população inca agora é "milhões", e entrou a rede de mais de 30 mil km.
+- Jericó, 'Ain Ghazal, Stonehenge, Mohenjo-daro, Anyang, Monte Albán e Harappa ficam sem fonte por ora.
+
+**Sincronias**
+- Carnac, Uruk/Stonehenge e as estradas incas ganharam fonte. As estradas passaram de 40 mil para mais de 30 mil km (UNESCO).
+- Textos suavizados:
+  - Göbekli Tepe é "mais de 6 mil anos" mais antigo que Stonehenge.
+  - San Lorenzo aparece como "grande centro olmeca" no tempo de Kadesh.
+  - A Muralha Ming foi "reforçada" por volta de 1490.
+  - A Primeira Guerra terminou com "bombardeios aéreos".
+- As outras 27 são fatos de manual conferidos, mas ainda sem fonte ligada.
