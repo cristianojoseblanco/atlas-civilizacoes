@@ -54,3 +54,12 @@ Fontes F073–F122: ensaios do Met (Uruk, escrita, Ur, Ubaid, Núbia), Louvre (C
 ## 30/10/2026: artes em tabela
 
 Os 19 padrões ornamentais e a regra que escolhe o padrão de cada lugar saíram do código e foram para `artes_estilos.csv` e `artes_regras.csv`, com inspiração, fonte e status como o resto. Um teste com 200 mil pontos aleatórios confirmou que as regras em tabela escolhem exatamente o mesmo padrão que o código antigo.
+
+## Artes: estilos por civilização, peças de referência e animação (2026-10-30)
+
+- 15 estilos novos ligados a civilizações: minoico, cicládico, Vale do Indo, olmeca, moche, khmer, etrusco, romano, bizantino, axumita, celta, otomano, Grande Zimbábue, asteca, assírio. Total: 34 estilos e 52 regras.
+- Regras com `alvo` (id da civilização) vêm primeiro; caixas regionais mais estreitas vêm antes das amplas (ex.: assírio antes de mesopotâmico, bizantino antes de islâmico).
+- Cada estilo tem uma peça real de referência (`peca`, `peca_local`, `peca_fonte`); o cartão mostra o link "peça ↗". Fontes novas F123–F149 (museus, Smarthistory, Britannica, EBSCO, Getty, teses).
+- Sem peça com fonte A–C nesta rodada: andino, aborígene, polinésio e etrusco (este tem peça indicada, a Tumba das Leoas, mas sem fonte ligada). Ficam `revisado_sem_fonte`.
+- Os padrões são desenhos simplificados feitos para o atlas, não cópias das peças.
+- Animação: cada ladrilho se desenha traço a traço (`pathLength` + `stroke-dashoffset`), da esquerda para a direita, alternando as cores da paleta. Respeita `prefers-reduced-motion`.

@@ -380,10 +380,18 @@ function srcHtml(fontes, status, extra){
   return h;
 }
 function setSrc(fontes, status, extra){ $('#cSrc').innerHTML = srcHtml(fontes, status, extra); }
-function setArt(lon, lat, y, g, color){
-  const st = artStyle(lon, lat, y, g);
-  $('#cArt').style.backgroundImage = `url("data:image/svg+xml;utf8,${encodeURIComponent(artTile(st, color))}")`;
-  $('#cArtCap').textContent = 'Padrão inspirado na arte ' + ART[st].nome;
+function setArt(lon, lat, y, g, alvo){
+  const st = artStyle(lon, lat, y, g, alvo), a = ART[st], box = $('#cArt');
+  const w = Math.max(320, Math.round(box.clientWidth || 360));
+  box.querySelector('svg')?.remove();
+  box.insertAdjacentHTML('afterbegin', artBand(st, w, 62));
+  const F = a.pf && FONTES[a.pf];
+  const cap = $('#cArtCap'); cap.textContent = 'Padrão inspirado na arte ' + a.nome;
+  if (F && F.url){
+    const l = document.createElement('a'); l.href = F.url; l.target = '_blank'; l.rel = 'noopener';
+    l.textContent = ' · peça ↗'; l.title = a.peca + (a.local ? ' — ' + a.local : ''); cap.appendChild(l);
+  } else if (a.peca) cap.title = a.peca + (a.local ? ' — ' + a.local : '');
+  else cap.removeAttribute('title');
 }
 function openCiv(name, quiet){
   selected = {type:'civ', name};
@@ -405,7 +413,7 @@ function openCiv(name, quiet){
   setBar(`linear-gradient(90deg, hsl(${h},70%,55%), hsl(${(h+40)%360},70%,45%))`);
   { const it = layer(SNAP_YEARS[idx]).find(x => x.name === name); const c = it ? d3.geoCentroid(it.f) : [0, 0];
     const yy = civ ? (parsePeriodo(civ.periodo) || [SNAP_YEARS[idx]])[0] : SNAP_YEARS[idx];
-    setArt(c[0], c[1], yy, null, `hsl(${h},70%,64%)`); }
+    setArt(c[0], c[1], yy, null, civ && civ.id); }
   showCard();
   if (!quiet) redraw();
 }
@@ -421,7 +429,7 @@ function openPlace(pl){
   $('#cLink').href = wiki(pl.n.replace(/ \(.*/, ''));
   $('#cJump').style.display = 'none';
   setBar(pl.k === 's' ? 'linear-gradient(90deg,#f0c454,#b8862b)' : 'linear-gradient(90deg,#fff6df,#c9b48a)');
-  setArt(pl.lon, pl.lat, pl.y, pl.g, pl.k === 's' ? '#f0c454' : '#e8dcc0');
+  setArt(pl.lon, pl.lat, pl.y, pl.g, pl.id);
   showCard();
   redraw();
 }
@@ -612,7 +620,7 @@ function openEvent(ev, fly){
   setSrc(ev.fontes, ev.status);
   $('#cJump').style.display = 'none';
   setBar(cat.cor);
-  { const p0 = evPoints(ev)[0]; setArt(p0[0], p0[1], ev.y, null, cat.cor); }
+  { const p0 = evPoints(ev)[0]; setArt(p0[0], p0[1], ev.y, null); }
   showCard();
   evOverride[ev.id] = performance.now();
   if (fly) flyTo(evPoints(ev));
@@ -628,7 +636,7 @@ function openRoute(rt, fly){
   $('#cLink').href = wiki(rt.n.replace(/:.*/, ''));
   $('#cJump').style.display = 'none';
   setBar(rt.cor);
-  { const m = rt.path[Math.floor(rt.path.length / 2)]; setArt(m[0], m[1], rt.y, null, rt.cor); }
+  { const m = rt.path[Math.floor(rt.path.length / 2)]; setArt(m[0], m[1], rt.y, null); }
   showCard();
   if (fly) flyTo(rt.path);
 }
@@ -784,7 +792,7 @@ function openCase(c, fly){
   setSrc(c.fontes, c.status);
   $('#cLink').href = wiki(c.n.replace(/:.*/, '').replace(/'/g, ''));
   $('#cJump').style.display = 'none';
-  setBar(L.cor); setArt(c.at[0], c.at[1], c.y, null, L.cor); showCard();
+  setBar(L.cor); setArt(c.at[0], c.at[1], c.y, null); showCard();
   if (fly) flyTo([c.at], 5);
 }
 function drawTheme(t){

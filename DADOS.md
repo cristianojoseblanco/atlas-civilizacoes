@@ -47,8 +47,8 @@ Todo o conteúdo fica em `data/conteudo/*.csv` (UTF-8, separado por vírgula). E
 | `sincronias.csv` | "Enquanto isso…" | `ano` |
 | `epocas.csv` | faixa de época da linha do tempo | `ate_ano` |
 | `bases_geograficas.csv` | arquivo de dados geográficos | fonte, licença e script que o gera |
-| `artes_estilos.csv` | padrão ornamental dos cartões | `svg` (desenho do ladrilho), `largura`/`altura`, `tradicao`, `inspiracao` (de que peças ou tradição o padrão vem) |
-| `artes_regras.csv` | regra que escolhe o padrão de um lugar | lida em `ordem`, vale a primeira que casar: `grupo`, caixa `lon_min`–`lon_max` × `lat_min`–`lat_max`, `ano_min`/`ano_max` |
+| `artes_estilos.csv` | padrão ornamental dos cartões | `svg` (desenho do ladrilho), `largura`/`altura`, `tradicao`, `inspiracao`; `peca`, `peca_local` e `peca_fonte` (a peça real de referência, ligada no cartão); `cores` (paleta da cultura, `#hex;#hex`, alternada entre os ladrilhos) |
+| `artes_regras.csv` | regra que escolhe o padrão de um lugar | lida em `ordem`, vale a primeira que casar: `alvo` (id da civilização ou do lugar; essas regras vêm primeiro), `grupo`, caixa `lon_min`–`lon_max` × `lat_min`–`lat_max`, `ano_min`/`ano_max` |
 
 ## Como adicionar ou corrigir um item
 1. Se a fonte é nova, cadastre-a em `fontes.csv`.

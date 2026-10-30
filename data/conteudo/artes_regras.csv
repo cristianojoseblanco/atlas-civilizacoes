@@ -1,24 +1,53 @@
-ordem,estilo,grupo,lon_min,lon_max,lat_min,lat_max,ano_min,ano_max,descricao
-1,tepe,tt,,,,,,,Lugares do grupo Taş Tepeler
-2,meandro,gr,,,,,,,Pólis e colônias gregas
-3,aborigene,,110,156,-45,-10,,,Austrália
-4,polinesio,,156.0001,180,-90,90,,,Pacífico a leste de 156° L
-5,polinesio,,-180,-125.0001,-90,90,,,Pacífico a oeste de 125° O
-6,norte,,-125,-60,25,70,,,América do Norte
-7,maia,,-118,-84,8,25,,,Mesoamérica
-8,andino,,-84,-62,-45,8,,,Andes
-9,amazonico,,-62,-30,-40,8,,,Amazônia e leste da América do Sul
-10,japones,,129,146,30,46,,,Japão
-11,chines,,98,135,18,46,,,China
-12,indiano,,62,125,-10,36,,,Índia e Sudeste Asiático
-13,estepe,,46,125,36,56,,649,Estepes antes do islã
-14,islamico,,46,125,36,56,650,,Ásia Central islâmica
-15,egipcio,,24,37,13,32,,639,Egito e Núbia antes do islã
-16,islamico,,24,37,13,32,640,,Egito islâmico
-17,islamico,,-20,60,12,40,640,,Norte da África e Oriente Médio islâmicos
-18,mesopotamia,,34,63,22,41,,-561,Mesopotâmia e Elam antes dos persas
-19,persa,,34,63,22,41,-560,,Irã e Mesopotâmia a partir de Ciro
-20,africa,,-20,55,-36,13,,,África subsaariana
-21,meandro,,-10,30,34,46,-1499,,Mediterrâneo central e Egeu
-22,nordico,,-12,45,46,72,500,,Norte da Europa medieval
-23,espiral,,,,,,,,Padrão para o resto do mundo
+ordem,estilo,alvo,grupo,lon_min,lon_max,lat_min,lat_max,ano_min,ano_max,descricao
+1,indo,C033,,,,,,,,Cartão da civilização C033
+2,minoico,C034,,,,,,,,Cartão da civilização C034
+3,cicladico,C035,,,,,,,,Cartão da civilização C035
+4,assirio,C043,,,,,,,,Cartão da civilização C043
+5,olmeca,C048,,,,,,,,Cartão da civilização C048
+6,romano,C058,,,,,,,,Cartão da civilização C058
+7,bizantino,C059,,,,,,,,Cartão da civilização C059
+8,etrusco,C061,,,,,,,,Cartão da civilização C061
+9,axum,C064,,,,,,,,Cartão da civilização C064
+10,moche,C065,,,,,,,,Cartão da civilização C065
+11,asteca,C072,,,,,,,,Cartão da civilização C072
+12,khmer,C073,,,,,,,,Cartão da civilização C073
+13,zimbabue,C076,,,,,,,,Cartão da civilização C076
+14,otomano,C079,,,,,,,,Cartão da civilização C079
+15,tepe,,tt,,,,,,,Lugares do grupo Taş Tepeler
+16,meandro,,gr,,,,,,,Pólis e colônias gregas
+17,minoico,,,23.4,26.4,34.8,35.7,-3000,-1100,Creta minoica
+18,cicladico,,,24.0,26.6,36.3,37.9,-3200,-2000,Cíclades no Bronze Antigo
+19,indo,,,66,78,22,32,-3300,-1300,Vale do Indo
+20,olmeca,,,-97,-91,17,19.5,-1600,-400,Costa olmeca do Golfo
+21,asteca,,,-100.5,-97.5,18.5,20.5,1300,1521,Vale do México asteca
+22,moche,,,-80.5,-77.5,-9.5,-5.5,100,800,Costa norte do Peru moche
+23,khmer,,,102,108,10,15.5,802,1431,Angkor e o Camboja khmer
+24,zimbabue,,,25,35,-23,-15,1100,1450,Planalto do Zimbábue
+25,axum,,,36,41,12,16.5,100,940,Axum
+26,assirio,,,41,45,34.5,37.5,-2025,-609,Coração da Assíria
+27,etrusco,,,10.5,13,41.8,44,-900,-27,Etrúria
+28,romano,,,6.5,18.5,36.5,47,-27,476,Itália romana imperial
+29,bizantino,,,22,35,36.5,42,330,1452,"Constantinopla, Grécia e oeste da Anatólia bizantinos"
+30,otomano,,,22,45,36,42.5,1453,1922,Anatólia e Bálcãs otomanos
+31,celta,,,-10,17,44,56,-800,50,Europa celta da Idade do Ferro
+32,aborigene,,,110,156,-45,-10,,,Austrália
+33,polinesio,,,156.0001,180,-90,90,,,Pacífico a leste de 156° L
+34,polinesio,,,-180,-125.0001,-90,90,,,Pacífico a oeste de 125° O
+35,norte,,,-125,-60,25,70,,,América do Norte
+36,maia,,,-118,-84,8,25,,,Mesoamérica
+37,andino,,,-84,-62,-45,8,,,Andes
+38,amazonico,,,-62,-30,-40,8,,,Amazônia e leste da América do Sul
+39,japones,,,129,146,30,46,,,Japão
+40,chines,,,98,135,18,46,,,China
+41,indiano,,,62,125,-10,36,,,Índia e Sudeste Asiático
+42,estepe,,,46,125,36,56,,649,Estepes antes do islã
+43,islamico,,,46,125,36,56,650,,Ásia Central islâmica
+44,egipcio,,,24,37,13,32,,639,Egito e Núbia antes do islã
+45,islamico,,,24,37,13,32,640,,Egito islâmico
+46,islamico,,,-20,60,12,40,640,,Norte da África e Oriente Médio islâmicos
+47,mesopotamia,,,34,63,22,41,,-561,Mesopotâmia e Elam antes dos persas
+48,persa,,,34,63,22,41,-560,,Irã e Mesopotâmia a partir de Ciro
+49,africa,,,-20,55,-36,13,,,África subsaariana
+50,meandro,,,-10,30,34,46,-1499,,Mediterrâneo central e Egeu
+51,nordico,,,-12,45,46,72,500,,Norte da Europa medieval
+52,espiral,,,,,,,,,Padrão para o resto do mundo

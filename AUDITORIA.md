@@ -14,8 +14,8 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | perguntas | 3 | 3 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | perguntas_casos | 23 | 6 (26%) | 0 (0%) | 17 (74%) | 0 (0%) |
 | sincronias | 30 | 0 (0%) | 0 (0%) | 30 (100%) | 0 (0%) |
-| artes_estilos | 19 | 2 (11%) | 17 (89%) | 0 (0%) | 0 (0%) |
-| **total** | **492** | **126 (26%)** | **232 (47%)** | **134 (27%)** | **0 (0%)** |
+| artes_estilos | 34 | 30 (88%) | 4 (12%) | 0 (0%) | 0 (0%) |
+| **total** | **507** | **154 (30%)** | **219 (43%)** | **134 (26%)** | **0 (0%)** |
 
 **Legenda:** *com fonte*: ao menos uma fonte em `fontes.csv` sustenta o item. *Revisado sem fonte*: conferido com conhecimento consolidado da área, mas ainda sem referência ligada. *Não revisado*: escrito e ainda não conferido. *Contestado*: há fontes em desacordo, e o texto deve dizer isso.
 
@@ -43,6 +43,7 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | F062 | 3 | C | Konar Sandal: misteriosos símbolos en tablillas de arcilla y piedra |
 | F102 | 3 | B | Early Dynastic Period |
 | F020 | 3 | C | Karahantepe: 11 pillars and a carving shaped like a human head |
+| F111 | 3 | C | Persepolis |
 | F069 | 3 | B | Wider Influence of Early Sumerian Civilization (ANTH 328) |
 | F054 | 3 | B | Lecture 5: Akkad and Empire (HIST 213) |
 | F117 | 2 | B | Ubaid Culture in Mesopotamia |
@@ -62,7 +63,6 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | F015 | 2 | D | Breakthrough in Karahantepe excavations: Human-Faced T-Shaped Pillar |
 | F019 | 2 | C | Karahantepe'de 11 bin yıllık heykel: Leoparın sırtındaki insan figürü bulundu |
 | F014 | 2 | C | 30 new Neolithic discoveries boost Taş Tepeler archaeological site in Türkiye |
-| F111 | 2 | C | Persepolis |
 | F043 | 2 | B | Battle of Syracuse (413 BC) |
 | F030 | 2 | D | Talianki (archaeological site) |
 | F065 | 2 | B | Boats and ships and the world's first cities in Mesopotamia |
@@ -126,6 +126,33 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | F032 | 1 | B | Poverty Point |
 | F033 | 1 | D | The Dawn of Everything |
 | F034 | 1 | C | David Graeber Is Gone, But He's Still Changing How We See History |
+| F123 | 1 | B | Terracotta krater (14.130.14), Hirschfeld Workshop |
+| F134 | 1 | B | Lotiform Chalice (26.7.971) |
+| F148 | 1 | B | Textile Fragment (447085) |
+| F132 | 1 | B | Stupa Railing Medallion with Lotus |
+| F124 | 1 | B | Ritual food vessel (ding) with taotie on leiwen ground |
+| F133 | 1 | B | seigaiha 青海波 |
+| F125 | 1 | B | Mitla (archeological site) |
+| F128 | 1 | B | A Iconografia e o Estilo Estético como Demarcadores de Limites e Identidades Sociais |
+| F129 | 1 | B | Wrapper (Bògòlanfini), 1979.206.190 |
+| F126 | 1 | B | Newgrange |
+| F127 | 1 | B | Urnes Stave Church |
+| F130 | 1 | B | Scythian art |
+| F131 | 1 | B | Gorget Fragment with Cross-in-Circle Motif (Spiro) |
+| F135 | 1 | B | Terracotta stirrup jar with octopus (53.11.6) |
+| F136 | 1 | B | Dominating the sea (frigideira de Syros, Π4974) |
+| F137 | 1 | B | Ravi Phase pot with intersecting circle motif |
+| F138 | 1 | B | Winged plaque (PC.B.538) |
+| F139 | 1 | B | Garrafa moche com onda escalonada (M 30164) |
+| F149 | 1 | A | Computer Modeling, Analysis and Visualization of Angkor Wat Style Temples in Cambodia |
+| F146 | 1 | A | Roman Mosaics in the J. Paul Getty Museum: 1. Mosaic Floor with Head of Medusa |
+| F147 | 1 | B | Ravenna, Basilica di San Vitale, Sottarco della trifora |
+| F145 | 1 | B | The Monumental Stelae of Aksum (3rd–4th Century) |
+| F140 | 1 | B | The Battersea Shield (1857,0715.1) |
+| F141 | 1 | B | Border Tiles with Saz Leaf Design (453400) |
+| F142 | 1 | B | Great Zimbabwe Urbanism and Architecture |
+| F143 | 1 | B | The Sun Stone (Calendar Stone) |
+| F144 | 1 | B | Incised furniture plaque with a frieze of lotus blossoms and buds (325874) |
 
 Fontes cadastradas sem uso por nenhum item: F001, F002, F003, F037 (bases geográficas aparecem em `bases_geograficas.csv`).
 
@@ -133,7 +160,8 @@ Fontes cadastradas sem uso por nenhum item: F001, F002, F003, F037 (bases geogr�
 
 Nenhum.
 
-## Avisos (2)
+## Avisos (3)
 
 - fontes F060: sem URL nem DOI/ISBN
 - fontes F119: sem URL nem DOI/ISBN
+- artes_estilos etrusco: peça sem fonte

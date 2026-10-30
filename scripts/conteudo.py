@@ -50,10 +50,11 @@ def gerar():
     themes = [dict(id=r['id'], n=r['pergunta'], ano=num(r['ano']), intro=r['introducao'], casos=casos.get(r['id'], []), **aud(r)) for r in tab('perguntas')]
     sync = [dict(id=r['id'], y=num(r['ano']), t=r['texto'], **aud(r)) for r in tab('sincronias')]
     fontes_js = {k: dict(titulo=v['titulo'], autores=v['autores'], ano=v['ano'], veiculo=v['veiculo_editora'], url=v['url'], tipo=v['tipo'], conf=v['confiabilidade'], consulta=v['consulta']) for k, v in fontes.items()}
-    art = {r['id']: dict(nome=r['nome'], trad=r['tradicao'], insp=r['inspiracao'], w=num(r['largura']), h=num(r['altura']), d=r['svg'], **aud(r)) for r in tab('artes_estilos')}
+    art = {r['id']: dict(nome=r['nome'], trad=r['tradicao'], insp=r['inspiracao'], w=num(r['largura']), h=num(r['altura']), d=r['svg'], peca=r['peca'], local=r['peca_local'], pf=r['peca_fonte'], cores=r['cores'].split(';'), **aud(r)) for r in tab('artes_estilos')}
     regras = []
     for r in sorted(tab('artes_regras'), key=lambda r: int(r['ordem'])):
         q = dict(s=r['estilo'])
+        if r['alvo']: q['alvo'] = r['alvo']
         if r['grupo']: q['g'] = r['grupo']
         if r['lon_min'] != '': q['box'] = [num(r['lon_min']), num(r['lon_max']), num(r['lat_min']), num(r['lat_max'])]
         if r['ano_min'] != '': q['a'] = num(r['ano_min'])

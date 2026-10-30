@@ -1,3 +1,4 @@
+import re
 """Valida as tabelas de data/conteudo e gera AUDITORIA.md.
 Uso: python3 scripts/validar.py   (sai com código 1 se houver erro)"""
 import csv, pathlib, sys, collections, datetime
@@ -87,7 +88,12 @@ estilos = {r['id'] for r in tab('artes_estilos')}
 for r in tab('artes_estilos'):
     checa_id('artes_estilos', r['id']); checa_fontes('artes_estilos', r['id'], r)
     if not r['svg'].strip(): erros.append(f"artes_estilos {r['id']}: sem desenho")
+    if r['peca_fonte'] and r['peca_fonte'] not in r['fontes'].split(';'): erros.append(f"artes_estilos {r['id']}: peca_fonte fora de fontes")
+    if r['peca'] and not r['peca_fonte']: avisos.append(f"artes_estilos {r['id']}: peça sem fonte")
+    if not re.fullmatch(r'#[0-9a-fA-F]{6}(;#[0-9a-fA-F]{6})*', r['cores']): erros.append(f"artes_estilos {r['id']}: cores inválidas")
+alvos = {r['id'] for r in tab('civilizacoes')} | {r['id'] for r in tab('lugares')}
 for r in tab('artes_regras'):
+    if r['alvo'] and r['alvo'] not in alvos: erros.append(f"artes_regras {r['ordem']}: alvo inexistente {r['alvo']}")
     if r['estilo'] not in estilos: erros.append(f"artes_regras {r['ordem']}: estilo inexistente {r['estilo']}")
     if r['lon_min'] != '': checa_coord('artes_regras', r['ordem'], r['lon_min'], r['lat_min']); checa_coord('artes_regras', r['ordem'], r['lon_max'], r['lat_max'])
 
