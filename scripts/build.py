@@ -28,7 +28,7 @@ parts = {
     'SNAPS': snaps(),
     'GEO': geo(),
     'PLACES': (src / 'places.js').read_text() + '\n' + (src / 'places_world.js').read_text() + '\n' + (src / 'events.js').read_text() + '\n' + (src / 'tours.js').read_text() + '\n' + (src / 'themes.js').read_text() + '\n' + (src / 'sync.js').read_text(),
-    'CONTENT': (src / 'content.js').read_text(),
+    'CONTENT': (src / 'content.js').read_text() + '\n' + (src / 'art.js').read_text(),
     'APP': (src / 'app.js').read_text(),
 }
 html = (src / 'template.html').read_text()

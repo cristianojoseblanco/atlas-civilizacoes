@@ -15,6 +15,7 @@ Mapa interativo das civilizações ao longo do tempo, de 123 mil a.C. até hoje:
 - **Enquanto isso…**: sincronias surpreendentes em cada época.
 - **Busca** por civilização, cidade, sítio, evento ou rota (atalho `/`).
 - **Oriente Próximo desenhado à mão** entre 3500 e 1500 a.C. (Uruk, Akkad, Ur III, Hamurabi, Dilmun, Magan, Marhashi, Mitanni…), com 5 épocas extras na linha do tempo.
+- **Arte de cada cultura**: 20 padrões ornamentais próprios (meandro grego, lótus egípcio, chakana andina, leiwen chinês, marajoara, bogolan…) no topo dos cartões.
 - **Cartões** em português com período, centros e contexto de cada civilização, cidade ou sítio.
 
 O resultado é um único `index.html` autocontido, que funciona offline e no celular.
@@ -27,6 +28,8 @@ src/        código e conteúdo editorial
   template.html layout e estilos
   content.js    civilizações e épocas
   places.js     cidades e sítios
+  places_world.js  pólis gregas e lugares das outras regiões
+  art.js        padrões de arte por cultura
   events.js     eventos animados e rotas comerciais
   tours.js      passeios guiados
   themes.js     grandes perguntas
