@@ -1,0 +1,24 @@
+ordem,estilo,grupo,lon_min,lon_max,lat_min,lat_max,ano_min,ano_max,descricao
+1,tepe,tt,,,,,,,Lugares do grupo Taş Tepeler
+2,meandro,gr,,,,,,,Pólis e colônias gregas
+3,aborigene,,110,156,-45,-10,,,Austrália
+4,polinesio,,156.0001,180,-90,90,,,Pacífico a leste de 156° L
+5,polinesio,,-180,-125.0001,-90,90,,,Pacífico a oeste de 125° O
+6,norte,,-125,-60,25,70,,,América do Norte
+7,maia,,-118,-84,8,25,,,Mesoamérica
+8,andino,,-84,-62,-45,8,,,Andes
+9,amazonico,,-62,-30,-40,8,,,Amazônia e leste da América do Sul
+10,japones,,129,146,30,46,,,Japão
+11,chines,,98,135,18,46,,,China
+12,indiano,,62,125,-10,36,,,Índia e Sudeste Asiático
+13,estepe,,46,125,36,56,,649,Estepes antes do islã
+14,islamico,,46,125,36,56,650,,Ásia Central islâmica
+15,egipcio,,24,37,13,32,,639,Egito e Núbia antes do islã
+16,islamico,,24,37,13,32,640,,Egito islâmico
+17,islamico,,-20,60,12,40,640,,Norte da África e Oriente Médio islâmicos
+18,mesopotamia,,34,63,22,41,,-561,Mesopotâmia e Elam antes dos persas
+19,persa,,34,63,22,41,-560,,Irã e Mesopotâmia a partir de Ciro
+20,africa,,-20,55,-36,13,,,África subsaariana
+21,meandro,,-10,30,34,46,-1499,,Mediterrâneo central e Egeu
+22,nordico,,-12,45,46,72,500,,Norte da Europa medieval
+23,espiral,,,,,,,,Padrão para o resto do mundo

@@ -43,3 +43,14 @@ Cada item foi conferido em fontes consultadas nesta rodada e ligado a elas em `f
 - Isin: termina c. 1793 a.C., quando Rim-Sin de Larsa a conquista.
 - Larsa: "dominou a Suméria inteira" virou "boa parte do sul, Isin e Nippur incluídas".
 - Eshnunna: "destruída em 1762" virou "conquistada logo depois de 1762".
+
+## 30/10/2026: terceira rodada (Egito, Núbia, Mesopotâmia clássica e Irã)
+
+Fontes F073–F122: ensaios do Met (Uruk, escrita, Ur, Ubaid, Núbia), Louvre (Código de Hamurabi), British Museum (Cilindro de Ciro, joias de Ur, Náucratis), Britannica, ISAC de Chicago (Nippur, Meroé, túmulos das rainhas de Nimrud), Penn Museum, CDLI, Antiquity (Tell Brak), ICOMOS (Shahr-i Sokhta), Godlewski (Dongola) e a decifração do elamita linear (Desset et al. 2022).
+
+- 34 lugares, 7 civilizações e 8 eventos ganharam fonte.
+- **Correções:** a escrita em Uruk passou de 3300 para c. 3200 a.C. (Met); Mari agora diz "centenas de cômodos" (as fontes variam entre 260 e 300); o baqt de Dongola durou "mais de cinco séculos", não 600 anos; Pasárgada tem o túmulo "tradicionalmente atribuído" a Ciro; Shahr-i Sokhta ganhou a data de fundação e o tabuleiro virou "talvez um antepassado do gamão".
+
+## 30/10/2026: artes em tabela
+
+Os 19 padrões ornamentais e a regra que escolhe o padrão de cada lugar saíram do código e foram para `artes_estilos.csv` e `artes_regras.csv`, com inspiração, fonte e status como o resto. Um teste com 200 mil pontos aleatórios confirmou que as regras em tabela escolhem exatamente o mesmo padrão que o código antigo.

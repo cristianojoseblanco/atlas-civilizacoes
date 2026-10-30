@@ -83,6 +83,13 @@ for r in tab('perguntas_casos'):
     rid = f"{r['pergunta_id']}#{r['ordem']}"; checa_fontes('perguntas_casos', rid, r); checa_coord('perguntas_casos', rid, r['lon'], r['lat'])
     if r['lado'] not in lados: erros.append(f'perguntas_casos {rid}: lado inválido {r["lado"]}')
 for r in tab('sincronias'): checa_id('sincronias', r['id']); checa_fontes('sincronias', r['id'], r)
+estilos = {r['id'] for r in tab('artes_estilos')}
+for r in tab('artes_estilos'):
+    checa_id('artes_estilos', r['id']); checa_fontes('artes_estilos', r['id'], r)
+    if not r['svg'].strip(): erros.append(f"artes_estilos {r['id']}: sem desenho")
+for r in tab('artes_regras'):
+    if r['estilo'] not in estilos: erros.append(f"artes_regras {r['ordem']}: estilo inexistente {r['estilo']}")
+    if r['lon_min'] != '': checa_coord('artes_regras', r['ordem'], r['lon_min'], r['lat_min']); checa_coord('artes_regras', r['ordem'], r['lon_max'], r['lat_max'])
 
 # relatório
 def cobertura(n):
@@ -91,7 +98,7 @@ def cobertura(n):
 linhas = ['# Auditoria do conteúdo', '', f'Gerado por `scripts/validar.py` em {datetime.date.today().isoformat()}.', '',
           '## Situação das fontes', '', '| Tabela | Itens | Com fonte | Revisado sem fonte | Não revisado | Contestado |', '|---|---|---|---|---|---|']
 tot = collections.Counter(); tt = 0
-for n in ['lugares', 'civilizacoes', 'eventos', 'rotas', 'passeios_paradas', 'perguntas', 'perguntas_casos', 'sincronias']:
+for n in ['lugares', 'civilizacoes', 'eventos', 'rotas', 'passeios_paradas', 'perguntas', 'perguntas_casos', 'sincronias', 'artes_estilos']:
     t, c = cobertura(n); tot.update(c); tt += t
     pct = lambda k: f"{c[k]} ({round(100 * c[k] / t)}%)" if t else '0'
     linhas.append(f"| {n} | {t} | {pct('com_fonte')} | {pct('revisado_sem_fonte')} | {pct('nao_revisado')} | {pct('contestado')} |")
