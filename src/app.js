@@ -195,7 +195,7 @@ function draw(now = performance.now()){
 
   const boxes = [];
   if (showLabels) drawLabels(cur, k, boxes);
-  if (showPlaces) drawPlaces(now, boxes);
+  if (showPlaces && !theme) drawPlaces(now, boxes);
 }
 function hit(b, boxes){ return boxes.some(o => !(b[2] < o[0] || b[0] > o[2] || b[3] < o[1] || b[1] > o[3])); }
 function drawLabels(list, k, boxes){
@@ -303,6 +303,7 @@ function updateHUD(anim){
     if (f < 1) yearTween = requestAnimationFrame(step); else shownYear = to;
   };
   yearTween = requestAnimationFrame(step);
+  renderSync();
   renderChips();
   const novos = PLACES.filter(placeIsNew);
   $('#news').textContent = novos.length ? 'Surgem: ' + novos.slice(0, 4).map(p => p.n.replace(/ \(.*/, '')).join(', ') + (novos.length > 4 ? ` e mais ${novos.length - 4}` : '') : '';
@@ -328,7 +329,7 @@ document.addEventListener('keydown', e => {
   if (tour) { if (e.key === 'ArrowRight') tourStep(tour.i + 1); if (e.key === 'ArrowLeft') tourStep(tour.i - 1); if (e.key === 'Escape') endTour(); return; }
   if (e.key === 'ArrowRight') go(idx + 1);
   if (e.key === 'ArrowLeft') go(idx - 1);
-  if (e.key === 'Escape') closeCard();
+  if (e.key === 'Escape') { if (card.classList.contains('open')) closeCard(); else if (theme) endTheme(); }
 });
 $('#tPlaces').onchange = e => { showPlaces = e.target.checked; redraw(); };
 $('#tLabels').onchange = e => { showLabels = e.target.checked; redraw(); };
@@ -382,8 +383,8 @@ function openPlace(pl){
   showCard();
   redraw();
 }
-function showCard(){ card.classList.add('open'); $('#tour').classList.add('behind'); }
-function closeCard(){ card.classList.remove('open'); $('#tour').classList.remove('behind'); selected = null; redraw(); }
+function showCard(){ card.classList.add('open'); $('#tour').classList.add('behind'); $('#theme').classList.add('behind'); }
+function closeCard(){ card.classList.remove('open'); $('#tour').classList.remove('behind'); $('#theme').classList.remove('behind'); selected = null; redraw(); }
 $('#cClose').onclick = closeCard;
 
 // ---------- eventos e rotas (camada animada) ----------
@@ -453,6 +454,7 @@ function drawOverlay(t){
   sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   overlayTargets = [];
   hudTop = H - ($('#hud').offsetHeight || 0) * 0.72;
+  if (theme) return drawTheme(t);
   const k = transform.k;
   // rotas comerciais: linha tracejada que flui
   for (const rt of activeRoutes()) {
@@ -606,11 +608,21 @@ function openTourMenu(){
     b.onclick = () => { $('#tourMenu').classList.remove('open'); startTour(t); };
     list.append(b);
   });
+  const h = document.createElement('h3'); h.className = 'tm-sec'; h.textContent = 'Grandes perguntas'; list.append(h);
+  THEMES.forEach(th => {
+    const b = document.createElement('button'); b.className = 'tm-item';
+    b.innerHTML = `<span class="tm-bar" style="background:linear-gradient(${LADOS.classico.cor},${LADOS.contra.cor})"></span><b></b><span class="tm-d"></span><span class="tm-n"></span>`;
+    b.querySelector('b').textContent = th.n; b.querySelector('.tm-d').textContent = th.intro.split('. ')[0] + '.';
+    b.querySelector('.tm-n').textContent = `${th.casos.length} casos no mapa`;
+    b.onclick = () => { $('#tourMenu').classList.remove('open'); startTheme(th); };
+    list.append(b);
+  });
   $('#tourMenu').classList.add('open');
 }
 function stepDur(st){ return 5000 + st.txt.length * 42; }
 function startTour(t){
   if (playTimer) stopPlay();
+  if (theme) endTheme();
   closeCard();
   tour = {t, i: -1, auto: true, timer: null};
   $('#tour').classList.add('open'); document.body.classList.add('touring');
@@ -660,6 +672,80 @@ $('#tNext').onclick = () => tour.i === tour.t.steps.length - 1 ? endTour() : tou
 $('#tAuto').onclick = () => { tour.auto = !tour.auto; schedule(); };
 $('#tClose').onclick = endTour;
 window.__tour = (id, i = 0) => { startTour(TOURS.find(t => t.id === id)); if (i) tourStep(i); };
+
+// ---------- enquanto isso ----------
+let syncI = 0;
+function syncNow(){ const cur = SNAP_YEARS[idx], prev = idx > 0 ? SNAP_YEARS[idx-1] : -Infinity; return SYNC.filter(x => x.y > prev && x.y <= cur); }
+function renderSync(){
+  const list = syncNow(), el = $('#sync');
+  if (!list.length) { el.style.display = 'none'; return; }
+  syncI = 0; el.style.display = ''; showSync(list);
+}
+function showSync(list){
+  const el = $('#sync'), x = list[syncI % list.length];
+  el.innerHTML = '<b>Enquanto isso…</b> '; el.append(document.createTextNode(x.t));
+  if (list.length > 1) { const n = document.createElement('span'); n.className = 'sync-n'; n.textContent = ` (${syncI % list.length + 1}/${list.length}) ›`; el.append(n); }
+  el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
+}
+$('#sync').onclick = () => { const l = syncNow(); if (l.length > 1) { syncI++; showSync(l); } };
+
+// ---------- grandes perguntas ----------
+let theme = null;
+function startTheme(th){
+  if (tour) endTour();
+  if (playTimer) stopPlay();
+  closeCard();
+  theme = th;
+  const si = snapFor(th.ano); if (si !== idx) go(si);
+  document.body.classList.add('theming');
+  $('#thTitle').textContent = th.n; $('#thIntro').textContent = th.intro;
+  const used = [...new Set(th.casos.map(c => c.lado))];
+  $('#thLegend').innerHTML = '';
+  ['classico', 'contra', 'variante', 'aberto'].filter(l => used.includes(l)).forEach(l => {
+    const sp = document.createElement('span'); sp.innerHTML = `<i style="background:${LADOS[l].cor}"></i>`; sp.append(document.createTextNode(LADOS[l].nome)); $('#thLegend').append(sp);
+  });
+  const ul = $('#thList'); ul.innerHTML = '';
+  th.casos.slice().sort((a, b) => a.y - b.y).forEach(c => {
+    const b = document.createElement('button'); b.className = 'th-case';
+    b.innerHTML = `<i style="background:${LADOS[c.lado].cor}"></i><b></b><span></span>`;
+    b.querySelector('b').textContent = c.n; b.querySelector('span').textContent = 'c. ' + fmtYear(c.y);
+    b.onclick = () => openCase(c, true); ul.append(b);
+  });
+  $('#theme').classList.add('open'); $('#theme').scrollTop = 0;
+  selected = null; redraw();
+  flyTo(th.casos.map(c => c.at));
+}
+function endTheme(){
+  if (!theme) return;
+  theme = null; document.body.classList.remove('theming');
+  $('#theme').classList.remove('open'); closeCard();
+}
+function openCase(c, fly){
+  selected = {type:'th', name:c.n};
+  const L = LADOS[c.lado];
+  $('#cKind').textContent = 'Grande pergunta · ' + L.nome;
+  $('#cTitle').textContent = c.n; $('#cSub').textContent = theme ? theme.n : '';
+  $('#cMeta').innerHTML = `<b>Quando:</b> c. ${fmtYear(c.y)}`;
+  $('#cText').textContent = c.t;
+  $('#cLink').href = wiki(c.n.replace(/:.*/, '').replace(/'/g, ''));
+  $('#cJump').style.display = 'none';
+  setBar(L.cor); showCard();
+  if (fly) flyTo([c.at], 5);
+}
+function drawTheme(t){
+  for (const c of theme.casos) {
+    const p = projection(c.at); if (!p) continue;
+    const P = S(p[0], p[1]), L = LADOS[c.lado];
+    const sel = selected && selected.type === 'th' && selected.name === c.n;
+    const ph = (((t / 2400) + Math.abs(c.y) * 0.37) % 1 + 1) % 1;
+    sctx.beginPath(); sctx.arc(P[0], P[1], 8 + ph * 18, 0, 7); sctx.strokeStyle = L.cor; sctx.globalAlpha = (1 - ph) * .7; sctx.lineWidth = 2; sctx.stroke(); sctx.globalAlpha = 1;
+    sctx.beginPath(); sctx.arc(P[0], P[1], sel ? 9 : 7, 0, 7); sctx.fillStyle = L.cor; sctx.fill(); sctx.lineWidth = 2; sctx.strokeStyle = '#fff'; sctx.stroke();
+    if (showLabels) { haloText(c.n, P[0] + 12, P[1] - 5, '#fff', '700 12px Inter, system-ui, sans-serif'); haloText('c. ' + fmtYear(c.y), P[0] + 12, P[1] + 9, L.cor, '600 11px Inter, system-ui, sans-serif'); }
+    overlayTargets.push({kind:'th', c, x:P[0], y:P[1]});
+  }
+}
+$('#thClose').onclick = endTheme;
+window.__theme = id => startTheme(THEMES.find(t => t.id === id));
 
 // ---------- busca ----------
 const norm = x => x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -759,7 +845,7 @@ canvas.addEventListener('pointerup', e => {
   if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return;
   const r = canvas.getBoundingClientRect(), sx = e.clientX - r.left, sy = e.clientY - r.top;
   const oh = overlayHit(sx, sy);
-  if (oh) return oh.kind === 'ev' ? openEvent(oh.ev) : openRoute(oh.rt);
+  if (oh) return oh.kind === 'ev' ? openEvent(oh.ev) : oh.kind === 'th' ? openCase(oh.c) : openRoute(oh.rt);
   if (showPlaces) {
     let best = null, bd = 15;
     for (const o of placeScreen) { const d = Math.hypot(o.x - sx, o.y - sy); if (d < bd) { bd = d; best = o.pl; } }

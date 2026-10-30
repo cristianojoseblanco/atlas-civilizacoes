@@ -24,7 +24,7 @@ parts = {
     'TOPO': (nm / 'topojson-client/dist/topojson-client.min.js').read_text(),
     'SNAPS': snaps(),
     'GEO': geo(),
-    'PLACES': (src / 'places.js').read_text() + '\n' + (src / 'events.js').read_text() + '\n' + (src / 'tours.js').read_text(),
+    'PLACES': (src / 'places.js').read_text() + '\n' + (src / 'events.js').read_text() + '\n' + (src / 'tours.js').read_text() + '\n' + (src / 'themes.js').read_text() + '\n' + (src / 'sync.js').read_text(),
     'CONTENT': (src / 'content.js').read_text(),
     'APP': (src / 'app.js').read_text(),
 }
