@@ -13,6 +13,8 @@ def snaps():
         t = json.loads(f.read_text()); k = list(t['objects'])[0]; t['objects'] = {'r': t['objects'][k]}
         out[y] = t
     meta = json.loads((data / 'ne_meta.json').read_text())
+    # anos extras no fim da Era do Gelo, para ver o mar subir (reaproveitam as fronteiras do ano-base)
+    for y, b in {-9000: -10000, -7000: -8000, -6500: -8000, -6000: -8000}.items(): meta.setdefault(str(y), {'base': b, 'remove': []})
     years = sorted(set(out) | {int(k) for k in meta})
     return ('const NE_META=' + json.dumps({int(k): v for k, v in meta.items()}) + ';const NE_CUSTOM=' + (data / 'ne_custom.json').read_text() +
             ';const SNAP_YEARS=' + json.dumps(years) + ';\nconst SNAPS=' +
@@ -21,7 +23,7 @@ def snaps():
 def geo():
     b64 = lambda f: 'data:image/jpeg;base64,' + base64.b64encode((data / f).read_bytes()).decode()
     return ('const RIVERS=' + (data / 'rivers.json').read_text() + ';const LAKES=' + (data / 'lakes.json').read_text() +
-            ';const RELIEF_META=' + (data / 'relief.json').read_text() +
+            ';const PALEO=' + (data / 'paleo.json').read_text() + ';const RELIEF_META=' + (data / 'relief.json').read_text() +
             ';const RELIEF_WORLD="' + b64('relief_world.jpg') + '";const RELIEF_HI="' + b64('relief_hi.jpg') + '";')
 
 parts = {

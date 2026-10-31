@@ -105,6 +105,7 @@ function layer(year){
 }
 
 function setup(){
+  paleoP = new Map();
   dpr = Math.min(window.devicePixelRatio || 1, 2);
   W = canvas.clientWidth; H = canvas.clientHeight;
   canvas.width = base.width = W * dpr; canvas.height = base.height = H * dpr;
@@ -148,6 +149,27 @@ function drawRelief(){
   }
   ctx.filter = 'none';
 }
+// ---------- terras hoje submersas (nível do mar no fim da Era do Gelo) ----------
+const PALEO_F = topojson.feature(PALEO, PALEO.objects[Object.keys(PALEO.objects)[0]]).features.map(fixWinding).sort((a, b) => a.properties.nivel - b.properties.nivel);
+let paleoP = new Map();
+function seaLevel(y){
+  const c = NIVEL_MAR; if (y < c[0][0] || y >= c[c.length - 1][0]) return null;
+  for (let i = 1; i < c.length; i++) if (y < c[i][0]) { const [a, na] = c[i-1], [b, nb] = c[i]; return na + (nb - na) * (y - a) / (b - a); }
+  return null;
+}
+function paleoFor(y){
+  const sl = seaLevel(y); if (sl === null) return null;
+  const f = PALEO_F.find(f => f.properties.nivel >= sl); if (!f) return null;
+  if (!paleoP.has(f.properties.nivel)) paleoP.set(f.properties.nivel, new Path2D(path(f) || ''));
+  return {p: paleoP.get(f.properties.nivel), nivel: Math.round(sl)};
+}
+function drawPaleo(year, alpha, k){
+  const pp = paleoFor(year); if (!pp) return;
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = 'rgba(176,160,118,.62)'; ctx.fill(pp.p);
+  ctx.setLineDash([2 / k, 2.5 / k]); ctx.lineWidth = 0.8 / k; ctx.strokeStyle = 'rgba(235,225,190,.75)'; ctx.stroke(pp.p); ctx.setLineDash([]);
+  ctx.globalAlpha = 1;
+}
 function drawPolities(list, alpha, k){
   ctx.globalAlpha = alpha;
   ctx.globalCompositeOperation = 'multiply';
@@ -172,6 +194,8 @@ function draw(now = performance.now()){
   ctx.save(); ctx.clip(sphereP);
   ctx.fillStyle = '#0e1e2c'; ctx.fill(sphereP);
   drawRelief();
+  if (prevIdx !== null && fade < 1) { drawPaleo(SNAP_YEARS[prevIdx], 1 - fade, k); drawPaleo(SNAP_YEARS[idx], fade, k); }
+  else drawPaleo(SNAP_YEARS[idx], 1, k);
   ctx.fillStyle = '#0f2232'; ctx.fill(lakesP);
 
   const cur = layer(SNAP_YEARS[idx]);
@@ -304,6 +328,7 @@ function go(i){
 }
 function updateHUD(anim){
   const y = SNAP_YEARS[idx], e = eraFor(y);
+  { const sl = seaLevel(y), lg = $('#lgPaleo'); if (lg) { lg.style.display = sl !== null && sl < -1.5 ? '' : 'none'; if (sl !== null) $('#lgPaleoT').textContent = `Terra hoje submersa (mar ${Math.round(-sl)} m abaixo do atual)`; } }
   $('#era').textContent = e.nome;
   $('#eratext').textContent = e.t;
   slider.style.setProperty('--p', (idx / (N - 1) * 100) + '%');

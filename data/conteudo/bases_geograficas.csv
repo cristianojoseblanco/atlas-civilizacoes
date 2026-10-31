@@ -4,3 +4,4 @@ data/ne_custom.json; data/ne_meta.json,"Oriente Próximo 3500–1500 a.C., desen
 data/relief_world.jpg; data/relief_hi.jpg,Relevo sombreado reprojetado,F002,Domínio público,scripts/relief.py
 data/rivers.json; data/lakes.json,Rios e lagos 1:50m,F002,Domínio público,scripts/build_data.sh
 "(land-10m, land-50m)",Contorno das terras para recortes e máscara do oceano,F003,ISC,scripts/fetch_raw.sh
+data/paleo.json,Terras hoje submersas para níveis do mar de −70 a −2 m,F468,CC-BY 4.0,scripts/paleo_costas.py + scripts/paleo_costas.js + mapshaper (simplificação 8%)

@@ -155,3 +155,11 @@ Fontes F328–F415. Agora 410 itens têm fonte, 96 estão revisados sem fonte e 
 - Botão único "Aprender história", com nível (iniciante, colégio, graduação, completo, personalizado por temas).
 - Iniciante: só as paradas marcadas como iniciante, com `texto_iniciante` (15 textos novos, mais simples, sobre os mesmos fatos e as mesmas fontes).
 - Debates ficam a partir do nível colégio. A trilha de Taş Tepeler também.
+
+## 30/10/2026: terras hoje submersas
+
+- Nova camada: entre 10 mil e cerca de 2 mil a.C., o mapa mostra em tom de areia a terra que estava acima do mar e hoje está submersa (Doggerland, Beríngia, Sunda, Sahul, Golfo Pérsico).
+- Nível do mar ano a ano: `data/conteudo/nivel_mar.csv`, curva global de Lambeck e colegas (PNAS, 2014; F467), interpolada entre os pontos citados.
+- Fundo do mar: ETOPO1 em grade de 10 minutos de arco (cerca de 18 km), via projeto Fatiando a Terra (F468). Linhas de costa em 14 níveis, de −70 a −2 m.
+- Limites do método ("banheira"): não considera o afundamento e a subida da crosta sob o peso do gelo nem a sedimentação. Báltico, Mar Branco e Baía de Hudson ficam de fora (estavam sob gelo ou com nível próprio), assim como Mar Negro, Cáspio e Aral (lagos com nível próprio).
+- Anos novos na linha do tempo: 9000, 7000, 6500 e 6000 a.C., para ver o mar subir.

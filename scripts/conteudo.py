@@ -53,6 +53,7 @@ def gerar():
     tours = [dict(id=r['id'], n=r['nome'], cor=r['cor'], d=r['descricao'], nivel=r['nivel'], temas=lst(r['temas']), steps=steps.get(r['id'], [])) for r in tri if r['tipo'] == 'passeio']
     themes = [dict(id=r['id'], n=r['nome'], ano=num(r['ano']), intro=r['descricao'], nivel=r['nivel'], temas=lst(r['temas']), casos=casos.get(r['id'], []), **aud(r)) for r in tri if r['tipo'] == 'debate']
     temas_js = [dict(id=r['id'], n=r['nome']) for r in tab('temas')]
+    mar = [[num(r['ano']), num(r['nivel_m'])] for r in sorted(tab('nivel_mar'), key=lambda r: num(r['ano']))]
     sync = [dict(id=r['id'], y=num(r['ano']), t=r['texto'], **aud(r)) for r in tab('sincronias')]
     fontes_js = {k: dict(titulo=v['titulo'], autores=v['autores'], ano=v['ano'], veiculo=v['veiculo_editora'], url=v['url'], tipo=v['tipo'], conf=v['confiabilidade'], consulta=v['consulta']) for k, v in fontes.items()}
     art = {r['id']: dict(nome=r['nome'], trad=r['tradicao'], insp=r['inspiracao'], w=num(r['largura']), h=num(r['altura']), d=r['svg'], peca=r['peca'], local=r['peca_local'], pf=r['peca_fonte'], cores=r['cores'].split(';'), **aud(r)) for r in tab('artes_estilos')}
@@ -65,5 +66,5 @@ def gerar():
         if r['ano_min'] != '': q['a'] = num(r['ano_min'])
         if r['ano_max'] != '': q['b'] = num(r['ano_max'])
         regras.append(q)
-    out = dict(ART=art, ART_RULES=regras, FONTES=fontes_js, CIVS=civs, ERAS=eras, PLACES=places, EVENT_CATS=cats, EVENTS=events, ROUTES=routes, TOURS=tours, LADOS=lados, THEMES=themes, SYNC=sync, TEMAS=temas_js)
+    out = dict(ART=art, ART_RULES=regras, FONTES=fontes_js, CIVS=civs, ERAS=eras, PLACES=places, EVENT_CATS=cats, EVENTS=events, ROUTES=routes, TOURS=tours, LADOS=lados, THEMES=themes, SYNC=sync, TEMAS=temas_js, NIVEL_MAR=mar)
     return ''.join(f'const {k}={json.dumps(v, ensure_ascii=False, separators=(",", ":"))};\n' for k, v in out.items())
