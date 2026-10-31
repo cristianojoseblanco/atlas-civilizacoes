@@ -48,6 +48,16 @@ Tabela nova, `desenvolvimentos.csv`, no mesmo padrão das outras:
 - **Técnica:** o site hoje é uma página estática. Contas pedem um back-end (autenticação e banco). Até lá, o progresso fica salvo no navegador, num formato pensado para migrar depois.
 - **Consequência para agora:** aulas, blocos, quiz e glossário já nascem como unidades pequenas, com id estável, nível e tema, para servir de base às lições e à revisão espaçada.
 
+## Decisões de 31/10/2026: lições oficiais e jogo
+
+- **Sem lições curtas avulsas.** Toda lição faz parte de uma ordem geral ou de uma **árvore de caminhos** (pré-requisitos entre lições). Passeios e grandes perguntas atuais serão reaproveitados dentro das lições oficiais, não como trilhas separadas.
+- **A lição é a versão oficial do atlas**, escrita a partir da junção das fontes (livros como Liverani e Mithen, artigos, museus, UNESCO), em português e com texto próprio. Nenhum livro é traduzido ou copiado; cada afirmação continua ligada a fontes.
+- **Formato:** texto longo por seção (400–700 palavras), depois perguntas sobre aquela seção; acerto dá XP.
+- **Níveis** (iniciante, colégio, graduação) não mudam a lição: mudam **quanto se cobra** (quantas seções e detalhes entram nas perguntas) e **a dificuldade das perguntas**.
+- **Jogo:** energia diária (errar gasta energia; ela recarrega com o tempo), XP, níveis, sequência de dias e conquistas. **Versão premium paga** para explorar à vontade (energia ilimitada, todas as lições abertas fora da ordem).
+- **Implicações técnicas:** contas no Supabase (perfil, progresso, XP, energia calculada no servidor); pagamentos por um provedor (ex.: Stripe ou Mercado Pago) só quando houver conteúdo suficiente; termos de uso e política de privacidade antes de cobrar.
+- **Cuidado de direitos autorais redobrado** num produto pago: texto sempre original, imagens só com licença clara.
+
 ## Modo "Preparo para provas"
 
 - Montar uma base de **temas cobrados** por prova e ano (ENEM, Fuvest, Unicamp, outras), a partir das provas e gabaritos públicos do INEP e das bancas.
