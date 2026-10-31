@@ -108,3 +108,10 @@ for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_B, ensure_ascii=False) +
     dr = dr.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
 (ROOT / 'direcoes.html').write_text(dr)
 print('direcoes.html', round(len(dr.encode()) / 1e3), 'kB')
+
+# ---------- prototipo-e.html: mapa 3D em tela cheia + folha, três direções ----------
+pe = (src / 'prototipo-e.html').read_text()
+for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_B, ensure_ascii=False) + ';', 'PROTO': (src / 'prototipo-e.js').read_text()}.items():
+    pe = pe.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
+(ROOT / 'prototipo-e.html').write_text(pe)
+print('prototipo-e.html', round(len(pe.encode()) / 1e3), 'kB')
