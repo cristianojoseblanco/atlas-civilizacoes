@@ -60,3 +60,19 @@ for k, v in {'LICOES': 'const LICOES=' + json.dumps(L, ensure_ascii=False) + ';'
     ap = ap.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
 (ROOT / 'aprender.html').write_text(ap)
 print('aprender.html', round(len(ap.encode()) / 1e3), 'kB;', len(L['licoes']), 'lições publicadas')
+
+# ---------- prototipo-a.html: protótipo de acabamento (referência: jogo bem acabado) ----------
+lic = L['licoes']['revolucao-urbana']
+lim = {'iniciante': 1, 'colegio': 2, 'graduacao': 3}
+secs = [dict(titulo=s_['titulo'], ano=s_['ano'], foco=s_['foco'], zoom=s_['zoom'], paragrafos=s_['paragrafos'][:3],
+             perguntas=[q for q in s_['perguntas'] if lim.get(q['nivel'], 2) <= 2][:4]) for s_ in lic['secoes']]
+fundo = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {MP["w"]} {MP["h"]}" preserveAspectRatio="xMidYMid slice">'
+         '<style>.mar{fill:#3D7F8F}.costa{fill:#0F1A22;stroke:#0F1A22;stroke-width:4}.terra{fill:#F1DCA6}.lago{fill:#3D7F8F}.rio{fill:none;stroke:#2B6576;stroke-width:1.6}</style>'
+         + MP['svg'] + '</svg>')
+DADOS = dict(licao=dict(titulo=lic['titulo'], secoes=secs), mapa=MP, mapaFundo=fundo, vj=VJ,
+             unidades=[dict(titulo=u['titulo'], periodo=u['periodo'], licoes=[dict(titulo=x['titulo']) for x in u['licoes']]) for u in L['unidades'][:2]])
+pa = (src / 'prototipo-a.html').read_text()
+for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS, ensure_ascii=False) + ';', 'PROTO': (src / 'prototipo-a.js').read_text()}.items():
+    pa = pa.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
+(ROOT / 'prototipo-a.html').write_text(pa)
+print('prototipo-a.html', round(len(pa.encode()) / 1e3), 'kB')
