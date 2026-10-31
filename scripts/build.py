@@ -76,3 +76,12 @@ for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS, ensure_ascii=False) + '
     pa = pa.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
 (ROOT / 'prototipo-a.html').write_text(pa)
 print('prototipo-a.html', round(len(pa.encode()) / 1e3), 'kB')
+
+# ---------- prototipo-b.html: trilha e mapa lado a lado, sincronizados ----------
+DADOS_B = dict(DADOS, unidades=[dict(titulo=u['titulo'], periodo=u['periodo'], licoes=[dict(id=x['id'], titulo=x['titulo'], lugar=x['lugar'], lon=x['lon'], lat=x['lat'], ano=x['ano'], publicada=x['publicada']) for x in u['licoes']]) for u in L['unidades']])
+DADOS_B.pop('mapaFundo')
+pb = (src / 'prototipo-b.html').read_text()
+for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_B, ensure_ascii=False) + ';', 'PROTO': (src / 'prototipo-b.js').read_text()}.items():
+    pb = pb.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
+(ROOT / 'prototipo-b.html').write_text(pb)
+print('prototipo-b.html', round(len(pb.encode()) / 1e3), 'kB')

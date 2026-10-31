@@ -101,6 +101,7 @@ def gerar(fontes_ids=None):
         if lic: licoes[lic['id']] = lic
     ids_plano = {r['id'] for r in plano}
     for r in plano:
+        if not (r.get('lon') and r.get('lat') and r.get('ano')): erros.append(f"plano {r['id']}: falta lugar/lon/lat/ano")
         for q in lst(r['requisitos']):
             if q not in ids_plano: erros.append(f"plano {r['id']}: requisito inexistente {q}")
         if r['status'] == 'publicada' and r['id'] not in licoes: erros.append(f"plano {r['id']}: marcada como publicada sem arquivo")
@@ -114,6 +115,7 @@ def gerar(fontes_ids=None):
     arvore = []
     for u in sorted(unidades, key=lambda r: int(r['ordem'])):
         itens = [dict(id=r['id'], ordem=int(r['ordem']), titulo=r['titulo'], requisitos=lst(r['requisitos']), base=r['base'],
+                      lugar=r.get('lugar',''), lon=float(r['lon']) if r.get('lon') else None, lat=float(r['lat']) if r.get('lat') else None, ano=int(r['ano']) if r.get('ano') else None,
                       publicada=r['id'] in licoes) for r in plano if r['unidade'] == u['id']]
         arvore.append(dict(id=u['id'], curso=u['curso'], titulo=u['titulo'], periodo=u['periodo'], descricao=u['descricao'],
                            requisitos=lst(u['requisitos']), licoes=sorted(itens, key=lambda x: x['ordem'])))
