@@ -1,7 +1,7 @@
 """Monta index.html (um arquivo só, autocontido) a partir de src/ e data/."""
 import base64, json, os, pathlib, re, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import conteudo, licoes, csv
+import conteudo, licoes, csv, mapa_curso
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 src, data, nm = ROOT / 'src', ROOT / 'data', ROOT / 'node_modules'
 
@@ -51,7 +51,11 @@ for lic in L['licoes'].values():
     for s_ in lic['secoes']: usadas |= {f['id'] for f in s_['fontes']}
 fj = {k: dict(titulo=FT[k]['titulo'], autores=FT[k]['autores'], ano=FT[k]['ano'], url=FT[k]['url']) for k in sorted(usadas)}
 ap = (src / 'aprender.html').read_text()
+MP = mapa_curso.gerar('oriente-antigo')
+vjd = ROOT / 'assets' / 'viajante'
+VJ = {k: (vjd / f).read_text() for k, f in {'parado': 'parado-mesopotamia.svg', 'andando': 'andando-mesopotamia.svg', 'comemorando': 'comemorando-mesopotamia.svg', 'retrato': 'retrato-mesopotamia.svg'}.items()}
 for k, v in {'LICOES': 'const LICOES=' + json.dumps(L, ensure_ascii=False) + ';', 'FONTES': 'const FONTES=' + json.dumps(fj, ensure_ascii=False) + ';',
+             'MAPA': 'const MAPA=' + json.dumps(MP, ensure_ascii=False) + ';const VJ=' + json.dumps(VJ, ensure_ascii=False) + ';',
              'APRENDER': (src / 'aprender.js').read_text()}.items():
     ap = ap.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
 (ROOT / 'aprender.html').write_text(ap)
