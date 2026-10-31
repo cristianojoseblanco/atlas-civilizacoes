@@ -43,3 +43,11 @@
 |  | 32 | Los medos y la unificación persa | 700–719 | Os medos e a unificação persa | a escrever |
 
 Epílogo: p. 720 em diante (nova geopolítica, herança do Oriente antigo).
+
+## Lugar e ano de cada lição
+
+Cada lição do `data/licoes/plano.csv` tem um lugar e um ano, usados pelo mapa da trilha.
+
+- **Lugar:** a coluna `lugar_id` aponta para `data/conteudo/lugares.csv`, onde estão as coordenadas e as fontes do lugar. O build recusa coordenadas diferentes das de lá. As duas lições de introdução (Oriente Próximo e Crescente Fértil) são regiões e usam um ponto central aproximado, sem `lugar_id`.
+- **Ano:** uma data representativa do capítulo correspondente do Liverani (F469, coluna `base`), na cronologia média que o livro usa. Serve para posicionar o mapa e a régua do tempo, não é a data de um evento.
+- **Mitanni:** o lugar exato da capital, Washukanni, não é conhecido. O ponto marca Tell Fekheriye, a identificação mais citada, e o nome aparece como "Washukanni (provável)".

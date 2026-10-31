@@ -6,7 +6,7 @@ Gerado por `scripts/validar.py` em 2026-10-31.
 
 | Tabela | Itens | Com fonte | Revisado sem fonte | Não revisado | Contestado |
 |---|---|---|---|---|---|
-| lugares | 260 | 259 (100%) | 0 (0%) | 0 (0%) | 1 (0%) |
+| lugares | 265 | 264 (100%) | 0 (0%) | 0 (0%) | 1 (0%) |
 | civilizacoes | 88 | 88 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | eventos | 31 | 31 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | rotas | 10 | 10 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
@@ -16,7 +16,7 @@ Gerado por `scripts/validar.py` em 2026-10-31.
 | glossario | 3 | 3 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | sincronias | 30 | 30 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | artes_estilos | 34 | 33 (97%) | 1 (3%) | 0 (0%) | 0 (0%) |
-| **total** | **513** | **511 (100%)** | **1 (0%)** | **0 (0%)** | **1 (0%)** |
+| **total** | **518** | **516 (100%)** | **1 (0%)** | **0 (0%)** | **1 (0%)** |
 
 **Legenda:** *com fonte*: ao menos uma fonte em `fontes.csv` sustenta o item. *Revisado sem fonte*: conferido com conhecimento consolidado da área, mas ainda sem referência ligada. *Não revisado*: escrito e ainda não conferido. *Contestado*: há fontes em desacordo, e o texto deve dizer isso.
 
@@ -35,6 +35,7 @@ Gerado por `scripts/validar.py` em 2026-10-31.
 | F055 | 6 | B | Akkad ou Agadé |
 | F075 | 5 | B | Uruk: The First City |
 | F013 | 5 | C | Tas Tepeler Discoveries Redraw the Map of Early Civilization in Turkey |
+| F469 | 5 | A | El antiguo Oriente: historia, sociedad y economía |
 | F035 | 5 | A | The Dawn of Everything: A New History of Humanity |
 | F074 | 4 | B | Reflections on the Mesopotamian Flood |
 | F086 | 4 | B | The Ishtar Gate and Neo-Babylonian art and architecture |
@@ -353,6 +354,11 @@ Gerado por `scripts/validar.py` em 2026-10-31.
 | F245 | 1 | B | Budj Bim Cultural Landscape (No 1577) |
 | F246 | 1 | B | Taputapuātea (No 1529) |
 | F247 | 1 | B | Nan Madol: Ceremonial Centre of Eastern Micronesia (No 1503) |
+| F470 | 1 | A | Tell Habuba Kabira (Pleiades 923122730) |
+| F471 | 1 | C | Tell Fekheriye |
+| F472 | 1 | A | Dur-(Kuri)galzu (Pleiades 893988) |
+| F473 | 1 | C | Karkemish / Karkamış |
+| F474 | 1 | B | Tushpa/Van Fortress, the Mound and the Old City of Van (Tentative list 6114) |
 | F070 | 1 | A | [Uruk, Inana e Susa; a escrita proto-elamita] (texto em academia.edu) |
 | F060 | 1 | A | The Question of Marhaši: A Contribution to the Historical Geography of Iran in the Third Millennium B.C. |
 | F422 | 1 | B | Archaeological Sites of Bat, Al-Khutm and Al-Ayn (No 434) |
@@ -471,7 +477,7 @@ Gerado por `scripts/validar.py` em 2026-10-31.
 | F143 | 1 | B | The Sun Stone (Calendar Stone) |
 | F144 | 1 | B | Incised furniture plaque with a frieze of lotus blossoms and buds (325874) |
 
-Fontes cadastradas sem uso por nenhum item: F001, F002, F003, F037, F466, F467, F468, F469 (bases geográficas aparecem em `bases_geograficas.csv`).
+Fontes cadastradas sem uso por nenhum item: F001, F002, F003, F037, F466, F467, F468 (bases geográficas aparecem em `bases_geograficas.csv`).
 
 ## Temas e níveis
 
@@ -479,7 +485,7 @@ Preparação para os modos de ensino (ver `ROADMAP.md`).
 
 | Tabela | Itens | Com tema | Com nível |
 |---|---|---|---|
-| lugares | 260 | 260 | 260 |
+| lugares | 265 | 265 | 265 |
 | civilizacoes | 88 | 88 | 88 |
 | eventos | 31 | 31 | 31 |
 | rotas | 10 | 10 | 10 |

@@ -95,6 +95,7 @@ def gerar(fontes_ids=None):
     erros = []
     unidades = tab(LD / 'unidades.csv')
     plano = tab(LD / 'plano.csv')
+    LUGARES = {x['id']: x for x in tab(LD.parent / 'conteudo' / 'lugares.csv')}
     licoes = {}
     for p in sorted(LD.glob('**/*.md')):
         lic = ler_licao(p, erros)
@@ -102,6 +103,11 @@ def gerar(fontes_ids=None):
     ids_plano = {r['id'] for r in plano}
     for r in plano:
         if not (r.get('lon') and r.get('lat') and r.get('ano')): erros.append(f"plano {r['id']}: falta lugar/lon/lat/ano")
+        if r.get('lugar_id'):
+            lg = LUGARES.get(r['lugar_id'])
+            if not lg: erros.append(f"plano {r['id']}: lugar_id inexistente {r['lugar_id']}")
+            elif (round(float(lg['lat']), 3), round(float(lg['lon']), 3)) != (round(float(r['lat']), 3), round(float(r['lon']), 3)):
+                erros.append(f"plano {r['id']}: coordenadas diferentes de lugares.csv ({r['lugar_id']})")
         for q in lst(r['requisitos']):
             if q not in ids_plano: erros.append(f"plano {r['id']}: requisito inexistente {q}")
         if r['status'] == 'publicada' and r['id'] not in licoes: erros.append(f"plano {r['id']}: marcada como publicada sem arquivo")
