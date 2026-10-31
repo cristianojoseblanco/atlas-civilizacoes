@@ -101,3 +101,10 @@ for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_B, ensure_ascii=False) +
     pd = pd.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
 (ROOT / 'prototipo-d.html').write_text(pd)
 print('prototipo-d.html', round(len(pd.encode()) / 1e3), 'kB')
+
+# ---------- direcoes.html: três direções visuais para a home ----------
+dr = (src / 'direcoes.html').read_text()
+for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_B, ensure_ascii=False) + ';', 'PROTO': (src / 'direcoes.js').read_text()}.items():
+    dr = dr.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
+(ROOT / 'direcoes.html').write_text(dr)
+print('direcoes.html', round(len(dr.encode()) / 1e3), 'kB')

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Três direções · Atlas das Civilizações</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Fredoka:wght@500;600;700&family=Instrument+Serif&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#E9ECEF;font-family:"Inter Tight",system-ui,sans-serif;color:#111;padding:28px 16px 60px}
+.intro{max-width:1240px;margin:0 auto 26px}
+.intro h1{font-size:28px;letter-spacing:-.02em}
+.intro p{font-size:16px;line-height:24px;max-width:70ch;margin-top:8px;color:#333}
+.grade{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.dir h2{font-size:20px;margin:0 0 4px}
+.dir p{font-size:14px;line-height:20px;color:#444;min-height:60px;margin-bottom:14px}
+.tel{position:relative;width:100%;max-width:390px;aspect-ratio:390/800;margin:0 auto;border-radius:44px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.18),0 0 0 10px #111}
+.mapa{position:absolute;inset:0;overflow:hidden;perspective:1300px;perspective-origin:50% 20%}
+.cena{position:absolute;left:50%;top:36%;transform-style:preserve-3d}
+.mundo{position:absolute;left:0;top:0;transform-origin:0 0;transform-style:preserve-3d}
+.marfundo{position:absolute;left:-9000px;top:-9000px;width:21000px;height:21000px}
+.chao{position:absolute;left:0;top:0}
+.chao.base{transform:translateZ(-26px)}
+.arco{position:absolute;transform-origin:50% 100%;pointer-events:none}
+.arco svg{display:block;width:100%;height:100%;overflow:visible}
+.arco path{fill:none;stroke-linecap:round}
+.bb{position:absolute;left:0;top:0;transform-origin:50% 100%}
+.pin{width:40px;height:66px;margin:-66px 0 0 -20px}
+.pin i{position:absolute;left:19px;top:30px;width:2px;height:36px}
+.pin b{position:absolute;left:6px;top:4px;width:28px;height:28px;border-radius:50%}
+.pin.foco b{left:2px;top:0;width:36px;height:36px}
+.pin.longe{opacity:.3}
+.vj{width:200px;height:120px;margin:-120px 0 0 -100px}.vj div{position:absolute;left:0;top:8px;width:74px}.vj svg{width:100%;height:auto}
+.etq{width:260px;height:110px;margin:-110px 0 0 -130px}.etq span{position:absolute;left:150px;top:6px;padding:5px 11px;font-size:15px;white-space:nowrap}
+.ceu{position:absolute;left:0;right:0;top:0;height:34%;pointer-events:none}
+.topo{position:absolute;z-index:5;left:0;right:0;top:0;display:flex;align-items:center;gap:8px;padding:52px 18px 0}
+.marca{margin-right:auto;font-size:22px}
+.ch{height:32px;display:flex;align-items:center;padding:0 12px;font-size:14px}
+.ano{position:absolute;z-index:5;left:18px;top:96px;font-size:15px;padding:6px 12px}
+.folha{position:absolute;z-index:6;left:0;right:0;bottom:0;height:50%;padding:10px 18px 22px;display:flex;flex-direction:column}
+.alca{display:block;width:40px;height:5px;border-radius:3px;margin:0 auto 12px}
+.cab{display:flex;align-items:flex-end;gap:10px}
+.cab .per{font-size:13px}
+.cab h2{font-size:21px;line-height:25px;margin:2px 0 0}
+.prog{margin-left:auto;font-size:14px;padding:5px 10px}
+.arv{flex:1;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:6px 0}
+.ln{display:flex;justify-content:center;gap:10px}
+.nd{width:96px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;font-size:11.5px;line-height:14px}
+.nd i{width:38px;height:38px;border-radius:50%}
+.acao{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px}
+.acao div{flex:1;min-width:0}.acao b{display:block;font-size:16px}.acao span{display:block;font-size:13px}
+.acao button{border:none;height:44px;padding:0 20px;font:inherit;font-weight:600;font-size:15px;cursor:pointer}
+
+/* ===== 1. Lápis e ouro: noite de Babilônia ===== */
+.d1{font-family:Sora,sans-serif;color:#EEF2FF}
+.d1 .mapa{background:#06123A}
+.d1 .marfundo{background:#071643}
+.d1 .chao .mar,.d1 .chao .lago{fill:#071643}.d1 .chao .costa{fill:#C9A24A;stroke:#C9A24A;stroke-width:1.2px}.d1 .chao .terra{fill:#17328A}.d1 .chao .rio{fill:none;stroke:#5B8CFF;stroke-width:1px}
+.d1 .arco path{stroke-width:6}.d1 .arco.feita path{stroke:#F2C14E;filter:drop-shadow(0 0 6px rgba(242,193,78,.8))}.d1 .arco.aberta path{stroke:#7FE7FF;stroke-dasharray:.6 2.2;filter:drop-shadow(0 0 5px rgba(127,231,255,.9))}.d1 .arco.fechada path{stroke:rgba(255,255,255,.25);stroke-dasharray:.3 1.8}
+.d1 .pin i{background:linear-gradient(#F2C14E,transparent)}.d1 .pin b{background:#0B1E5B;box-shadow:inset 0 0 0 2px #F2C14E,0 0 14px rgba(242,193,78,.6)}.d1 .pin.feito b{background:#F2C14E}.d1 .pin.aberta b,.d1 .pin.atual b{background:#7FE7FF;box-shadow:0 0 16px #7FE7FF}.d1 .pin.trancado b{background:#24357A;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+.d1 .etq span{background:#F2C14E;color:#06123A;border-radius:6px;font-weight:600}
+.d1 .ceu{background:linear-gradient(#06123A 30%,rgba(6,18,58,0))}
+.d1 .marca{font-weight:700;letter-spacing:-.02em}.d1 .ch{border-radius:8px;background:rgba(255,255,255,.08);color:#F2C14E;font-weight:600}
+.d1 .ano{background:transparent;color:#F2C14E;font-weight:600;font-size:26px;letter-spacing:-.02em;padding:0}
+.d1 .folha{background:#0B1E5B;border-radius:28px 28px 0 0}
+.d1 .alca{background:rgba(255,255,255,.25)}.d1 .cab .per{color:#9DB0F0}.d1 .cab h2{font-weight:700;letter-spacing:-.02em}
+.d1 .prog{color:#F2C14E;background:rgba(242,193,78,.12);border-radius:8px;font-weight:600}
+.d1 .nd{color:#C8D3FF}.d1 .nd i{background:#16307E}.d1 .nd.feito i{background:#F2C14E}.d1 .nd.aberta i{background:transparent;box-shadow:inset 0 0 0 2.5px #7FE7FF}.d1 .nd.sel i{background:#7FE7FF;box-shadow:0 0 0 5px rgba(127,231,255,.25),0 0 22px #7FE7FF}.d1 .nd.sel{color:#fff;font-weight:600}
+.d1 .acao{background:#132A73;border-radius:18px}.d1 .acao span{color:#9DB0F0}.d1 .acao button{background:#F2C14E;color:#06123A;border-radius:12px}
+
+/* ===== 2. Diorama: maquete de terra e água ===== */
+.d2{font-family:Fredoka,sans-serif;color:#173B45}
+.d2 .mapa{background:linear-gradient(#BFEFF2,#8FDDE3)}
+.d2 .marfundo{background:#55C2CF}
+.d2 .chao .mar,.d2 .chao .lago{fill:#55C2CF}.d2 .chao .costa{fill:#F7D98B;stroke:#F7D98B;stroke-width:3px}.d2 .chao .terra{fill:#FBE7AE}.d2 .chao .rio{fill:none;stroke:#2FA6BC;stroke-width:2.2px}
+.d2 .chao.base .mar{fill:transparent}.d2 .chao.base .costa,.d2 .chao.base .terra{fill:#C98F4E;stroke:#C98F4E}.d2 .chao.base .rio,.d2 .chao.base .lago{display:none}
+.d2 .arco path{stroke-width:10}.d2 .arco.feita path{stroke:#FF6B57}.d2 .arco.aberta path{stroke:#fff;stroke-dasharray:.1 2.6}.d2 .arco.fechada path{stroke:rgba(23,59,69,.25);stroke-width:4;stroke-dasharray:.1 2}
+.d2 .pin i{background:#173B45;width:3px}.d2 .pin b{border:3px solid #173B45;background:#E8E2D2}.d2 .pin.feito b{background:#FF6B57}.d2 .pin.aberta b,.d2 .pin.atual b{background:#fff}.d2 .pin.foco b{box-shadow:0 0 0 6px rgba(255,255,255,.6)}
+.d2 .etq span{background:#173B45;color:#fff;border-radius:999px;font-weight:600}
+.d2 .ceu{background:linear-gradient(#BFEFF2 20%,rgba(191,239,242,0))}
+.d2 .marca{font-weight:700;font-size:26px}.d2 .ch{border-radius:999px;background:#fff;font-weight:600;box-shadow:0 3px 0 rgba(23,59,69,.15)}
+.d2 .ano{background:#173B45;color:#fff;border-radius:999px;font-weight:600}
+.d2 .folha{background:#FFFDF7;border-radius:32px 32px 0 0;box-shadow:0 -8px 30px rgba(23,59,69,.15)}
+.d2 .alca{background:#D9D3C2}.d2 .cab .per{color:#5E7C82}.d2 .cab h2{font-weight:700;font-size:23px}
+.d2 .prog{background:#FF6B57;color:#fff;border-radius:999px;font-weight:600}
+.d2 .nd{font-weight:500}.d2 .nd i{background:#ECE6D6;border:3px solid #CFC6AF}.d2 .nd.feito i{background:#FF6B57;border-color:#173B45}.d2 .nd.aberta i{background:#fff;border-color:#173B45}.d2 .nd.sel i{transform:scale(1.15);box-shadow:0 5px 0 #173B45}.d2 .nd.sel{font-weight:700}
+.d2 .acao{background:#173B45;color:#fff;border-radius:22px}.d2 .acao span{color:#A9C6CB}.d2 .acao button{background:#FF6B57;color:#fff;border-radius:999px;font-size:16px;box-shadow:0 4px 0 #B8402F}
+
+/* ===== 3. Atlas impresso: mapa de museu, tinta e ouro ===== */
+.d3{color:#16181D}
+.d3 .mapa{background:#E4E7EA}
+.d3 .marfundo{background:#DDE3E8}
+.d3 .chao .mar,.d3 .chao .lago{fill:#DDE3E8}.d3 .chao .costa{fill:#16181D;stroke:#16181D;stroke-width:.8px}.d3 .chao .terra{fill:#FAFAF8}.d3 .chao .rio{fill:none;stroke:#7E93A6;stroke-width:.9px}
+.d3 .arco path{stroke-width:4}.d3 .arco.feita path{stroke:#16181D}.d3 .arco.aberta path{stroke:#B0802A;stroke-dasharray:1.2 1.6}.d3 .arco.fechada path{stroke:rgba(22,24,29,.22);stroke-dasharray:.4 1.6}
+.d3 .pin i{background:#16181D;width:1.5px;left:19.5px}.d3 .pin b{background:#FAFAF8;border:1.5px solid #16181D;width:22px;height:22px;left:9px;top:8px}.d3 .pin.feito b{background:#16181D}.d3 .pin.aberta b{background:#B0802A;border-color:#B0802A}.d3 .pin.foco b{width:30px;height:30px;left:5px;top:2px}
+.d3 .etq span{font-family:"Instrument Serif",serif;font-size:24px;background:transparent;padding:0;color:#16181D}
+.d3 .ceu{background:linear-gradient(#E4E7EA 25%,rgba(228,231,234,0))}
+.d3 .marca{font-family:"Instrument Serif",serif;font-size:30px}.d3 .ch{font-weight:500;background:#fff;border-radius:999px}
+.d3 .ano{font-family:"Instrument Serif",serif;font-size:34px;padding:0;background:none}
+.d3 .folha{background:#FAFAF8;border-radius:24px 24px 0 0}
+.d3 .alca{background:#C9CDD2}.d3 .cab .per{color:#5D646D}.d3 .cab h2{font-family:"Instrument Serif",serif;font-weight:400;font-size:30px;line-height:32px}
+.d3 .prog{font-weight:500;border:1.5px solid #16181D;border-radius:999px}
+.d3 .nd i{background:#E9EBEE}.d3 .nd.feito i{background:#16181D}.d3 .nd.aberta i{background:#fff;box-shadow:inset 0 0 0 2px #B0802A}.d3 .nd.sel i{background:#B0802A;box-shadow:0 0 0 5px rgba(176,128,42,.2)}.d3 .nd.sel{font-weight:600}
+.d3 .acao{background:#16181D;color:#FAFAF8;border-radius:16px}.d3 .acao span{color:#A8AEB5}.d3 .acao b{font-family:"Instrument Serif",serif;font-weight:400;font-size:21px}.d3 .acao button{background:#B0802A;color:#fff;border-radius:999px}
+@media (max-width:1000px){.grade{grid-template-columns:1fr}.dir p{min-height:0}}
+</style></head>
+<body>
+<div class="intro"><h1>Três direções para o Atlas</h1><p>As três usam o mesmo layout novo: o mapa em 3D ocupa a tela inteira e a árvore do galho fica numa folha que se puxa de baixo, como num app de mapas. O que muda é a personalidade. Exemplo: meio do galho 3, com Hamurabi aberta.</p></div>
+<div class="grade">
+  <section class="dir"><h2>1. Lápis e ouro</h2><p>A noite de Babilônia: terra em lápis-lazúli, costas em ouro, arcos que brilham como constelações. Elegante e marcante.</p><div class="tel d1" data-tilt="52"></div></section>
+  <section class="dir"><h2>2. Maquete</h2><p>Um diorama de verdade: a terra tem espessura, o mar é turquesa, os arcos são grossos e coloridos. Divertido, de jogo moderno.</p><div class="tel d2" data-tilt="50" data-esp="1"></div></section>
+  <section class="dir"><h2>3. Atlas de museu</h2><p>Um mapa impresso que ganhou relevo: tinta preta, papel claro, ouro só no que está aberto, títulos com serifa. Sóbrio e adulto.</p><div class="tel d3" data-tilt="48"></div></section>
+</div>
+<script>/*DADOS*/</script>
+<script>/*PROTO*/</script>
+</body></html>

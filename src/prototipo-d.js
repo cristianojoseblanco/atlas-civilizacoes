@@ -228,11 +228,11 @@ function aplica(anima){
   const el = $('#painel'), m3 = $('#m3');
   el.classList.toggle('sem-trans', !anima);
   const {s, cx, cy, T, R} = cam;
-  m3.style.transform = `rotateX(${T}deg) rotateZ(${R}deg) scale(${s}) translate(${-cx}px, ${-cy}px)`;
+  m3.style.transform = `rotateX(${T}deg) rotateZ(${R}deg) scale3d(${s}, ${s}, ${s}) translate(${-cx}px, ${-cy}px)`;
   m3.style.setProperty('--k', 1 / s);
-  const em = (x, y) => `translate3d(${x}px, ${y}px, 3px) rotateZ(${-R}deg) rotateX(${-T}deg) scale(${1 / s})`;
+  const em = (x, y) => `translate3d(${x}px, ${y}px, 3px) rotateZ(${-R}deg) rotateX(${-T}deg) scale3d(${1 / s}, ${1 / s}, ${1 / s})`;
   el.querySelectorAll('.pin3').forEach(p => { const [x, y] = proj(TODAS[+p.dataset.gi]); p.style.transform = em(x, y); });
-  el.querySelectorAll('.sombra').forEach(p => { const [x, y] = proj(TODAS[+p.dataset.gi]); p.style.transform = `translate3d(${x}px, ${y}px, 1px) scale(${1 / s})`; });
+  el.querySelectorAll('.sombra').forEach(p => { const [x, y] = proj(TODAS[+p.dataset.gi]); p.style.transform = `translate3d(${x}px, ${y}px, 1px) scale3d(${1 / s}, ${1 / s}, ${1 / s})`; });
   const l = TODAS[focoGi], [x, y] = proj(l);
   $('#vjb').style.transform = em(x, y); $('#etq').style.transform = em(x, y);
   if (!anima) requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.remove('sem-trans'); posAlvos(); }));
