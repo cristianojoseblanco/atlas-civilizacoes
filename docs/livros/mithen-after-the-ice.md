@@ -67,12 +67,14 @@
 | 52 | Farmers in the Nile Valley and Beyond | 5500–4000 a.C. | Egito | Merimde, Fayum | antes do Egito faraônico |
 | Ep. | 'The Blessings of Civilisation' | — | Global | — | aquecimento global, passado e futuro |
 
-## Trilhas que este livro sustenta
+## Trilhas que este livro ajuda a sustentar
 
-1. **Depois do gelo (iniciante e colégio):** como o fim da Era do Gelo mudou o mundo e a agricultura surgiu em vários lugares, sem contato entre si. Crescente Fértil (caps. 4–11), China (39), Nova Guiné (37), México (30), Andes (29), Saara (51).
-2. **Os primeiros americanos (colégio e graduação):** da Beríngia a Monte Verde e à Amazônia (caps. 23–29), complementada com fontes posteriores a 2003.
+Os nomes das trilhas são do atlas, não do livro.
+
+1. **Muitos berços da agricultura (iniciante e colégio):** como o fim da Era do Gelo mudou o mundo e a agricultura surgiu em vários lugares, sem contato entre si. Crescente Fértil (caps. 4–11), China (39), Nova Guiné (37), México (30), Andes (29), Saara (51).
+2. **A chegada às Américas (colégio e graduação):** da Beríngia a Monte Verde e à Amazônia (caps. 23–29), complementada com fontes posteriores a 2003.
 3. **Grande pergunta "A agricultura veio antes dos monumentos?":** os caps. 7, 8 e 11 reforçam os casos de Jericó, Göbekli Tepe e Çatalhöyük.
-4. **Mares que subiram (colégio):** Doggerland, o Báltico e o Mar Negro (cap. 17).
+4. **Quando o mar engoliu terras (colégio):** Doggerland, o Báltico e o Mar Negro (cap. 17).
 
 ## Lugares candidatos a entrar no atlas
 
