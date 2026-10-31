@@ -36,6 +36,18 @@ Tabela nova, `desenvolvimentos.csv`, no mesmo padrão das outras:
 - **Base de conhecimento:** livros didáticos em PDF (um do ensino médio brasileiro, um universitário de história mundial, opcionalmente um de história da matemática) servem de índice e de fonte citada com página. Nenhum trecho é copiado para o site; preferir livros de licença aberta (ex.: OpenStax World History).
 - Trilhas novas previstas: Egito, Grécia e Roma, Rota da Seda, Américas pré-colombianas, África medieval, história da matemática.
 
+## Visão de longo prazo: aprendizado com conta e gamificação (30/10/2026)
+
+- **Conta do usuário:** login, página pessoal com progresso, aulas concluídas, conquistas e histórico.
+- **Gamificação, com identidade própria do atlas** (nada copiado de outros apps):
+  - aulas curtas em unidades e módulos, com desbloqueio em sequência;
+  - pontos por aula e quiz, sequência de dias estudados, metas diárias;
+  - revisão espaçada: perguntas erradas voltam dias depois;
+  - conquistas temáticas (por exemplo, "completou a Mesopotâmia", "acertou 50 datas");
+  - o mapa como recompensa: regiões e épocas "acendem" conforme o usuário estuda.
+- **Técnica:** o site hoje é uma página estática. Contas pedem um back-end (autenticação e banco). Até lá, o progresso fica salvo no navegador, num formato pensado para migrar depois.
+- **Consequência para agora:** aulas, blocos, quiz e glossário já nascem como unidades pequenas, com id estável, nível e tema, para servir de base às lições e à revisão espaçada.
+
 ## Modo "Preparo para provas"
 
 - Montar uma base de **temas cobrados** por prova e ano (ENEM, Fuvest, Unicamp, outras), a partir das provas e gabaritos públicos do INEP e das bancas.
