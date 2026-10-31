@@ -94,3 +94,10 @@ for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_C, ensure_ascii=False) +
     pc = pc.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
 (ROOT / 'prototipo-c.html').write_text(pc)
 print('prototipo-c.html', round(len(pc.encode()) / 1e3), 'kB')
+
+# ---------- prototipo-d.html: Cupertino e mapa 3D (mesmos dados do B) ----------
+pd = (src / 'prototipo-d.html').read_text()
+for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_B, ensure_ascii=False) + ';', 'PROTO': (src / 'prototipo-d.js').read_text()}.items():
+    pd = pd.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
+(ROOT / 'prototipo-d.html').write_text(pd)
+print('prototipo-d.html', round(len(pd.encode()) / 1e3), 'kB')
