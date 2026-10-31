@@ -12,9 +12,11 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | rotas | 10 | 10 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | trilhas | 3 | 3 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | trilhas_paradas | 51 | 51 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
+| quiz | 3 | 3 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
+| glossario | 3 | 3 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | sincronias | 30 | 30 (100%) | 0 (0%) | 0 (0%) | 0 (0%) |
 | artes_estilos | 34 | 33 (97%) | 1 (3%) | 0 (0%) | 0 (0%) |
-| **total** | **507** | **505 (100%)** | **1 (0%)** | **0 (0%)** | **1 (0%)** |
+| **total** | **513** | **511 (100%)** | **1 (0%)** | **0 (0%)** | **1 (0%)** |
 
 **Legenda:** *com fonte*: ao menos uma fonte em `fontes.csv` sustenta o item. *Revisado sem fonte*: conferido com conhecimento consolidado da área, mas ainda sem referência ligada. *Não revisado*: escrito e ainda não conferido. *Contestado*: há fontes em desacordo, e o texto deve dizer isso.
 
@@ -24,14 +26,15 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 |---|---|---|---|
 | F038 | 15 | C | Greek Colonization |
 | F010 | 11 | C | Discovering a New Neolithic World |
+| F076 | 8 | B | The Origins of Writing |
 | F018 | 8 | D | Karahan Tepe (Ancient Village or Settlement) e sítios próximos |
 | F016 | 8 | B | Taş Tepeler Project marks five years of rewriting human history |
 | F039 | 7 | B | The Greek Renaissance: chronology (HIST 210, Ancient Greek History) |
-| F076 | 6 | B | The Origins of Writing |
 | F087 | 6 | B | The Code of Hammurabi |
+| F054 | 6 | B | Lecture 5: Akkad and Empire (HIST 213) |
+| F055 | 6 | B | Akkad ou Agadé |
 | F075 | 5 | B | Uruk: The First City |
 | F013 | 5 | C | Tas Tepeler Discoveries Redraw the Map of Early Civilization in Turkey |
-| F055 | 5 | B | Akkad ou Agadé |
 | F035 | 5 | A | The Dawn of Everything: A New History of Humanity |
 | F074 | 4 | B | Reflections on the Mesopotamian Flood |
 | F086 | 4 | B | The Ishtar Gate and Neo-Babylonian art and architecture |
@@ -43,12 +46,13 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | F279 | 4 | B | Alexandria (Tentative list 1822) |
 | F281 | 4 | B | Archaeological Site of Carthage (No 37) |
 | F332 | 4 | B | Ancient Maya City and Protected Tropical Forests of Calakmul, Campeche (No 1061) |
-| F054 | 4 | B | Lecture 5: Akkad and Empire (HIST 213) |
 | F036 | 4 | A | Man Makes Himself |
 | F373 | 4 | C | Great Pyramid of Giza (timeline) |
 | F117 | 3 | B | Ubaid Culture in Mesopotamia |
 | F078 | 3 | B | Ur: The Royal Graves |
 | F058 | 3 | B | Ur - Dynasty III (iq_ur_dyn_3) |
+| F080 | 3 | B | Stele of Vultures |
+| F082 | 3 | B | Lugalzagesi |
 | F052 | 3 | B | The Isin-Larsa and Old Babylonian Periods (2004–1595 B.C.) |
 | F097 | 3 | B | Ctesiphon |
 | F361 | 3 | B | Baghdad: History |
@@ -90,6 +94,7 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | F380 | 3 | C | Second Punic War |
 | F250 | 3 | B | Qhapaq Ñan, Andean Road System (No 1459) |
 | F367 | 3 | B | Mexico City, Mexico (Organization of World Heritage Cities) |
+| F122 | 3 | B | The Cyrus Cylinder (BM 90920) |
 | F403 | 3 | B | The Middle Ages: The Black Death (LaunchPacks) |
 | F404 | 3 | B | Map 13.1 Advance of the Black Death, 1346–1353 |
 | F460 | 3 | A | Lapis Lazuli: The Early Phases of its Trade |
@@ -98,8 +103,6 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | F453 | 3 | A | Efter Dilmun norm |
 | F073 | 2 | C | Eridu |
 | F079 | 2 | B | Jewellery from the Royal Cemetery (ANE 122334) |
-| F080 | 2 | B | Stele of Vultures |
-| F082 | 2 | B | Lugalzagesi |
 | F053 | 2 | B | Larsa |
 | F063 | 2 | C | Mighty Mari |
 | F064 | 2 | C | The Greatest Library Before Alexandria |
@@ -168,7 +171,6 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | F438 | 2 | B | Musa I of Mali (summary) |
 | F396 | 2 | B | Turkey: History |
 | F385 | 2 | A | Sui-Tang Chang'an (A.D. 582–904) |
-| F122 | 2 | B | The Cyrus Cylinder (BM 90920) |
 | F407 | 2 | B | San Salvador Island |
 | F408 | 2 | B | Vasco da Gama: Round Africa to India, 1497–1498 |
 | F410 | 2 | B | Magellan got the credit, but this man was first to sail around the world |

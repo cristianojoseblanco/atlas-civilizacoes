@@ -107,6 +107,16 @@ for r in tab('artes_regras'):
 
 # temas e níveis (vocabulário controlado em temas.csv e niveis.csv)
 TEMAS = {r['id'] for r in tab('temas')}; NIVEIS = {r['id'] for r in tab('niveis')}
+GL = {r['id'] for r in tab('glossario')}
+for r in tab('glossario'): checa_fontes('glossario', r['id'], r)
+for r in tab('quiz'):
+    rid = f"{r['trilha_id']}#{r['ordem']}"; checa_fontes('quiz', rid, r)
+    if r['trilha_id'] not in TRI: erros.append(f'quiz {rid}: trilha inexistente')
+    n_ops = len(r['opcoes'].split('|'))
+    if not r['correta'].isdigit() or not 1 <= int(r['correta']) <= n_ops: erros.append(f'quiz {rid}: alternativa correta inválida')
+for r in tab('trilhas_paradas'):
+    for c in (r.get('conceitos') or '').split(';'):
+        if c and c not in GL: erros.append(f"trilhas_paradas {r['trilha_id']}#{r['ordem']}: conceito inexistente {c}")
 TAB_TN = ['lugares', 'civilizacoes', 'eventos', 'rotas', 'trilhas', 'trilhas_paradas', 'sincronias']
 cob_tn = {}
 for n in TAB_TN:
@@ -127,7 +137,7 @@ def cobertura(n):
 linhas = ['# Auditoria do conteúdo', '', f'Gerado por `scripts/validar.py` em {datetime.date.today().isoformat()}.', '',
           '## Situação das fontes', '', '| Tabela | Itens | Com fonte | Revisado sem fonte | Não revisado | Contestado |', '|---|---|---|---|---|---|']
 tot = collections.Counter(); tt = 0
-for n in ['lugares', 'civilizacoes', 'eventos', 'rotas', 'trilhas', 'trilhas_paradas', 'sincronias', 'artes_estilos']:
+for n in ['lugares', 'civilizacoes', 'eventos', 'rotas', 'trilhas', 'trilhas_paradas', 'quiz', 'glossario', 'sincronias', 'artes_estilos']:
     t, c = cobertura(n); tot.update(c); tt += t
     pct = lambda k: f"{c[k]} ({round(100 * c[k] / t)}%)" if t else '0'
     linhas.append(f"| {n} | {t} | {pct('com_fonte')} | {pct('revisado_sem_fonte')} | {pct('nao_revisado')} | {pct('contestado')} |")

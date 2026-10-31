@@ -148,6 +148,123 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
 .credit a{color:inherit}
 @media (max-width:600px){ .hide-sm{display:none} header h1{font-size:14px;white-space:nowrap} header h1 small{display:none} .tourbtn{padding:6px 10px;font-size:12px} .toggles{gap:6px;position:relative} .layersbtn{display:block} #layers{display:none;position:absolute;right:0;top:38px;flex-direction:column;align-items:stretch;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px} #layers.open{display:flex} #layers label{border:none;background:none} .toggles label{padding:5px 8px;font-size:11px} }
 @media (min-width:760px){ #theme{left:auto;right:16px;top:64px;max-height:calc(100vh - 260px);margin:0;width:380px} #theme:not(.open){transform:translateX(120%)} #tour{left:auto;right:16px;top:64px;max-height:calc(100vh - 260px);margin:0;width:380px} #tour:not(.open){transform:translateX(120%)} #card{left:auto;right:16px;top:64px;max-height:calc(100vh - 260px);margin:0;width:380px} #card:not(.open){transform:translateX(120%)} .zoombtns{top:auto;bottom:190px} }
+
+/* ===== layout 2026-10-31: painel lateral, aula em meia tela, rodapé enxuto ===== */
+:root{--pane:0px;--panebg:#12161c}
+.searchpill{display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;background:var(--panel);border:1px solid rgba(255,255,255,.16);color:var(--mute);font:500 13px Inter,system-ui,sans-serif;cursor:pointer;min-width:44px;justify-content:center}
+.searchpill:hover{color:var(--ink)}
+.periodbtn{margin-left:auto;margin-right:8px;height:38px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:var(--ink);font:600 12px Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+.periodbtn b{color:var(--gold)}
+.pane{position:fixed;z-index:6;background:var(--panebg);color:var(--ink);overflow:auto;transition:transform .35s ease,opacity .35s;opacity:0;pointer-events:none}
+.pane.open,#card.open,#theme.open{opacity:1;pointer-events:auto}
+.p-head{display:flex;justify-content:space-between;align-items:center}
+.p-year{font-family:Cinzel,serif;font-size:26px;font-weight:700;margin:6px 0 8px}
+.p-sec{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--mute);margin:16px 0 8px;font-weight:600}
+#period #eratext{font-size:14px;color:var(--ink);line-height:1.55;margin:0}
+#period #chips{flex-wrap:wrap;overflow:visible;margin:0}
+#period #sync{font-size:13.5px;color:var(--ink);margin:0}
+#period #news{margin:8px 0 0;font-size:12.5px}
+.l-icon{width:44px;height:44px;border:none;background:none;color:var(--mute);font-size:20px;cursor:pointer;border-radius:10px;flex:0 0 auto}
+.l-icon:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+.l-icon.on{color:#1a1405;background:var(--gold)}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px}
+.pills span{padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:12px;font-weight:600}
+.pills:empty{display:none}
+.see{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.see:empty{display:none}
+.see h4{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--mute);font-weight:600;margin-bottom:2px}
+.see button{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:42px;padding:0 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--ink);font:600 13px Inter,system-ui,sans-serif;cursor:pointer;text-align:left}
+.see button:hover{background:rgba(255,255,255,.09)}
+.see button span{color:var(--mute);font-weight:500;font-size:12px;white-space:nowrap}
+.see button.lesson span{color:var(--gold);font-weight:600}
+/* aula */
+#tour{display:flex;flex-direction:column;overflow:hidden}
+.l-head{display:flex;align-items:center;gap:6px;padding:14px 16px 10px 24px;border-bottom:1px solid rgba(255,255,255,.08)}
+.l-titles{flex:1;min-width:0}
+.l-kick{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:700}
+.l-name{font-family:Cinzel,serif;font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.l-count{font-size:12px;color:var(--mute);white-space:nowrap}
+.l-prog{display:flex;gap:3px;padding:0 24px;margin:10px 0 0}
+.l-prog i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.14)}
+.l-prog i.done{background:var(--gold)}.l-prog i.cur{background:#ffe08f}
+.l-body{flex:1;display:flex;min-height:0}
+.l-nav{width:210px;flex:0 0 auto;overflow:auto;padding:16px 10px 16px 18px;border-right:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:2px}
+.l-nav button{display:flex;align-items:center;gap:10px;min-height:38px;padding:4px 8px;border-radius:10px;border:none;background:none;color:var(--mute);font:500 13px Inter,system-ui,sans-serif;text-align:left;cursor:pointer;line-height:1.25}
+.l-nav button:hover{background:rgba(255,255,255,.05);color:var(--ink)}
+.l-nav button.cur{background:rgba(233,185,73,.13);color:var(--ink);font-weight:700}
+.l-nav b{width:22px;height:22px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.l-nav button.done b{background:var(--gold);border-color:var(--gold);color:#1a1405}
+.l-nav button.cur b{border:2px solid var(--gold)}
+.l-nav .sep{height:1px;background:rgba(255,255,255,.08);margin:8px 0}
+.l-main{flex:1;min-width:0;overflow:auto;padding:28px 34px 24px}
+.l-main .k{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:700}
+.l-main h2{font-family:Cinzel,serif;font-size:32px;line-height:1.15;margin:8px 0 16px}
+.l-main p{font-size:16.5px;line-height:1.7;margin:0 0 14px}
+.l-main .term{color:#ffd978;background:rgba(233,185,73,.12);border-bottom:2px dotted var(--gold);padding:0 3px;border-radius:3px;font-weight:600}
+.l-boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:6px 0 14px}
+.l-box{padding:13px 15px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);font-size:14px;line-height:1.55}
+.l-box h5{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:5px}
+.l-box.think{background:rgba(78,163,255,.08);border-color:rgba(78,163,255,.35)}.l-box.think h5{color:#9fcbff}
+.l-box.goal{background:rgba(233,185,73,.08);border-color:rgba(233,185,73,.3)}
+.l-meta{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 16px}
+.l-meta span{padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:12.5px;font-weight:600}
+.l-foot{display:flex;gap:10px;padding:14px 24px 18px;border-top:1px solid rgba(255,255,255,.08)}
+.l-btn{height:48px;padding:0 20px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--ink);font:600 15px Inter,system-ui,sans-serif;cursor:pointer}
+.l-btn.primary{flex:1;background:var(--gold);border-color:var(--gold);color:#1a1405;font-weight:700}
+.l-btn:disabled{opacity:.35;cursor:default}
+.q-op{display:flex;align-items:center;gap:10px;width:100%;min-height:50px;margin:0 0 10px;padding:12px 16px;text-align:left;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);color:var(--ink);font:500 15px Inter,system-ui,sans-serif;cursor:pointer}
+.q-op:hover:not(:disabled){background:rgba(255,255,255,.09)}
+.q-op.ok{background:rgba(143,209,158,.12);border:2px solid #8fd19e;font-weight:600}
+.q-op.bad{background:rgba(255,138,61,.1);border:2px solid #ff8a3d}
+.q-op:disabled{cursor:default}
+.q-ex{padding:13px 15px;border-radius:14px;font-size:14px;line-height:1.55;margin-top:6px}
+.q-ex.ok{background:rgba(143,209,158,.08);border:1px solid rgba(143,209,158,.4)}.q-ex.ok b{color:#8fd19e}
+.q-ex.bad{background:rgba(255,138,61,.08);border:1px solid rgba(255,138,61,.4)}.q-ex.bad b{color:#ffb27f}
+.l-res{margin:0 0 16px;padding-left:20px;font-size:16px;line-height:1.6}.l-res li{margin-bottom:8px}
+.l-score{font-family:Cinzel,serif;font-size:22px;color:var(--gold);margin:4px 0 14px}
+.l-src{font-size:12px;color:var(--mute);margin-top:6px}
+/* escolha das aulas */
+#tourMenu .tm-box{max-width:1080px;max-height:90vh;padding:26px 30px}
+#tmList{display:block}
+.tm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.tm-item{margin:0;height:100%}
+.tm-prog{display:block;height:5px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:10px;overflow:hidden}
+.tm-prog i{display:block;height:100%;background:var(--gold)}
+.tm-st{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:4px}
+.tm-st.go{color:var(--gold)}.tm-st.done{color:#8fd19e}
+.tm-soon{padding:14px 16px;border-radius:12px;border:1px dashed rgba(255,255,255,.2);color:var(--mute);font-size:13px;line-height:1.5}
+@media (min-width:760px){
+  #map{right:auto;width:calc(100vw - var(--pane))}
+  header{right:var(--pane)}
+  #hud{right:var(--pane)}
+  .zoombtns{right:calc(var(--pane) + 14px);top:auto;bottom:150px}
+  .credit{right:calc(var(--pane) + 8px)}
+  body.side{--pane:400px}
+  body.lesson{--pane:50vw}
+  #card,#theme,#period{left:auto;right:0;top:0;bottom:0;width:400px;max-width:none;max-height:none;margin:0;border-radius:0;border:none;border-left:1px solid rgba(255,255,255,.1);background:var(--panebg);box-shadow:none;backdrop-filter:none;padding:22px 24px;transform:translateX(100%)}
+  #card.open,#theme.open,#period.open{transform:none}
+  #tour{left:auto;right:0;top:0;bottom:0;width:50vw;max-width:none;max-height:none;margin:0;padding:0;border-radius:0;border:none;border-left:1px solid rgba(255,255,255,.1);background:var(--panebg);box-shadow:none;transform:translateX(100%)}
+  #tour.open{transform:none}
+  body.lesson #card{width:400px;z-index:7;box-shadow:-20px 0 40px rgba(0,0,0,.45)}
+  #theme:not(.open),#card:not(.open),#period:not(.open){transform:translateX(100%)}
+  #cArt{margin:-22px -24px 12px}
+  #cClose{top:14px;right:14px}
+}
+body.lesson #layers,body.lesson header h1 small,body.lesson .hide-sm,body.lesson .legend{display:none}
+body.lesson header h1{font-size:15px}
+@media (min-width:760px) and (max-width:1100px){ .l-nav{display:none} .l-main{padding:24px 26px} }
+@media (max-width:759px){
+  #card,#theme,#period,#tour{left:0;right:0;top:auto;bottom:0;max-width:none;margin:0;max-height:62vh;padding:18px 18px 16px;border-radius:20px 20px 0 0;border:none;border-top:1px solid rgba(255,255,255,.14);background:var(--panebg);transform:translateY(105%);box-shadow:0 -10px 40px rgba(0,0,0,.5)}
+  #card.open,#theme.open,#period.open,#tour.open{transform:none}
+  #tour{height:66vh;max-height:66vh;padding:0}
+  .l-nav{display:none}
+  .l-main{padding:18px 20px}
+  .l-main h2{font-size:24px}
+  .l-main p{font-size:16px}
+  body.sheet #hud{display:none}
+  body.sheet .zoombtns{display:none}
+  .periodbtn{padding:0 10px}
+}
 </style>
 </head>
 <body>
@@ -155,7 +272,7 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
 <header>
   <h1>Atlas das Civilizações<small>Fronteiras do mundo ao longo do tempo</small></h1>
   <div class="toggles">
-    <button id="btnSearch" class="layersbtn searchbtn" aria-label="Buscar">⌕</button>
+    <button id="btnSearch" class="searchpill" aria-label="Buscar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg><span class="hide-sm">Buscar lugar, povo, evento…</span></button>
     <button id="btnTours" class="tourbtn">▶ Aprender<span class="hide-sm"> história</span></button>
     <button id="btnLayers" class="layersbtn" aria-label="Camadas">☰</button>
     <div id="layers">
@@ -170,9 +287,9 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
 <div id="hud">
   <div class="hudtop">
     <div><div id="year"></div><div id="era"></div></div>
-    <div class="ctrl"><button id="prev" aria-label="Anterior">‹</button><button id="play" aria-label="Reproduzir">▶</button><button id="next" aria-label="Próximo">›</button></div>
+    <button id="btnPeriod" class="periodbtn">Neste período</button><div class="ctrl"><button id="prev" aria-label="Anterior">‹</button><button id="play" aria-label="Reproduzir">▶</button><button id="next" aria-label="Próximo">›</button></div>
   </div>
-  <div id="eratext"></div><div id="sync"></div><div id="chips"></div><div id="news"></div>
+  
   <div class="track"><input type="range" id="slider" min="0" step="1"><div id="ticks"></div></div>
   <div class="legend"><span><i style="background:hsl(30 70% 58%)"></i>Estados e impérios</span><span><i style="background:transparent;border:1px dashed #9a8f7a"></i>Povos e culturas</span><span><i style="background:#fff6df;border-radius:50%;border:2px solid #2a1c0e"></i>Cidades</span><span><i style="background:#f0c454;transform:rotate(45deg) scale(.8)"></i>Sítios</span><span id="lgPaleo" style="display:none"><i style="background:rgba(176,160,118,.8);border:1px dashed #ebe1be"></i><span id="lgPaleoT">Terra hoje submersa</span></span></div>
 </div>
@@ -183,18 +300,22 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
   <div id="cTitle"></div>
   <div id="cSub"></div>
   <div id="cMeta"></div>
+  <div id="cPills" class="pills"></div>
   <div id="cText"></div>
-  <details id="cSrcBox"><summary>Fontes e verificação</summary><div id="cSrc"></div></details>
+  <div id="cSee" class="see"></div>
+  <details id="cSrcBox" open><summary>Fontes e verificação</summary><div id="cSrc"></div></details>
   <div class="cact"><a id="cLink" target="_blank" rel="noopener">Ler na Wikipédia ↗</a><button id="cJump">Ir para quando surge</button></div>
 </div>
-<div id="tour">
-  <div id="tBar"></div>
-  <div class="t-head"><span id="tName"></span><button id="tClose" aria-label="Sair da trilha">×</button></div>
-  <div id="tStep"></div>
-  <div id="tTitle"></div>
-  <div id="tText"></div>
-  <details class="srcbox"><summary>Fontes e verificação</summary><div id="tSrc"></div></details>
-  <div class="t-ctrl"><button id="tPrev" aria-label="Parada anterior">‹</button><button id="tAuto" aria-label="Pausar ou continuar">❚❚</button><button id="tNext" aria-label="Próxima parada">›</button><div class="t-prog"><i id="tProg"></i></div></div>
+<div id="tour" class="pane">
+  <div class="l-head">
+    <div class="l-titles"><div class="l-kick" id="lKick"></div><div class="l-name" id="tName"></div></div>
+    <span id="lCount" class="l-count"></span>
+    <button id="tAuto" class="l-icon" aria-label="Assistir: avançar sozinho" title="Assistir: avançar sozinho">▶</button>
+    <button id="tClose" class="l-icon" aria-label="Sair da aula">×</button>
+  </div>
+  <div id="lProg" class="l-prog"></div>
+  <div class="l-body"><nav id="lNav" class="l-nav" aria-label="Etapas da aula"></nav><div id="lMain" class="l-main"></div></div>
+  <div class="l-foot"><button id="tPrev" class="l-btn">Voltar</button><button id="tNext" class="l-btn primary">Continuar</button></div>
 </div>
 <div id="theme">
   <div class="t-head"><span class="th-kick">Grande pergunta</span><button id="thClose" aria-label="Sair">×</button></div>
@@ -204,7 +325,12 @@ body.touring #hud .ctrl, body.touring #chips{opacity:.35}
   <div id="thLegend"></div>
   <div id="thList"></div>
 </div>
-<div id="search"><div class="s-box"><input id="sInput" type="search" placeholder="Buscar: Uruk, Incas, Rota da Seda, Peste…" autocomplete="off"><div id="sResults"></div></div></div>
+<div id="period" class="pane">
+  <div class="p-head"><span class="th-kick">Neste período</span><button id="pClose" class="l-icon" aria-label="Fechar">×</button></div>
+  <div id="pYear" class="p-year"></div>
+  <div id="pBody"><div id="eratext"></div><h4 class="p-sec">Acontecendo agora</h4><div id="chips"></div><div id="news"></div><h4 class="p-sec">Enquanto isso</h4><div id="sync"></div></div>
+</div>
+<div id="search"><div class="s-box"><input id="sInput" type="search" placeholder="Buscar lugar, povo, evento ou aula…" autocomplete="off"><div id="sResults"></div></div></div>
 <div id="tourMenu"><div class="tm-box"><div class="tm-top"><h2>Aprender história</h2><button id="tmClose" aria-label="Fechar">×</button></div><div id="tmList"></div></div></div>
 <div class="credit">Fronteiras: <a href="https://github.com/aourednik/historical-basemaps" target="_blank" rel="noopener">historical-basemaps</a> (GPL-3), aproximadas · Relevo e rios: Natural Earth</div>
 

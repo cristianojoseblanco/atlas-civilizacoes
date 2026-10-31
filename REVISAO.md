@@ -163,3 +163,12 @@ Fontes F328–F415. Agora 410 itens têm fonte, 96 estão revisados sem fonte e 
 - Fundo do mar: ETOPO1 em grade de 10 minutos de arco (cerca de 18 km), via projeto Fatiando a Terra (F468). Linhas de costa em 14 níveis, de −70 a −2 m.
 - Limites do método ("banheira"): não considera o afundamento e a subida da crosta sob o peso do gelo nem a sedimentação. Báltico, Mar Branco e Baía de Hudson ficam de fora (estavam sob gelo ou com nível próprio), assim como Mar Negro, Cáspio e Aral (lagos com nível próprio).
 - Anos novos na linha do tempo: 9000, 7000, 6500 e 6000 a.C., para ver o mar subir.
+
+## 31/10/2026: layout novo e aula de verdade
+
+- Computador: cards, grandes perguntas e "Neste período" ficam num painel fixo à direita (400 px); o mapa encolhe e nada fica por cima dele. A aula ocupa meia tela.
+- Celular: os painéis viram gaveta que sobe de baixo.
+- Rodapé enxuto: ano, época e linha do tempo. "Enquanto isso", eventos e "Surgem…" foram para o painel "Neste período".
+- Card: temas em pílulas, "Veja também" (lugares próximos da mesma época e aulas que passam pelo lugar) e fontes visíveis.
+- Aula: abertura com objetivo, etapas com sumário e progresso, conceitos do glossário destacados no texto, "Para pensar", quiz com explicação e fonte, resumo e próxima aula. Progresso salvo no navegador.
+- Dados novos: `glossario.csv` (3 termos), `quiz.csv` (3 perguntas da Mesopotâmia), colunas `objetivo` e `resumo` em `trilhas`, `pergunta` e `conceitos` em `trilhas_paradas`.

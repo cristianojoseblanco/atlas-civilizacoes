@@ -13,11 +13,11 @@ def aud(r): return {'fontes': lst(r.get('fontes')), 'status': r.get('status') or
 
 def gerar():
     fontes = {r['id']: r for r in tab('fontes')}
-    civs = [dict(id=r['id'], keys=r['chaves_mapa'].split('|'), pt=r['nome'], periodo=r['periodo'], cidades=r['centros'], texto=r['descricao'], **aud(r)) for r in tab('civilizacoes')]
+    civs = [dict(id=r['id'], keys=r['chaves_mapa'].split('|'), pt=r['nome'], periodo=r['periodo'], cidades=r['centros'], texto=r['descricao'], temas=lst(r['temas']), **aud(r)) for r in tab('civilizacoes')]
     eras = [dict(ate=num(r['ate_ano']), nome=r['nome'], t=r['descricao']) for r in sorted(tab('epocas'), key=lambda r: num(r['ate_ano']))]
     places = []
     for r in tab('lugares'):
-        p = dict(id=r['id'], k='c' if r['tipo'] == 'cidade' else 's', n=r['nome'], p=r['pais'], lat=num(r['lat']), lon=num(r['lon']), y=num(r['ano_inicio']), e=num(r['ano_fim']), w=num(r['importancia']), t=r['descricao'], **aud(r))
+        p = dict(id=r['id'], k='c' if r['tipo'] == 'cidade' else 's', n=r['nome'], p=r['pais'], lat=num(r['lat']), lon=num(r['lon']), y=num(r['ano_inicio']), e=num(r['ano_fim']), w=num(r['importancia']), t=r['descricao'], temas=lst(r['temas']), **aud(r))
         if r['grupo']: p['g'] = r['grupo']
         places.append(p)
     traj = {}
@@ -44,13 +44,20 @@ def gerar():
         if tipo[r['trilha_id']] == 'passeio':
             s = dict(ano=num(r['ano']), foco=[[num(a) for a in c.split()] for c in r['foco'].split(';') if c], t=r['titulo'], txt=r['texto'], **base)
             if r['texto_iniciante']: s['ti'] = r['texto_iniciante']
+            if r.get('pergunta'): s['q'] = r['pergunta']
+            if r.get('conceitos'): s['cs'] = lst(r['conceitos'])
             if r['zoom']: s['k'] = num(r['zoom'])
             for k, c in (('ev', 'evento'), ('rt', 'rota'), ('lugar', 'lugar')):
                 if r[c]: s[k] = r[c]
             steps.setdefault(r['trilha_id'], []).append(s)
         else:
             casos.setdefault(r['trilha_id'], []).append(dict(n=r['titulo'], at=[num(r['lon']), num(r['lat'])], y=num(r['ano']), lado=r['lado'], t=r['texto'], **base))
-    tours = [dict(id=r['id'], n=r['nome'], cor=r['cor'], d=r['descricao'], nivel=r['nivel'], temas=lst(r['temas']), steps=steps.get(r['id'], [])) for r in tri if r['tipo'] == 'passeio']
+    quiz = {}
+    for r in sorted(tab('quiz'), key=lambda r: (r['trilha_id'], int(r['ordem']))):
+        quiz.setdefault(r['trilha_id'], []).append(dict(p=r['pergunta'], ops=r['opcoes'].split('|'), ok=int(r['correta']) - 1, ex=r['explicacao'], nivel=r['nivel'], **aud(r)))
+    tours = [dict(id=r['id'], n=r['nome'], cor=r['cor'], d=r['descricao'], nivel=r['nivel'], temas=lst(r['temas']), obj=r.get('objetivo', ''),
+                  res=[x for x in (r.get('resumo') or '').split('|') if x], quiz=quiz.get(r['id'], []), steps=steps.get(r['id'], [])) for r in tri if r['tipo'] == 'passeio']
+    gloss = {r['id']: dict(termo=r['termo'], d=r['definicao'], **aud(r)) for r in tab('glossario')}
     themes = [dict(id=r['id'], n=r['nome'], ano=num(r['ano']), intro=r['descricao'], nivel=r['nivel'], temas=lst(r['temas']), casos=casos.get(r['id'], []), **aud(r)) for r in tri if r['tipo'] == 'debate']
     temas_js = [dict(id=r['id'], n=r['nome']) for r in tab('temas')]
     mar = [[num(r['ano']), num(r['nivel_m'])] for r in sorted(tab('nivel_mar'), key=lambda r: num(r['ano']))]
@@ -66,5 +73,5 @@ def gerar():
         if r['ano_min'] != '': q['a'] = num(r['ano_min'])
         if r['ano_max'] != '': q['b'] = num(r['ano_max'])
         regras.append(q)
-    out = dict(ART=art, ART_RULES=regras, FONTES=fontes_js, CIVS=civs, ERAS=eras, PLACES=places, EVENT_CATS=cats, EVENTS=events, ROUTES=routes, TOURS=tours, LADOS=lados, THEMES=themes, SYNC=sync, TEMAS=temas_js, NIVEL_MAR=mar)
+    out = dict(ART=art, ART_RULES=regras, FONTES=fontes_js, CIVS=civs, ERAS=eras, PLACES=places, EVENT_CATS=cats, EVENTS=events, ROUTES=routes, TOURS=tours, LADOS=lados, THEMES=themes, SYNC=sync, TEMAS=temas_js, NIVEL_MAR=mar, GLOSS=gloss)
     return ''.join(f'const {k}={json.dumps(v, ensure_ascii=False, separators=(",", ":"))};\n' for k, v in out.items())

@@ -343,6 +343,7 @@ function updateHUD(anim){
   yearTween = requestAnimationFrame(step);
   renderSync();
   renderChips();
+  if (typeof updatePeriodBtn === 'function') updatePeriodBtn();
   const novos = PLACES.filter(placeIsNew);
   $('#news').textContent = novos.length ? 'Surgem: ' + novos.slice(0, 4).map(p => p.n.replace(/ \(.*/, '')).join(', ') + (novos.length > 4 ? ` e mais ${novos.length - 4}` : '') : '';
 }
@@ -439,6 +440,8 @@ function openCiv(name, quiet){
   { const it = layer(SNAP_YEARS[idx]).find(x => x.name === name); const c = it ? d3.geoCentroid(it.f) : [0, 0];
     const yy = civ ? (parsePeriodo(civ.periodo) || [SNAP_YEARS[idx]])[0] : SNAP_YEARS[idx];
     setArt(c[0], c[1], yy, null, civ && civ.id); }
+  setPills(civ ? (civ.temas || []).map(t => TEMA_N[t]) : []);
+  setSee(civ ? PLACES.filter(p => civ.cidades.split(/,\s*/).some(n => p.n.startsWith(n))).slice(0, 4).map(p => ({label:p.n, sub:(p.k === 's' ? 'sítio' : 'cidade') + ' · ' + fmtYear(p.y), go:() => goPlace(p)})) : []);
   showCard();
   if (!quiet) redraw();
 }
@@ -455,12 +458,58 @@ function openPlace(pl){
   $('#cJump').style.display = 'none';
   setBar(pl.k === 's' ? 'linear-gradient(90deg,#f0c454,#b8862b)' : 'linear-gradient(90deg,#fff6df,#c9b48a)');
   setArt(pl.lon, pl.lat, pl.y, pl.g, pl.id);
+  setPills((pl.temas || []).map(t => TEMA_N[t]));
+  setSee(seePlace(pl));
   showCard();
   redraw();
 }
-function showCard(){ card.classList.add('open'); $('#tour').classList.add('behind'); $('#theme').classList.add('behind'); }
-function closeCard(){ card.classList.remove('open'); $('#tour').classList.remove('behind'); $('#theme').classList.remove('behind'); selected = null; redraw(); }
+// ---------- painéis (lado direito no computador, gaveta no celular) ----------
+let paneKey = '';
+function setPane(){
+  const B = document.body, lesson = $('#tour').classList.contains('open');
+  const side = !lesson && ['#card', '#theme', '#period'].some(q => $(q).classList.contains('open'));
+  const sheet = lesson || side || card.classList.contains('open');
+  B.classList.toggle('lesson', lesson); B.classList.toggle('side', side); B.classList.toggle('sheet', sheet);
+  const key = (lesson ? 'L' : side ? 'S' : '-') + innerWidth;
+  if (key !== paneKey) {
+    paneKey = key;
+    if (!projection) return;
+    // mantém o mesmo lugar no centro e a mesma escala visual quando o mapa muda de largura
+    const c0 = projection.invert([(W / 2 - transform.x) / transform.k, (H / 2 - transform.y) / transform.k]);
+    const vs = projection.scale() * transform.k;
+    setup();
+    if (c0 && isFinite(c0[0])) {
+      const k = Math.max(1, vs / projection.scale()), P = projection(c0);
+      d3.select(canvas).call(zoom.transform, d3.zoomIdentity.translate(W / 2 - P[0] * k, H / 2 - P[1] * k).scale(k));
+    }
+    redraw();
+  }
+}
+function showCard(){ $('#period').classList.remove('open'); card.classList.add('open'); card.scrollTop = 0; setPane(); }
+function closeCard(){ card.classList.remove('open'); selected = null; setPane(); redraw(); }
 $('#cClose').onclick = closeCard;
+const TEMA_N = Object.fromEntries(TEMAS.map(t => [t.id, t.n]));
+function setPills(list){ $('#cPills').innerHTML = (list || []).filter(Boolean).map(x => `<span>${esc(x)}</span>`).join(''); }
+function setSee(items){
+  const box = $('#cSee'); box.innerHTML = '';
+  if (!items.length) return;
+  const h = document.createElement('h4'); h.textContent = 'Veja também'; box.append(h);
+  items.slice(0, 5).forEach(it => {
+    const b = document.createElement('button'); if (it.lesson) b.className = 'lesson';
+    b.innerHTML = '<b></b><span></span>'; b.querySelector('b').textContent = it.label; b.querySelector('span').textContent = it.sub;
+    b.onclick = it.go; box.append(b);
+  });
+}
+function km(a, b){ const r = Math.PI / 180, x = (b[0] - a[0]) * r * Math.cos((a[1] + b[1]) / 2 * r), y = (b[1] - a[1]) * r; return Math.hypot(x, y) * 6371; }
+function lessonsFor(match){
+  return TOURS.filter(t => t.steps.some(match)).map(t => ({label:'Aula: ' + t.n, sub:'abrir ›', lesson:true, go:() => { closeCard(); startTour(t); }}));
+}
+function seePlace(pl){
+  const near = PLACES.filter(p => p !== pl && km([pl.lon, pl.lat], [p.lon, p.lat]) < 450 && (p.e == null || p.e >= pl.y) && (pl.e == null || pl.e >= p.y))
+    .sort((a, b) => b.w - a.w || km([pl.lon, pl.lat], [a.lon, a.lat]) - km([pl.lon, pl.lat], [b.lon, b.lat])).slice(0, 3)
+    .map(p => ({label:p.n, sub:(p.k === 's' ? 'sítio' : 'cidade') + ' · ' + fmtYear(p.y), go:() => goPlace(p)}));
+  return lessonsFor(s => s.lugar === pl.n).concat(near);
+}
 
 // ---------- eventos e rotas (camada animada) ----------
 const geoms = new Map(); // id -> {pts:[[x,y,brk]], cum:[], total}
@@ -620,8 +669,9 @@ function flyTo(lonlats, kFixed){
   const xs = P.map(p => p[0]), ys = P.map(p => p[1]);
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
   const portrait = H > W;
-  const vw = portrait ? W : W - 420, vh = portrait ? H * 0.28 : H - 300;
-  const cx = portrait ? W / 2 : (W - 400) / 2, cy = portrait ? H * 0.6 : 60 + (H - 290) / 2;
+  const sheet = portrait && document.body.classList.contains('sheet');
+  const vw = W - 60, vh = sheet ? H * 0.3 : portrait ? H * 0.45 : H - 260;
+  const cx = W / 2, cy = sheet ? 70 + H * 0.17 : portrait ? H * 0.42 : 60 + (H - 230) / 2;
   let k = P.length === 1 ? 4 : Math.min(vw * 0.8 / Math.max(1, x1 - x0), vh * 0.8 / Math.max(1, y1 - y0));
   k = kFixed || Math.max(1.2, Math.min(7, k));
   const T = d3.zoomIdentity.translate(cx - (x0 + x1) / 2 * k, cy - (y0 + y1) / 2 * k).scale(k);
@@ -646,6 +696,7 @@ function openEvent(ev, fly){
   $('#cJump').style.display = 'none';
   setBar(cat.cor);
   { const p0 = evPoints(ev)[0]; setArt(p0[0], p0[1], ev.y, null); }
+  setPills([cat.nome]); setSee(lessonsFor(s => s.ev === ev.id));
   showCard();
   evOverride[ev.id] = performance.now();
   if (fly) flyTo(evPoints(ev));
@@ -662,6 +713,7 @@ function openRoute(rt, fly){
   $('#cJump').style.display = 'none';
   setBar(rt.cor);
   { const m = rt.path[Math.floor(rt.path.length / 2)]; setArt(m[0], m[1], rt.y, null); }
+  setPills(['Comércio']); setSee(lessonsFor(s => s.rt === rt.id));
   showCard();
   if (fly) flyTo(rt.path);
 }
@@ -677,7 +729,7 @@ function renderChips(){
     b.innerHTML = `<i style="background:${rt.cor}"></i>`; b.append(document.createTextNode(rt.n));
     b.onclick = () => { if (!showRoutes) { showRoutes = true; $('#tRoutes').checked = true; } openRoute(rt, true); }; box.append(b);
   });
-  box.style.display = box.children.length ? '' : 'none';
+  if (!box.children.length) box.innerHTML = '<span class="muted">Nenhum evento ou rota neste período.</span>'; box.style.display = '';
 }
 
 // ---------- trilhas guiadas (passeios) ----------
@@ -715,20 +767,24 @@ function openTourMenu(){
     });
     list.append(tc);
   }
-  const h1 = document.createElement('h3'); h1.className = 'tm-sec'; h1.textContent = 'Trilhas'; list.append(h1);
+  const h1 = document.createElement('h3'); h1.className = 'tm-sec'; h1.textContent = 'Aulas'; list.append(h1);
+  const grid1 = document.createElement('div'); grid1.className = 'tm-grid'; list.append(grid1);
   let n = 0;
   TOURS.filter(trilhaOk).forEach(t0 => {
     const t = tourFor(t0); if (!t.steps.length) return; n++;
     const b = document.createElement('button'); b.className = 'tm-item';
-    b.innerHTML = `<span class="tm-bar" style="background:${t.cor}"></span><b></b><span class="tm-d"></span><span class="tm-n"></span>`;
+    const P = progFor(t.id), st = P.fim ? ['done', 'Concluída' + (P.quiz != null ? ` · quiz ${P.quiz} de ${(t.quiz || []).length}` : '')] : P.visto ? ['go', `Em andamento · etapa ${Math.min(P.visto, t.steps.length)} de ${t.steps.length}`] : ['', 'Não iniciada'];
+    b.innerHTML = `<span class="tm-bar" style="background:${t.cor}"></span><span class="tm-st ${st[0]}"></span><b></b><span class="tm-d"></span><span class="tm-n"></span><span class="tm-prog"><i style="width:${P.fim ? 100 : Math.round(Math.min(P.visto, t.steps.length) / t.steps.length * 100)}%"></i></span>`;
+    b.querySelector('.tm-st').textContent = st[1];
     b.querySelector('b').textContent = t.n; b.querySelector('.tm-d').textContent = t.d;
-    b.querySelector('.tm-n').textContent = `${t.steps.length} paradas · cerca de ${Math.max(1, Math.round(t.steps.reduce((a, s) => a + stepDur(s), 0) / 60000))} min`;
+    b.querySelector('.tm-n').textContent = `${t.steps.length} etapas · cerca de ${Math.max(5, Math.round(t.steps.reduce((a, s) => a + stepDur(s), 0) / 60000))} min` + ((t.quiz || []).length ? ' · com quiz' : '');
     b.onclick = () => { $('#tourMenu').classList.remove('open'); startTour(t0); };
-    list.append(b);
+    grid1.append(b);
   });
   const ths = THEMES.filter(trilhaOk);
   if (ths.length) {
     const h = document.createElement('h3'); h.className = 'tm-sec'; h.textContent = 'Grandes perguntas'; list.append(h);
+    const grid2 = document.createElement('div'); grid2.className = 'tm-grid'; list.append(grid2);
     ths.forEach(th => {
       n++;
       const b = document.createElement('button'); b.className = 'tm-item';
@@ -736,67 +792,156 @@ function openTourMenu(){
       b.querySelector('b').textContent = th.n; b.querySelector('.tm-d').textContent = th.intro.split('. ')[0] + '.';
       b.querySelector('.tm-n').textContent = `${th.casos.length} casos no mapa`;
       b.onclick = () => { $('#tourMenu').classList.remove('open'); startTheme(th); };
-      list.append(b);
+      grid2.append(b);
     });
   }
+  const soon = document.createElement('div'); soon.className = 'tm-soon'; soon.style.marginTop = '14px';
+  soon.textContent = 'Em breve: Egito, Grécia e Roma, Rota da Seda, Américas, África medieval e história da matemática.'; list.append(soon);
   if (!n) { const e = document.createElement('p'); e.className = 'tm-help'; e.textContent = 'Nenhuma trilha para essa escolha ainda. Novas trilhas estão a caminho.'; list.append(e); }
   $('#tourMenu').classList.add('open');
 }
-function stepDur(st){ return 5000 + st.txt.length * 42; }
-function startTour(t){
-  t = tourFor(t); if (!t.steps.length) return;
+function stepDur(st){ return 7000 + st.txt.length * 45; }
+// ---------- aula: telas (abertura, etapas, quiz, resumo) ----------
+let PROG = {};
+try { PROG = JSON.parse(localStorage.getItem('atlas-progresso') || '{}') || {}; } catch (e) {}
+function saveProg(){ try { localStorage.setItem('atlas-progresso', JSON.stringify(PROG)); } catch (e) {} }
+function progFor(id){ return PROG[id] || (PROG[id] = {visto:0, quiz:null, fim:false}); }
+const NIV_NOME = {iniciante:'Iniciante', colegio:'Colégio', graduacao:'Graduação', completo:'Completo', personalizado:'Personalizado'};
+function screensFor(t){
+  const sc = [{tipo:'intro'}];
+  t.steps.forEach((s, i) => sc.push({tipo:'etapa', s, i}));
+  const qs = (t.quiz || []).filter(q => NIV_RANK[q.nivel || 'colegio'] <= NIV_RANK[learn.nivel] || learn.nivel === 'iniciante' && q.nivel === 'iniciante');
+  qs.forEach((q, i) => sc.push({tipo:'quiz', q, i, n:qs.length}));
+  sc.push({tipo:'fim'});
+  return sc;
+}
+function markTerms(txt, cs){
+  let h = esc(txt);
+  (cs || []).forEach(id => { const g = GLOSS[id]; if (!g) return;
+    const re = new RegExp('(' + g.termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'i');
+    h = h.replace(re, '<span class="term">$1</span>'); });
+  return h;
+}
+function srcLine(fontes){
+  const ids = (fontes || []).filter(f => FONTES[f]);
+  return ids.length ? '<div class="l-src">Fontes: ' + ids.map(f => { const F = FONTES[f]; return F.url ? `<a href="${esc(F.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(F.titulo)}</a>` : esc(F.titulo); }).join(' · ') + '</div>' : '';
+}
+function startTour(t0){
+  const t = tourFor(t0); if (!t.steps.length) return;
   if (playTimer) stopPlay();
   if (theme) endTheme();
-  closeCard();
-  tour = {t, i: -1, auto: true, timer: null};
+  closeCard(); $('#period').classList.remove('open');
+  tour = {t, src:t0, sc:screensFor(t), i:-1, auto:false, timer:null, quiz:{}};
   $('#tour').classList.add('open'); document.body.classList.add('touring');
-  $('#tName').textContent = t.n; $('#tName').style.color = t.cor; $('#tBar').style.background = t.cor;
-  tourStep(0);
+  $('#lKick').textContent = 'Aula · ' + NIV_NOME[learn.nivel]; $('#tName').textContent = t.n;
+  setPane();
+  setTimeout(() => tourStep(0), 60);
 }
+function tourGo(i){ tourStep(i); }
 function tourStep(i){
   if (!tour) return;
-  const t = tour.t; if (i < 0 || i >= t.steps.length) return;
-  tour.i = i; const st = t.steps[i];
+  const sc = tour.sc; if (i < 0 || i >= sc.length) return;
+  tour.i = i; const cur = sc[i], t = tour.t, nS = t.steps.length;
   clearTimeout(tour.timer);
-  closeCard();
-  const si = snapFor(st.ano); if (si !== idx) go(si);
-  if (st.rt) { if (!showRoutes) { showRoutes = true; $('#tRoutes').checked = true; } selected = {type:'rt', name: st.rt}; }
-  else if (st.lugar) selected = {type:'place', name: st.lugar};
-  else selected = null;
-  redraw();
-  if (st.ev) evOverride[st.ev] = performance.now() + 1300;
-  flyTo(st.foco, st.k);
-  $('#tStep').textContent = `${i + 1} / ${t.steps.length} · ${fmtYear(st.ano)}`;
-  $('#tTitle').textContent = st.t; $('#tText').textContent = st.txt;
-  $('#tSrc').innerHTML = srcHtml(st.fontes, st.status);
-  $('#tPrev').disabled = i === 0; $('#tNext').textContent = i === t.steps.length - 1 ? 'Fim' : '›';
-  $('#tour').scrollTop = 0;
+  if (card.classList.contains('open')) closeCard();
+  const P = progFor(t.id);
+  // mapa
+  if (cur.tipo === 'etapa') {
+    const st = cur.s;
+    const si = snapFor(st.ano); if (si !== idx) go(si);
+    if (st.rt) { if (!showRoutes) { showRoutes = true; $('#tRoutes').checked = true; } selected = {type:'rt', name: st.rt}; }
+    else if (st.lugar) selected = {type:'place', name: st.lugar};
+    else selected = null;
+    redraw();
+    if (st.ev) evOverride[st.ev] = performance.now() + 1300;
+    flyTo(st.foco, st.k);
+    P.visto = Math.max(P.visto, cur.i + 1); saveProg();
+  } else {
+    selected = null; redraw();
+    const all = t.steps.flatMap(s => s.foco); if (all.length) flyTo(all);
+    if (cur.tipo === 'intro') { const si = snapFor(t.steps[0].ano); if (si !== idx) go(si); }
+  }
+  // progresso e sumário
+  const etapa = cur.tipo === 'etapa' ? cur.i : cur.tipo === 'intro' ? -1 : nS;
+  $('#lProg').innerHTML = t.steps.map((s, k) => `<i class="${k < etapa ? 'done' : k === etapa ? 'cur' : ''}"></i>`).join('');
+  $('#lCount').textContent = cur.tipo === 'etapa' ? `${cur.i + 1} de ${nS}` : cur.tipo === 'quiz' ? `Quiz ${cur.i + 1} de ${cur.n}` : '';
+  const nav = $('#lNav'); nav.innerHTML = '';
+  sc.forEach((x, k) => {
+    if (x.tipo === 'quiz' && x.i > 0) return;
+    if (x.tipo === 'quiz' || x.tipo === 'fim') { if (!nav.querySelector('.sep')) { const d = document.createElement('div'); d.className = 'sep'; nav.append(d); } }
+    const b = document.createElement('button');
+    const isCur = k === i || (x.tipo === 'quiz' && cur.tipo === 'quiz');
+    const done = x.tipo === 'etapa' ? x.i < P.visto && !isCur : x.tipo === 'quiz' ? P.quiz != null : x.tipo === 'fim' ? P.fim : false;
+    b.className = (isCur ? 'cur ' : '') + (done ? 'done' : '');
+    const lab = x.tipo === 'intro' ? 'Abertura' : x.tipo === 'etapa' ? x.s.t : x.tipo === 'quiz' ? 'Quiz' : 'Resumo';
+    const num = x.tipo === 'etapa' ? (done ? '✓' : x.i + 1) : x.tipo === 'intro' ? '•' : x.tipo === 'quiz' ? '?' : '★';
+    b.innerHTML = `<b>${num}</b><span></span>`; b.querySelector('span').textContent = lab;
+    b.onclick = () => tourGo(k); nav.append(b);
+  });
+  // conteúdo
+  const M = $('#lMain'); M.scrollTop = 0;
+  let h = '';
+  if (cur.tipo === 'intro') {
+    const min = Math.max(5, Math.round(t.steps.reduce((a, s) => a + stepDur(s), 0) / 60000 + (sc.length - nS - 2) * 0.7));
+    h = `<div class="k">Nesta aula</div><h2>${esc(t.n)}</h2><p>${esc(t.d)}</p>
+      <div class="l-meta"><span>${nS} etapas</span><span>cerca de ${min} min</span>${(t.quiz || []).length ? `<span>quiz no fim</span>` : ''}<span>${esc(NIV_NOME[learn.nivel])}</span></div>
+      ${t.obj ? `<div class="l-boxes"><div class="l-box goal"><h5>Objetivo</h5>${esc(t.obj)}</div></div>` : ''}
+      <p class="muted" style="font-size:13px">O mapa acompanha cada etapa. Você avança no seu ritmo; o botão ▶ no topo faz a aula andar sozinha.</p>`;
+  } else if (cur.tipo === 'etapa') {
+    const st = cur.s, boxes = [];
+    (st.cs || []).forEach(id => { const g = GLOSS[id]; if (g) boxes.push(`<div class="l-box"><h5>Conceito · ${esc(g.termo)}</h5>${esc(g.d)}</div>`); });
+    if (st.q) boxes.push(`<div class="l-box think"><h5>Para pensar</h5>${esc(st.q)}</div>`);
+    h = `<div class="k">Etapa ${cur.i + 1} · ${esc(fmtYear(st.ano))}</div><h2>${esc(st.t)}</h2><p>${markTerms(st.txt, st.cs)}</p>
+      ${boxes.length ? `<div class="l-boxes">${boxes.join('')}</div>` : ''}${srcLine(st.fontes)}`;
+  } else if (cur.tipo === 'quiz') {
+    const q = cur.q, ans = tour.quiz[cur.i];
+    h = `<div class="k">Quiz · pergunta ${cur.i + 1} de ${cur.n}</div><h2 style="font-size:26px">${esc(q.p)}</h2>` +
+      q.ops.map((o, k) => `<button class="q-op${ans != null ? (k === q.ok ? ' ok' : k === ans ? ' bad' : '') : ''}" data-k="${k}"${ans != null ? ' disabled' : ''}>${esc(o)}</button>`).join('') +
+      (ans != null ? `<div class="q-ex ${ans === q.ok ? 'ok' : 'bad'}"><b>${ans === q.ok ? 'Isso mesmo.' : 'Não foi essa.'}</b> ${esc(q.ex)}${srcLine(q.fontes)}</div>` : '');
+  } else {
+    const qs = sc.filter(x => x.tipo === 'quiz'), acertos = qs.filter(x => tour.quiz[x.i] === x.q.ok).length;
+    if (qs.length && Object.keys(tour.quiz).length === qs.length) { P.quiz = Math.max(P.quiz || 0, acertos); }
+    P.fim = true; saveProg();
+    const prox = TOURS.filter(trilhaOk).find(x => x.id !== t.id && !progFor(x.id).fim && tourFor(x).steps.length);
+    h = `<div class="k">Fim da aula</div><h2>${esc(t.n)}</h2>` +
+      (qs.length ? `<div class="l-score">Quiz: ${acertos} de ${qs.length} certas</div>` : '') +
+      (t.res && t.res.length ? `<div class="p-sec" style="margin-top:0">Resumo</div><ol class="l-res">${t.res.map(r => `<li>${esc(r)}</li>`).join('')}</ol>` : '') +
+      (prox ? `<div class="l-boxes"><div class="l-box goal"><h5>Próxima aula</h5>${esc(prox.n)}<br><button class="l-btn" id="lNext" style="margin-top:10px;height:42px">Começar</button></div></div>` : '');
+  }
+  M.innerHTML = h;
+  M.querySelectorAll('.q-op').forEach(b => b.onclick = () => { tour.quiz[cur.i] = +b.dataset.k; tourStep(i); });
+  const ln = $('#lNext'); if (ln) ln.onclick = () => { const prox = TOURS.filter(trilhaOk).find(x => x.id !== t.id && !progFor(x.id).fim && tourFor(x).steps.length); if (prox) startTour(prox); };
+  // rodapé
+  $('#tPrev').disabled = i === 0;
+  const nxt = sc[i + 1];
+  const blocked = cur.tipo === 'quiz' && tour.quiz[cur.i] == null;
+  $('#tNext').disabled = blocked;
+  $('#tNext').textContent = cur.tipo === 'intro' ? 'Começar' : !nxt ? 'Voltar ao mapa' : nxt.tipo === 'quiz' && cur.tipo !== 'quiz' ? 'Ir para o quiz' : nxt.tipo === 'fim' ? 'Ver resumo' : blocked ? 'Escolha uma resposta' : 'Continuar';
   schedule();
 }
 function schedule(){
+  if (!tour) return;
   clearTimeout(tour.timer);
-  const bar = $('#tProg');
-  bar.style.transition = 'none'; bar.style.width = '0%';
-  $('#tAuto').textContent = tour.auto ? '❚❚' : '▶';
-  if (!tour.auto) return;
-  const dur = stepDur(tour.t.steps[tour.i]);
-  requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = `width ${dur}ms linear`; bar.style.width = '100%'; }));
-  tour.timer = setTimeout(() => { if (tour.i < tour.t.steps.length - 1) tourStep(tour.i + 1); else { tour.auto = false; schedule(); } }, dur);
+  $('#tAuto').classList.toggle('on', tour.auto); $('#tAuto').textContent = tour.auto ? '❚❚' : '▶';
+  const cur = tour.sc[tour.i];
+  if (!tour.auto || !cur || cur.tipo !== 'etapa' && cur.tipo !== 'intro') return;
+  const dur = cur.tipo === 'intro' ? 6000 : stepDur(cur.s);
+  tour.timer = setTimeout(() => { if (tour && tour.sc[tour.i + 1]) tourStep(tour.i + 1); }, dur);
 }
 function endTour(){
   if (!tour) return;
   clearTimeout(tour.timer); tour = null;
   $('#tour').classList.remove('open'); document.body.classList.remove('touring');
-  selected = null; redraw();
+  selected = null; setPane(); redraw();
 }
 $('#btnTours').onclick = openTourMenu;
 $('#tmClose').onclick = () => $('#tourMenu').classList.remove('open');
 $('#tourMenu').addEventListener('click', e => { if (e.target.id === 'tourMenu') $('#tourMenu').classList.remove('open'); });
 $('#tPrev').onclick = () => tourStep(tour.i - 1);
-$('#tNext').onclick = () => tour.i === tour.t.steps.length - 1 ? endTour() : tourStep(tour.i + 1);
+$('#tNext').onclick = () => { if (tour.i === tour.sc.length - 1) endTour(); else tourStep(tour.i + 1); };
 $('#tAuto').onclick = () => { tour.auto = !tour.auto; schedule(); };
 $('#tClose').onclick = endTour;
-window.__tour = (id, i = 0, nivel) => { if (nivel) learn.nivel = nivel; startTour(TOURS.find(t => t.id === id)); if (i) tourStep(i); };
+window.__tour = (id, i = 0, nivel) => { if (nivel) learn.nivel = nivel; startTour(TOURS.find(t => t.id === id)); if (i) setTimeout(() => tourStep(i), 80); };
 
 // ---------- enquanto isso ----------
 let syncI = 0;
@@ -813,6 +958,10 @@ function showSync(list){
   el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
 }
 $('#sync').onclick = () => { const l = syncNow(); if (l.length > 1) { syncI++; showSync(l); } };
+function periodCount(){ return activeEvents().length + ROUTES.filter(r => overlapsSnap(r.y, r.e) || (r.y <= SNAP_YEARS[idx] && r.e >= SNAP_YEARS[idx])).length + syncNow().length; }
+function updatePeriodBtn(){ const n = periodCount(); $('#btnPeriod').innerHTML = 'Neste período' + (n ? ` <b>${n}</b>` : ''); $('#pYear').textContent = fmtYear(SNAP_YEARS[idx]) + ' · ' + eraFor(SNAP_YEARS[idx]).nome; }
+$('#btnPeriod').onclick = () => { const P = $('#period'); if (P.classList.contains('open')) P.classList.remove('open'); else { if (card.classList.contains('open')) closeCard(); if (theme) endTheme(); P.classList.add('open'); P.scrollTop = 0; } setPane(); };
+$('#pClose').onclick = () => { $('#period').classList.remove('open'); setPane(); };
 
 // ---------- grandes perguntas ----------
 let theme = null;
@@ -837,14 +986,15 @@ function startTheme(th){
     b.querySelector('b').textContent = c.n; b.querySelector('span').textContent = 'c. ' + fmtYear(c.y);
     b.onclick = () => openCase(c, true); ul.append(b);
   });
-  $('#theme').classList.add('open'); $('#theme').scrollTop = 0;
+  $('#period').classList.remove('open');
+  $('#theme').classList.add('open'); $('#theme').scrollTop = 0; setPane();
   selected = null; redraw();
   flyTo(th.casos.map(c => c.at));
 }
 function endTheme(){
   if (!theme) return;
   theme = null; document.body.classList.remove('theming');
-  $('#theme').classList.remove('open'); closeCard();
+  $('#theme').classList.remove('open'); closeCard(); setPane();
 }
 function openCase(c, fly){
   selected = {type:'th', name:c.n};
@@ -856,7 +1006,7 @@ function openCase(c, fly){
   setSrc(c.fontes, c.status);
   $('#cLink').href = wiki(c.n.replace(/:.*/, '').replace(/'/g, ''));
   $('#cJump').style.display = 'none';
-  setBar(L.cor); setArt(c.at[0], c.at[1], c.y, null); showCard();
+  setBar(L.cor); setArt(c.at[0], c.at[1], c.y, null); setPills([L.nome]); setSee([]); showCard();
   if (fly) flyTo([c.at], 5);
 }
 function drawTheme(t){
@@ -1003,8 +1153,8 @@ window.__pt = (lon, lat) => { const p = projection([lon, lat]); return [p[0]*tra
 window.__go = i => go(i);
 window.__ne = () => flyTo([[35,26],[62,38]]);
 window.flyTo = flyTo; window.features = features; window.layer = layer; window.__idx = () => idx;
-window.addEventListener('resize', () => { setup(); redraw(); });
-setup(); slider.value = idx; updateHUD(false);
+window.addEventListener('resize', () => { paneKey = ''; setPane(); });
+setup(); slider.value = idx; updateHUD(false); updatePeriodBtn();
 d3.select(canvas).call(zoom.transform, initialView());
 evStart = performance.now();
 requestAnimationFrame(tick);
