@@ -172,3 +172,9 @@ Fontes F328–F415. Agora 410 itens têm fonte, 96 estão revisados sem fonte e 
 - Card: temas em pílulas, "Veja também" (lugares próximos da mesma época e aulas que passam pelo lugar) e fontes visíveis.
 - Aula: abertura com objetivo, etapas com sumário e progresso, conceitos do glossário destacados no texto, "Para pensar", quiz com explicação e fonte, resumo e próxima aula. Progresso salvo no navegador.
 - Dados novos: `glossario.csv` (3 termos), `quiz.csv` (3 perguntas da Mesopotâmia), colunas `objetivo` e `resumo` em `trilhas`, `pergunta` e `conceitos` em `trilhas_paradas`.
+
+## Página Aprender (31/10/2026)
+- Nova página `aprender.html`: curso Oriente Antigo em 6 unidades e 32 lições (árvore em `data/licoes/plano.csv`).
+- Primeira lição oficial publicada: "A revolução urbana" (5 seções, 19 perguntas no nível colégio). Texto original em português, com fontes por seção.
+- XP: 10 por acerto de primeira, 5 na revisão de uma pergunta errada, 30 de bônus ao terminar a lição. Progresso salvo só no navegador até o login (Supabase).
+- Cada seção tem "Ver no mapa", que abre o atlas no ano e no lugar da seção (`index.html#ano=…&foco=…&zoom=…`).

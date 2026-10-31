@@ -1,6 +1,6 @@
 # Auditoria do conteúdo
 
-Gerado por `scripts/validar.py` em 2026-10-30.
+Gerado por `scripts/validar.py` em 2026-10-31.
 
 ## Situação das fontes
 
@@ -471,7 +471,7 @@ Gerado por `scripts/validar.py` em 2026-10-30.
 | F143 | 1 | B | The Sun Stone (Calendar Stone) |
 | F144 | 1 | B | Incised furniture plaque with a frieze of lotus blossoms and buds (325874) |
 
-Fontes cadastradas sem uso por nenhum item: F001, F002, F003, F037, F466, F467, F468 (bases geográficas aparecem em `bases_geograficas.csv`).
+Fontes cadastradas sem uso por nenhum item: F001, F002, F003, F037, F466, F467, F468, F469 (bases geográficas aparecem em `bases_geograficas.csv`).
 
 ## Temas e níveis
 

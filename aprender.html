@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aprender história · Atlas das Civilizações</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e1217;--card:#161b22;--line:rgba(255,255,255,.1);--ink:#ece6d6;--mute:#b4ad9b;--gold:#e9b949;--gold2:#ffd978;--ok:#8fd19e;--bad:#ff9a5c;--blue:#9fcbff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif}
+a{color:var(--gold2)}
+button{font-family:inherit}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 20px;background:rgba(14,18,23,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.logo{font-family:Cinzel,serif;font-weight:700;color:var(--gold);font-size:18px;text-decoration:none;margin-right:auto}
+.logo small{display:block;font-family:Inter;font-weight:500;font-size:11px;color:var(--mute)}
+.navlink{height:40px;display:flex;align-items:center;padding:0 14px;border-radius:999px;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:13px;font-weight:600}
+.stat{display:flex;align-items:center;gap:6px;height:40px;padding:0 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:700;white-space:nowrap}
+.stat i{font-style:normal;color:var(--gold)}
+.wrap{max-width:860px;margin:0 auto;padding:28px 20px 80px}
+h1{font-family:Cinzel,serif;font-size:34px;line-height:1.15}
+h2{font-family:Cinzel,serif;font-size:24px;line-height:1.2}
+.k{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.mute{color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:var(--ink);font-weight:600;font-size:13px;cursor:pointer}
+.chip.on{background:var(--gold);border-color:var(--gold);color:#1a1405}
+.btn{height:50px;padding:0 22px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--ink);font-weight:700;font-size:15px;cursor:pointer}
+.btn.primary{background:var(--gold);border-color:var(--gold);color:#1a1405}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+/* início */
+.hero{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between;margin-bottom:28px}
+.prof{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:20px 0 26px}
+.pbox{padding:14px 16px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.pbox b{display:block;font-family:Cinzel,serif;font-size:24px;color:var(--gold2)}
+.pbox span{font-size:12px;color:var(--mute)}
+.lvbar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:8px;overflow:hidden}.lvbar i{display:block;height:100%;background:var(--gold)}
+.unit{margin:26px 0;padding:22px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
+.unit.lock{opacity:.6}
+.unit-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-bottom:6px}
+.path{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
+.node{display:flex;gap:12px;align-items:center;width:100%;min-height:64px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink);text-align:left;cursor:pointer;font-size:14px;font-weight:600;line-height:1.3}
+.node:disabled{cursor:default}
+.node .ic{width:38px;height:38px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;border:2px solid rgba(255,255,255,.25);color:var(--mute)}
+.node.open{border-color:rgba(233,185,73,.6);background:rgba(233,185,73,.08)}
+.node.open .ic{background:var(--gold);border-color:var(--gold);color:#1a1405}
+.node.done .ic{background:var(--ok);border-color:var(--ok);color:#10261a}
+.node.soon{border-style:dashed;color:var(--mute)}
+.node small{display:block;font-size:11.5px;font-weight:500;color:var(--mute);margin-top:3px}
+/* lição */
+.prog{display:flex;gap:4px;margin:6px 0 22px}.prog i{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.12)}.prog i.done{background:var(--gold)}.prog i.cur{background:var(--gold2)}
+.reader p{font-size:18px;line-height:1.75;margin:0 0 18px;max-width:68ch}
+.reader b{color:var(--gold2);font-weight:600}
+.src{font-size:13px;color:var(--mute);line-height:1.6;margin-top:10px;padding-top:12px;border-top:1px solid var(--line)}
+.box{padding:16px 18px;border-radius:16px;background:rgba(233,185,73,.08);border:1px solid rgba(233,185,73,.3);font-size:15px;line-height:1.6}
+.q-op{display:block;width:100%;min-height:56px;margin:0 0 10px;padding:14px 18px;text-align:left;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);color:var(--ink);font-size:16px;font-weight:500;cursor:pointer}
+.q-op:hover:not(:disabled){background:rgba(255,255,255,.09)}
+.q-op.ok{background:rgba(143,209,158,.12);border:2px solid var(--ok);font-weight:600}
+.q-op.bad{background:rgba(255,154,92,.1);border:2px solid var(--bad)}
+.q-op:disabled{cursor:default}
+.fb{padding:16px 18px;border-radius:16px;font-size:15px;line-height:1.6;margin-top:6px}
+.fb.ok{background:rgba(143,209,158,.08);border:1px solid rgba(143,209,158,.4)}.fb.ok b{color:var(--ok)}
+.fb.bad{background:rgba(255,154,92,.08);border:1px solid rgba(255,154,92,.4)}.fb.bad b{color:var(--bad)}
+.xp{display:inline-block;margin-left:8px;padding:2px 10px;border-radius:999px;background:var(--gold);color:#1a1405;font-weight:800;font-size:13px}
+.big{font-family:Cinzel,serif;font-size:48px;color:var(--gold2)}
+.foot{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:24px 0 16px;margin-top:20px;display:flex;gap:10px}
+.foot .btn.primary{flex:1}
+@media (max-width:640px){ h1{font-size:27px} .reader p{font-size:17px} .prof{grid-template-columns:repeat(3,minmax(0,1fr))} .pbox b{font-size:20px} .top{padding:10px 12px} .logo small,.hide-sm{display:none} }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="index.html">Atlas das Civilizações<small>Aprender história</small></a>
+  <span class="stat" title="Pontos de experiência"><i>XP</i> <span id="sXp">0</span></span>
+  <span class="stat" title="Dias seguidos estudando"><i>Dias</i> <span id="sDias">0</span></span>
+  <a class="navlink" href="index.html"><span class="hide-sm">Voltar ao&nbsp;</span>mapa</a>
+</header>
+<main class="wrap" id="app"></main>
+<script>const LICOES={"unidades": [{"id": "oriente-antes", "curso": "oriente-antigo", "titulo": "Antes das cidades", "periodo": "c. 10 mil – 3500 a.C.", "descricao": "O cenário do Oriente Próximo, a agricultura, as aldeias e os primeiros centros de culto.", "requisitos": [], "licoes": [{"id": "oriente-como-estudar", "ordem": 1, "titulo": "Como estudar o Oriente Antigo", "requisitos": [], "base": "F469 cap. 1", "publicada": false}, {"id": "oriente-paisagem", "ordem": 2, "titulo": "Rios, montanhas e desertos", "requisitos": ["oriente-como-estudar"], "base": "F469 cap. 2", "publicada": false}, {"id": "oriente-neolitico", "ordem": 3, "titulo": "Das primeiras aldeias às chefias", "requisitos": ["oriente-paisagem"], "base": "F469 cap. 3;F466", "publicada": false}]}, {"id": "oriente-bronze-antigo", "curso": "oriente-antigo", "titulo": "As primeiras cidades e impérios", "periodo": "c. 3500 – 2000 a.C.", "descricao": "Uruk, as cidades sumérias, Ebla, o império de Akkad e a terceira dinastia de Ur.", "requisitos": ["oriente-antes"], "licoes": [{"id": "revolucao-urbana", "ordem": 1, "titulo": "A revolução urbana", "requisitos": [], "base": "F469 cap. 4;F075;F076", "publicada": true}, {"id": "uruk-expansao", "ordem": 2, "titulo": "A expansão de Uruk e sua crise", "requisitos": ["revolucao-urbana"], "base": "F469 cap. 5", "publicada": false}, {"id": "sumer-cidades", "ordem": 3, "titulo": "As cidades-Estado sumérias", "requisitos": ["uruk-expansao"], "base": "F469 cap. 6", "publicada": false}, {"id": "ebla", "ordem": 4, "titulo": "O mundo de Ebla", "requisitos": ["uruk-expansao"], "base": "F469 cap. 7", "publicada": false}, {"id": "akkad", "ordem": 5, "titulo": "O império de Akkad", "requisitos": ["sumer-cidades", "ebla"], "base": "F469 cap. 8", "publicada": false}, {"id": "ur-iii", "ordem": 6, "titulo": "Ur III: o último império sumério", "requisitos": ["akkad"], "base": "F469 cap. 9", "publicada": false}]}, {"id": "oriente-bronze-medio", "curso": "oriente-antigo", "titulo": "Reinos rivais e mercadores", "periodo": "c. 2000 – 1600 a.C.", "descricao": "Isin e Larsa, os mercadores de Assur, Mari, Hamurabi e os primeiros hititas.", "requisitos": ["oriente-bronze-antigo"], "licoes": [{"id": "crise-2000", "ordem": 1, "titulo": "A crise do fim do terceiro milênio", "requisitos": ["ur-iii"], "base": "F469 cap. 10", "publicada": false}, {"id": "isin-larsa", "ordem": 2, "titulo": "Isin e Larsa", "requisitos": ["crise-2000"], "base": "F469 cap. 11", "publicada": false}, {"id": "assur-mercadores", "ordem": 3, "titulo": "Assur e os mercadores da Anatólia", "requisitos": ["crise-2000"], "base": "F469 cap. 12", "publicada": false}, {"id": "mari", "ordem": 4, "titulo": "A época de Mari", "requisitos": ["crise-2000"], "base": "F469 cap. 13", "publicada": false}, {"id": "hamurabi", "ordem": 5, "titulo": "Hamurabi da Babilônia", "requisitos": ["isin-larsa", "mari"], "base": "F469 cap. 14", "publicada": false}, {"id": "hititas-antigos", "ordem": 6, "titulo": "Os primeiros hititas", "requisitos": ["assur-mercadores"], "base": "F469 cap. 15", "publicada": false}]}, {"id": "oriente-bronze-tardio", "curso": "oriente-antigo", "titulo": "A era das grandes potências", "periodo": "c. 1600 – 1200 a.C.", "descricao": "Mitanni, hititas, Egito na Síria-Palestina, Assíria média e Babilônia cassita.", "requisitos": ["oriente-bronze-medio"], "licoes": [{"id": "bronze-tardio-mundo", "ordem": 1, "titulo": "Carros de guerra, palácios e diplomacia", "requisitos": ["hamurabi", "hititas-antigos"], "base": "F469 cap. 16", "publicada": false}, {"id": "mitanni", "ordem": 2, "titulo": "O reino de Mitanni", "requisitos": ["bronze-tardio-mundo"], "base": "F469 cap. 17", "publicada": false}, {"id": "imperio-hitita", "ordem": 3, "titulo": "O império hitita", "requisitos": ["bronze-tardio-mundo"], "base": "F469 cap. 18", "publicada": false}, {"id": "siria-palestina-bt", "ordem": 4, "titulo": "Síria e Palestina entre impérios", "requisitos": ["bronze-tardio-mundo"], "base": "F469 cap. 19", "publicada": false}, {"id": "assiria-media", "ordem": 5, "titulo": "A Assíria média", "requisitos": ["mitanni"], "base": "F469 cap. 20", "publicada": false}, {"id": "babilonia-cassita", "ordem": 6, "titulo": "A Babilônia cassita", "requisitos": ["bronze-tardio-mundo"], "base": "F469 cap. 21", "publicada": false}]}, {"id": "oriente-ferro", "curso": "oriente-antigo", "titulo": "Depois do colapso", "periodo": "c. 1200 – 900 a.C.", "descricao": "A crise de 1200, Israel, fenícios, arameus e os reinos neo-hititas.", "requisitos": ["oriente-bronze-tardio"], "licoes": [{"id": "crise-1200", "ordem": 1, "titulo": "O colapso de 1200 a.C.", "requisitos": ["imperio-hitita", "siria-palestina-bt", "assiria-media", "babilonia-cassita"], "base": "F469 cap. 22", "publicada": false}, {"id": "israel", "ordem": 2, "titulo": "Israel e Judá", "requisitos": ["crise-1200"], "base": "F469 cap. 23", "publicada": false}, {"id": "fenicios", "ordem": 3, "titulo": "Os fenícios", "requisitos": ["crise-1200"], "base": "F469 cap. 24", "publicada": false}, {"id": "arameus", "ordem": 4, "titulo": "Os arameus", "requisitos": ["crise-1200"], "base": "F469 cap. 25", "publicada": false}, {"id": "neo-hititas", "ordem": 5, "titulo": "Os reinos neo-hititas", "requisitos": ["crise-1200"], "base": "F469 cap. 26", "publicada": false}, {"id": "assiria-babilonia-elam", "ordem": 6, "titulo": "Assíria, Babilônia e Elam antes do império", "requisitos": ["crise-1200"], "base": "F469 cap. 27", "publicada": false}]}, {"id": "oriente-imperios", "curso": "oriente-antigo", "titulo": "Os impérios universais", "periodo": "c. 900 – 330 a.C.", "descricao": "O império assírio, a Babilônia caldeia, os medos e a unificação persa.", "requisitos": ["oriente-ferro"], "licoes": [{"id": "assiria-expansao", "ordem": 1, "titulo": "A expansão assíria", "requisitos": ["assiria-babilonia-elam"], "base": "F469 cap. 28", "publicada": false}, {"id": "assiria-estrutura", "ordem": 2, "titulo": "Como funcionava o império assírio", "requisitos": ["assiria-expansao"], "base": "F469 cap. 29", "publicada": false}, {"id": "assiria-periferia", "ordem": 3, "titulo": "Nas bordas do império", "requisitos": ["assiria-expansao"], "base": "F469 cap. 30", "publicada": false}, {"id": "babilonia-caldeia", "ordem": 4, "titulo": "A Babilônia de Nabucodonosor", "requisitos": ["assiria-estrutura"], "base": "F469 cap. 31", "publicada": false}, {"id": "persas", "ordem": 5, "titulo": "Os medos e a unificação persa", "requisitos": ["babilonia-caldeia"], "base": "F469 cap. 32", "publicada": false}]}], "licoes": {"revolucao-urbana": {"id": "revolucao-urbana", "unidade": "oriente-bronze-antigo", "ordem": 1, "titulo": "A revolução urbana", "periodo": "c. 3500 – 3000 a.C.", "lugar": "Uruk, sul da Mesopotâmia", "requisitos": [], "objetivo": "Entender por que as primeiras cidades surgiram no sul da Mesopotâmia, como funcionavam templos e palácios, como a necessidade de controlar bens levou à escrita e como o poder passou a se justificar pela religião.", "fontes": [{"id": "F469", "loc": ""}, {"id": "F075", "loc": ""}, {"id": "F076", "loc": ""}], "secoes": [{"titulo": "Uma virada em poucos séculos", "ano": -3500, "foco": [[45.64, 31.32]], "zoom": 6.0, "fontes": [{"id": "F469", "loc": "cap. 4, p. 97-99"}, {"id": "F075", "loc": ""}], "paragrafos": ["Durante milhares de anos depois do início da agricultura, as pessoas do Oriente Próximo viveram em aldeias. Algumas aldeias eram maiores e mais ricas que outras, havia gente que dominava ofícios como a cerâmica ou o trabalho com cobre, e já existiam trocas a longa distância. Mas cada aldeia ainda se bastava a si mesma: cada família plantava, criava animais e fazia quase tudo de que precisava.", "Por volta de 3500 a.C., no sul da Mesopotâmia, isso mudou depressa. Em poucos séculos, uma povoação chamada **Uruk** cresceu até se tornar uma cidade de verdade, com templos monumentais, oficinas, armazéns e milhares de pessoas que não plantavam a própria comida. O arqueólogo Gordon Childe chamou essa transformação de **revolução urbana**, de propósito parecido com \"Revolução Industrial\": uma mudança que alterou tudo ao mesmo tempo.", "O nome é discutido. Não foi um acontecimento de um dia, e sim o resultado de um longo caminho que vinha desde o Neolítico. Ainda assim, o historiador Mario Liverani defende que a palavra \"revolução\" continua útil por dois motivos: a velocidade, porque depois de milênios de mudanças lentas houve um salto concentrado em poucos séculos; e a profundidade, porque mudaram juntas a população, a economia, a tecnologia, a política e a religião.", "Uma pergunta antiga é qual desses fatores veio primeiro. Por muito tempo, os estudiosos tentaram apontar uma causa única: a tecnologia, o aumento da população ou a organização política. Hoje a explicação mais aceita é a de um **sistema**: cada fator empurra os outros. Colheitas maiores alimentam mais gente; mais gente permite cavar canais e ampliar as terras cultivadas; os canais exigem alguém que coordene o trabalho; e quem coordena passa a controlar uma parte da colheita.", "Se for preciso escolher um ponto de partida lógico, ele é o **excedente**: comida a mais do que os agricultores precisam para viver. É ele que permite sustentar pessoas dedicadas o tempo todo a outras tarefas. O salto mais visível foi o tamanho das cidades, mas o mais importante foi o da **organização**: com a cidade nascem o Estado, a divisão da sociedade em grupos desiguais e, poucos séculos depois, a escrita. Por isso se diz que a história, no sentido de sociedades complexas e documentadas, começa aqui."], "perguntas": [{"nivel": "iniciante", "p": "Onde e quando surgiram as primeiras cidades, segundo esta lição?", "ops": ["No Egito, por volta de 5000 a.C.", "No sul da Mesopotâmia, por volta de 3500 a.C.", "Na Grécia, por volta de 1000 a.C.", "No vale do Indo, por volta de 7000 a.C."], "ok": 1, "ex": "O sul da Mesopotâmia, com Uruk à frente, viveu a primeira urbanização entre cerca de 3500 e 3000 a.C.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 97-99"}, {"id": "F075", "loc": ""}]}, {"nivel": "iniciante", "p": "O que é \"excedente\" agrícola?", "ops": ["Comida produzida além do que os agricultores precisam para viver", "Um tipo de canal de irrigação", "O imposto pago em prata ao rei", "A terra que fica sem cultivo"], "ok": 0, "ex": "O excedente é a sobra de comida. É ela que permite sustentar pessoas que não plantam, como artesãos, escribas e sacerdotes.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 97-99"}, {"id": "F075", "loc": ""}]}, {"nivel": "colegio", "p": "Por que muitos historiadores ainda usam a expressão \"revolução urbana\", mesmo sabendo que foi um processo longo?", "ops": ["Porque a mudança aconteceu em um único ano", "Porque houve uma revolta popular contra os reis", "Porque as mudanças foram rápidas em comparação com os milênios anteriores e atingiram todos os aspectos da vida", "Porque as cidades surgiram ao mesmo tempo no mundo todo"], "ok": 2, "ex": "O termo destaca a aceleração depois de um longo período lento e a profundidade das mudanças: população, economia, técnica, política e religião.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 97-99"}, {"id": "F075", "loc": ""}]}, {"nivel": "graduacao", "p": "Qual é a explicação hoje mais aceita para as causas da revolução urbana?", "ops": ["Uma única causa tecnológica: a invenção do arado", "Uma única causa demográfica: a chegada de imigrantes", "Uma única causa política: a conquista por um povo estrangeiro", "Um processo sistêmico, em que excedente, população, técnica e organização se reforçam mutuamente"], "ok": 3, "ex": "As tentativas de achar uma causa única deram lugar a um modelo sistêmico, em que os fatores interagem e se aceleram uns aos outros.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 97-99"}, {"id": "F075", "loc": ""}]}], "palavras": 371}, {"titulo": "Quem planta e quem não planta", "ano": -3300, "foco": [[45.64, 31.32], [45.4, 32.1]], "zoom": 5.0, "fontes": [{"id": "F469", "loc": "cap. 4, p. 98-109"}], "paragrafos": ["A grande novidade da cidade é separar, de forma permanente, dois tipos de gente. De um lado, os **produtores de comida**, que viviam nas aldeias espalhadas pelo campo e eram a grande maioria, talvez quatro em cada cinco pessoas. De outro, os **especialistas**, concentrados na cidade: oleiros, tecelões, metalúrgicos, mercadores, escribas, administradores e sacerdotes.", "A relação entre os dois lados era uma troca, mas uma troca desigual. A comida subia das aldeias para a cidade; da cidade desciam produtos e serviços. Na prática, porém, os especialistas ficavam com a melhor parte. Dominavam técnicas que os camponeses não tinham, estavam mais perto de quem tomava as decisões e conseguiam reservar para si uma fatia maior da riqueza.", "O centro de tudo eram o que o estudioso Leo Oppenheim chamou de **grandes organizações**: o **templo** e, mais tarde, o **palácio**. O templo era a \"casa do deus\", onde a comunidade se reunia para o culto; o palácio, a casa do rei e da sua corte. Os dois, porém, funcionavam também como empresas: tinham armazéns, oficinas, escritórios e arquivos. Para Liverani, é isso que distingue uma cidade de uma aldeia: a cidade tem grandes organizações; a aldeia, não.", "Quem trabalhava para o templo ou o palácio não tinha terra nem ferramentas próprias. Recebia **rações** de cevada, óleo e lã, ou um lote de terra para usar enquanto prestasse serviço. Já as famílias das aldeias eram donas das suas terras e dos seus animais, mas tinham de entregar uma parte da produção e, em certas épocas, trabalhar de graça para a cidade nas grandes colheitas ou em obras. Esse trabalho obrigatório é chamado de **corveia**.", "Em troca, o que voltava para o campo? Em boa parte, coisas imateriais: festas, rituais e a promessa de proteção divina. O retorno mais concreto eram os **canais de irrigação**, que só uma organização central conseguia planejar e construir. Num lugar plano, de rios que mudam de curso e enchentes perigosas, os canais transformavam pântanos e estepes em campos muito férteis.", "A paisagem também mudou. As cidades passaram a comandar um território com aldeias, vilas intermediárias e grandes fazendas do templo. Em volta de Uruk, que chegou a cerca de 100 hectares por volta de 3000 a.C., muitas aldeias próximas desapareceram: a população foi atraída para a cidade. Para proteger tanta riqueza concentrada, as cidades ergueram **muralhas**; as aldeias, pobres demais para valer o esforço, continuaram abertas."], "perguntas": [{"nivel": "iniciante", "p": "O que eram as \"grandes organizações\" das primeiras cidades?", "ops": ["Os exércitos das aldeias", "Os templos e palácios, que reuniam culto, armazéns, oficinas e administração", "As famílias mais numerosas", "Os mercados ao ar livre"], "ok": 1, "ex": "Templos e palácios eram ao mesmo tempo centros religiosos ou políticos e grandes empresas econômicas.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 98-109"}]}, {"nivel": "iniciante", "p": "Quem eram a maioria da população nas primeiras cidades-Estado?", "ops": ["Os escribas", "Os sacerdotes", "Os agricultores e pastores das aldeias", "Os mercadores"], "ok": 2, "ex": "A grande maioria continuava produzindo comida no campo; os especialistas eram uma minoria concentrada na cidade.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 98-109"}]}, {"nivel": "colegio", "p": "Como eram pagos os trabalhadores que dependiam do templo ou do palácio?", "ops": ["Com moedas de ouro", "Com rações de cevada, óleo e lã, ou com o uso de um lote de terra", "Com parte dos impostos de outras cidades", "Não recebiam nada, eram todos escravizados"], "ok": 1, "ex": "Ainda não havia moeda. O pagamento era feito em rações ou com terras cedidas em troca de serviço.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 98-109"}]}, {"nivel": "colegio", "p": "O que era a corveia?", "ops": ["Um imposto pago em prata", "Uma festa religiosa anual", "Trabalho obrigatório que as famílias das aldeias prestavam à cidade, em obras ou colheitas", "O nome do canal principal de Uruk"], "ok": 2, "ex": "A corveia era uma prestação de trabalho, usada em colheitas, canais, muralhas e também na guerra.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 98-109"}]}, {"nivel": "graduacao", "p": "Segundo Liverani, o que mais distingue uma cidade de uma aldeia nesse período?", "ops": ["O número de habitantes acima de 10 mil", "A presença de grandes organizações, como templos e palácios, que concentram decisão e redistribuição", "A existência de agricultura irrigada", "O uso de cerâmica feita no torno"], "ok": 1, "ex": "O critério é organizativo: a cidade abriga as grandes organizações; a aldeia não.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 98-109"}]}], "palavras": 398}, {"titulo": "Uma cidade que aprendeu a contar", "ano": -3200, "foco": [[45.64, 31.32]], "zoom": 7.0, "fontes": [{"id": "F469", "loc": "cap. 4, p. 109-113"}], "paragrafos": ["Numa aldeia, cada família sabia de cabeça o que tinha e o que devia. Numa cidade com milhares de trabalhadores recebendo rações todos os dias, isso deixou de ser possível. Para que a comida, a lã, o trabalho e a terra circulassem sem confusão, a administração precisou de **regras fixas e impessoais**: pesos e medidas iguais para todos, um sistema de números e uma tabela de valores.", "As medidas antigas vinham do corpo humano (o palmo, o pé, o cúbito) ou da carga que uma pessoa ou um burro conseguia carregar. Variavam de lugar para lugar. A solução foi encaixá-las num sistema numérico único. Na Mesopotâmia, esse sistema era o **sexagesimal**, de base 60. Um talento, por exemplo, valia 60 minas, e uma mina, 60 siclos. O mesmo raciocínio foi aplicado ao tempo: um ano administrativo de 360 dias, dividido em 12 meses de 30. É dessa tradição que herdamos as 60 unidades do minuto e da hora e os 360 graus do círculo.", "Também era preciso comparar coisas diferentes. Quanto vale um saco de cevada em lã? E um dia de trabalho? Em vez de memorizar todas as combinações, a administração escolheu poucos bens como **medida de valor**: principalmente a **cevada**, barata e presente em toda parte, e a **prata**, rara e fácil de guardar. Um siclo de prata podia equivaler, por exemplo, a cerca de 300 litros de cevada. A prata quase nunca mudava de mão; servia de régua para fazer as contas.", "Com isso, o próprio trabalho virou número. As rações mensais seguiam tabelas: um homem recebia mais que uma mulher, e uma mulher mais que uma criança. E, se um oleiro recebia uma ração fixa, a administração passava a cobrar dele uma quantidade fixa de vasos. O resultado foi a **produção em série**: peças padronizadas, feitas rápido, em grande quantidade.", "O exemplo mais famoso são as **tigelas de borda chanfrada**, vasilhas grosseiras feitas em molde e encontradas aos milhares perto dos templos. Durante muito tempo se pensou que cada tigela correspondia exatamente a uma ração diária, e que era jogada fora depois. Liverani discorda: os tamanhos não são tão regulares, e descartar tigelas seria um desperdício improvável. Para ele, eram louça usada para servir comida a trabalhadores temporários no próprio local. Seja como for, elas mostram uma economia que passou a funcionar por padrões e números."], "perguntas": [{"nivel": "iniciante", "p": "Qual era a base do sistema de numeração usado pela administração mesopotâmica?", "ops": ["10", "12", "60", "100"], "ok": 2, "ex": "O sistema era sexagesimal, de base 60. Ele sobrevive nos minutos, nas horas e nos graus do círculo.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 109-113"}]}, {"nivel": "iniciante", "p": "Quais bens serviam principalmente como medida de valor?", "ops": ["Ouro e marfim", "Cevada e prata", "Sal e conchas", "Cobre e estanho"], "ok": 1, "ex": "A cevada, barata e comum, e a prata, rara e durável, funcionavam como réguas para comparar o valor das outras coisas.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 109-113"}]}, {"nivel": "colegio", "p": "Por que as cidades precisaram de pesos e medidas padronizados?", "ops": ["Porque os deuses exigiam números perfeitos", "Porque a redistribuição de rações e produtos para milhares de pessoas exigia regras fixas e impessoais", "Porque o comércio com o Egito exigia moedas", "Porque as aldeias se recusavam a pagar tributo"], "ok": 1, "ex": "A escala da administração urbana tornou impossível controlar tudo de memória. Medidas comuns permitiam calcular e conferir.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 109-113"}]}, {"nivel": "colegio", "p": "O que a produção em série das primeiras cidades mostra?", "ops": ["Que cada artesão fazia peças únicas para cada cliente", "Que o trabalho passou a ser medido e cobrado em quantidades fixas, com peças padronizadas", "Que não havia mais trabalho manual", "Que as máquinas substituíram os oleiros"], "ok": 1, "ex": "Com ração fixa, a administração exigia uma produção fixa. Isso favoreceu peças rápidas, iguais e numerosas.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 109-113"}]}, {"nivel": "graduacao", "p": "Qual é a posição de Liverani sobre as tigelas de borda chanfrada?", "ops": ["Cada tigela media exatamente a ração diária de um trabalhador", "Eram descartadas depois de um único uso", "Eram louça para servir refeições a trabalhadores temporários, sem medir rações com precisão", "Eram oferendas enterradas nos templos"], "ok": 2, "ex": "Liverani rejeita a ideia de tigelas-medida descartáveis: os tamanhos variam e o descarte seria um desperdício. Ele as vê como louça de refeitório do templo.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 109-113"}]}], "palavras": 390}, {"titulo": "Do selo ao tablete: como nasceu a escrita", "ano": -3300, "foco": [[45.64, 31.32]], "zoom": 7.0, "fontes": [{"id": "F469", "loc": "cap. 4, p. 113-118"}, {"id": "F076", "loc": ""}], "paragrafos": ["Contar não bastava: era preciso **garantir** que ninguém mexesse no que estava guardado e **registrar** o que entrava e saía. O primeiro instrumento foi o **selo**. Um cilindro ou carimbo de pedra, com um desenho próprio de cada funcionário, era rolado sobre um pedaço de argila molhada que fechava um vaso, um saco ou o nó da porta de um armazém. Quando a argila secava, ninguém conseguia abrir sem quebrá-la. Os arqueólogos encontram montes desses lacres quebrados perto dos armazéns: são o rastro do controle diário.", "Para mandar ordens e pedidos, usavam-se pequenas **fichas de argila**, cujas formas representavam produtos e quantidades. Um funcionário que precisava de cevada para pagar os trabalhadores de um canal podia fechar as fichas certas dentro de uma bola de argila, a **bula**, e lacrá-la com o seu selo. No armazém, alguém abria a bula, conferia as fichas e entregava a cevada.", "Daí em diante, a mudança foi rápida. Para saber o conteúdo sem quebrar a bula, começou-se a imprimir as fichas também do lado de fora. Logo se percebeu que as marcas externas bastavam. A bola achatou e virou **tablete**, com marcas de números ao lado do selo. Em seguida vieram sinais desenhados com uma ponta de junco: números e figuras simplificadas de coisas, como ovelha, tecido ou cevada. Essa sequência é a reconstrução mais aceita para o nascimento da escrita em Uruk, por volta de 3300 a.C.", "O passo decisivo foi usar desenhos pelo **som**, e não pelo significado. Em sumério, a palavra para \"flecha\" soava como a palavra para \"vida\"; então o sinal da flecha passou a servir também para \"vida\". Com esse recurso, os escribas puderam escrever ideias abstratas, verbos, terminações gramaticais e nomes de pessoas. Esses jogos de som só funcionam em sumério, o que mostra que era essa a língua dos primeiros escribas. Com o tempo, os desenhos viraram combinações de marcas em forma de cunha: o **cuneiforme**.", "Escrever exigia anos de estudo, porque havia centenas de sinais. Surgiram **escolas de escribas**, e delas saiu a elite que administrava a cidade. Desde o início, ao lado das contas, aparecem **listas** organizadas por assunto: profissões, animais, vasos, plantas. Eram material escolar, mas também uma forma de pôr o mundo em ordem, classificando-o em categorias oficiais. Cartas, leis, orações e poemas só viriam séculos depois."], "perguntas": [{"nivel": "iniciante", "p": "Para que serviu a escrita quando foi inventada em Uruk?", "ops": ["Para registrar poemas sobre os deuses", "Para controlar bens, rações e trabalho da administração", "Para escrever cartas entre reis", "Para gravar as leis da cidade"], "ok": 1, "ex": "Os primeiros tabletes são registros administrativos. Literatura, cartas e leis aparecem séculos depois.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 113-118"}, {"id": "F076", "loc": ""}]}, {"nivel": "iniciante", "p": "Como se chama a escrita feita com marcas em forma de cunha na argila?", "ops": ["Hieróglifo", "Alfabeto", "Cuneiforme", "Pictograma chinês"], "ok": 2, "ex": "Cuneiforme vem do latim \"cuneus\", cunha, por causa da forma das marcas deixadas pelo estilete na argila.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 113-118"}, {"id": "F076", "loc": ""}]}, {"nivel": "colegio", "p": "Qual foi o papel das fichas e das bulas de argila?", "ops": ["Eram moedas usadas no mercado", "Representavam produtos e quantidades e, fechadas na bula com um selo, funcionavam como mensagens administrativas", "Eram brinquedos de crianças", "Eram pesos para balanças"], "ok": 1, "ex": "As fichas eram uma espécie de \"escrita com objetos\". A bula lacrada garantia que a mensagem era autêntica.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 113-118"}, {"id": "F076", "loc": ""}]}, {"nivel": "colegio", "p": "Que avanço permitiu escrever verbos, ideias abstratas e nomes próprios?", "ops": ["O uso de cores diferentes na argila", "Usar um desenho pelo som da palavra, e não pelo seu significado", "A invenção do papiro", "A adoção do alfabeto fenício"], "ok": 1, "ex": "O princípio do som (como num rébus) libertou a escrita das coisas desenháveis e permitiu escrever qualquer palavra.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 113-118"}, {"id": "F076", "loc": ""}]}, {"nivel": "graduacao", "p": "Por que os jogos de som dos primeiros sinais indicam que a língua dos escribas era o sumério?", "ops": ["Porque os tabletes trazem a palavra \"sumério\" escrita", "Porque não existia outra língua na região", "Porque as semelhanças de som entre as palavras usadas só existem em sumério", "Porque os sinais foram copiados do Egito"], "ok": 2, "ex": "Exemplos como \"flecha\" e \"vida\" só soam parecido em sumério, o que identifica a língua por trás da escrita.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 113-118"}, {"id": "F076", "loc": ""}]}], "palavras": 384}, {"titulo": "Deuses, reis e muralhas", "ano": -3100, "foco": [[45.64, 31.32]], "zoom": 6.0, "fontes": [{"id": "F469", "loc": "cap. 4, p. 118-122"}, {"id": "F075", "loc": ""}], "paragrafos": ["A cidade nasceu desigual. Uns trabalhavam no campo e entregavam a colheita; outros administravam, rezavam ou fabricavam objetos de luxo, e viviam melhor. Para Liverani, isso explica por que a revolução urbana é também o nascimento do **Estado**: uma organização que controla de forma estável um território com várias comunidades e distribui de maneira desigual o trabalho e os recursos. Para funcionar, ela precisava convencer os que carregavam o peso maior de que aquela ordem era boa para todos.", "Essa tarefa coube a dois grupos. A **burocracia**, formada sobretudo pelos escribas, cuidava da parte prática: recolher a produção das aldeias, pagar as rações, planejar canais, templos e muralhas, organizar o comércio com terras distantes. O **clero** cuidava da parte ideológica: os rituais diários e as grandes festas. A comunidade já estava acostumada a dar aos deuses a melhor parte da colheita em troca de chuva e boas safras. Agora, dava também uma parte aos dirigentes, em troca de organização e proteção.", "Os próprios deuses ficaram mais organizados. Como a sociedade, o mundo divino ganhou funções e hierarquias, formando um **panteão**, com templos diferentes em cada cidade. Em Uruk, o centro de tudo era o grande recinto sagrado do **Eanna**, dedicado à deusa **Inanna**, com vários templos, pátios e colunatas, e ao lado o templo de **Anu**, erguido sobre uma plataforma alta. Era a fachada que a cidade apresentava ao seu deus e, na prática, a que os dirigentes apresentavam à população.", "Havia ainda uma terceira função: a **força**. Era preciso defender a riqueza acumulada contra outras cidades e contra grupos de fora, e às vezes atacar para tomar terras, gente e bens. Formou-se um pequeno núcleo de guerreiros profissionais, reforçado em tempo de guerra por camponeses convocados, como numa corveia. A força também servia dentro de casa, contra quem se rebelasse.", "As três funções, administrar, celebrar o culto e guerrear, se juntavam numa só pessoa: o **governante**. Em Uruk, ele aparece nos selos como sacerdote supremo, administrador do templo em nome do deus e protetor da cidade, lutando contra feras e inimigos. Um palácio separado do templo ainda não existia. A coesão vinha de duas ideias: \"o deus está conosco\", que mantinha unidos os de dentro apesar da desigualdade, e \"os de fora são perigosos\", que justificava a guerra e a conquista."], "perguntas": [{"nivel": "iniciante", "p": "Qual era o edifício mais importante no centro de Uruk?", "ops": ["O mercado", "O complexo de templos, como o Eanna, dedicado à deusa Inanna", "O palácio do rei, separado do templo", "O porto fluvial"], "ok": 1, "ex": "Na época de Uruk, o templo era o centro simbólico e econômico da cidade. Palácios separados viriam depois.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 118-122"}, {"id": "F075", "loc": ""}]}, {"nivel": "iniciante", "p": "Por que as cidades construíram muralhas e as aldeias não?", "ops": ["Porque as aldeias ficavam nas montanhas", "Porque as cidades concentravam riquezas, alimentos e oficinas que valia a pena proteger", "Porque as muralhas eram templos para os deuses", "Porque as aldeias proibiam construções de pedra"], "ok": 1, "ex": "A muralha protegia o que a cidade acumulava. As aldeias eram muitas, pequenas e pobres demais para justificar a obra.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 118-122"}, {"id": "F075", "loc": ""}]}, {"nivel": "colegio", "p": "Quais três funções se reuniam na figura do governante das primeiras cidades?", "ops": ["Comércio, agricultura e pesca", "Administração, culto religioso e defesa", "Medicina, astronomia e escrita", "Justiça, arte e música"], "ok": 1, "ex": "O governante administrava a \"empresa\" do templo, chefiava o culto como sacerdote supremo e comandava a defesa.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 118-122"}, {"id": "F075", "loc": ""}]}, {"nivel": "colegio", "p": "Qual era o papel da religião na organização das primeiras cidades?", "ops": ["Nenhum, pois as cidades eram governadas por mercadores", "Justificava a desigualdade e a entrega de parte da produção aos dirigentes, em troca de proteção e ordem", "Impedia a construção de muralhas", "Servia apenas para marcar o calendário agrícola"], "ok": 1, "ex": "O culto aos deuses, centrado no templo, dava legitimidade ao sistema de tributos e à posição dos dirigentes.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 118-122"}, {"id": "F075", "loc": ""}]}, {"nivel": "graduacao", "p": "Na leitura de Liverani, o que a revolução urbana cria que não existia nas aldeias?", "ops": ["A liderança de chefes de família", "O Estado: uma organização estável sobre um território com várias comunidades, baseada na desigualdade funcional", "A crença em deuses", "A agricultura de cereais"], "ok": 1, "ex": "Chefias já existiam antes. A novidade é o Estado como organização permanente, territorial e desigual, com burocracia, clero e força.", "fontes": [{"id": "F469", "loc": "cap. 4, p. 118-122"}, {"id": "F075", "loc": ""}]}], "palavras": 382}]}}};</script>
+<script>const FONTES={"F075": {"titulo": "Uruk: The First City", "autores": "Department of Ancient Near Eastern Art", "ano": "2003", "url": "https://www.metmuseum.org/toah/hd/uruk/hd_uruk.htm"}, "F076": {"titulo": "The Origins of Writing", "autores": "Ira Spar", "ano": "2004", "url": "https://www.metmuseum.org/essays/the-origins-of-writing"}, "F469": {"titulo": "El antiguo Oriente: historia, sociedad y economía", "autores": "Mario Liverani", "ano": "1995", "url": ""}};</script>
+<script>(() => {
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const esc = x => String(x ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+const md = x => esc(x).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+const NIV = [['iniciante','Iniciante'],['colegio','Colégio'],['graduacao','Graduação']];
+const RANK = {iniciante:1, colegio:2, graduacao:3};
+const XP_CERTA = 10, XP_REVISAO = 5, XP_LICAO = 30;
+
+// ---------- estado do jogador (no navegador por enquanto; depois no servidor) ----------
+let J = {xp:0, dias:[], nivel:'colegio', licoes:{}};
+try { const s = JSON.parse(localStorage.getItem('atlas-jogo') || 'null'); if (s) J = Object.assign(J, s); } catch (e) {}
+const save = () => { try { localStorage.setItem('atlas-jogo', JSON.stringify(J)); } catch (e) {} paintTop(); };
+const hoje = () => new Date().toLocaleDateString('sv-SE');
+function marcaDia(){ const d = hoje(); if (!J.dias.includes(d)) { J.dias.push(d); J.dias = J.dias.slice(-400); } }
+function sequencia(){
+  const set = new Set(J.dias); let n = 0, d = new Date();
+  if (!set.has(d.toLocaleDateString('sv-SE'))) d.setDate(d.getDate() - 1);
+  while (set.has(d.toLocaleDateString('sv-SE'))) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+const nivelJog = xp => Math.floor(Math.sqrt(xp / 40)) + 1;
+const xpDoNivel = n => (n - 1) * (n - 1) * 40;
+function paintTop(){ $('#sXp').textContent = J.xp.toLocaleString('pt-BR'); $('#sDias').textContent = sequencia(); }
+const feita = id => J.licoes[id] && J.licoes[id].feita;
+const LIC = LICOES.licoes;
+const reqOk = it => it.requisitos.every(id => feita(id) || !LIC[id]);
+function unidadeAberta(u){ return u.requisitos.every(uid => { const v = LICOES.unidades.find(x => x.id === uid); return v && v.licoes.filter(l => l.publicada).every(l => feita(l.id)); }); }
+
+function fontesTxt(refs){
+  return (refs || []).filter(f => FONTES[f.id]).map(f => { const F = FONTES[f.id];
+    const t = `${esc(F.autores)}${F.ano ? ' (' + esc(F.ano) + ')' : ''}, <i>${esc(F.titulo)}</i>${f.loc ? ', ' + esc(f.loc) : ''}`;
+    return F.url ? `<a href="${esc(F.url)}" target="_blank" rel="noopener">${t}</a>` : t; }).join(' · ');
+}
+
+// ---------- início: caminho das unidades ----------
+function home(){
+  const xp = J.xp, n = nivelJog(xp), a = xpDoNivel(n), b = xpDoNivel(n + 1);
+  const feitas = Object.values(J.licoes).filter(x => x.feita).length;
+  let h = `<div class="hero"><div><div class="k">Curso</div><h1>Oriente Antigo</h1>
+    <p class="mute" style="margin-top:8px;max-width:56ch">Das primeiras aldeias ao império persa, em lições com texto, mapa e perguntas. Cada acerto vale XP.</p></div>
+    <div><div class="k" style="margin-bottom:8px">Nível das perguntas</div><div class="chips" id="niv">${NIV.map(([id, nm]) => `<button class="chip${J.nivel === id ? ' on' : ''}" data-n="${id}">${nm}</button>`).join('')}</div></div></div>
+    <div class="prof">
+      <div class="pbox"><span>Nível do jogador</span><b>${n}</b><div class="lvbar"><i style="width:${Math.round((xp - a) / (b - a) * 100)}%"></i></div><span>${(b - xp).toLocaleString('pt-BR')} XP para o nível ${n + 1}</span></div>
+      <div class="pbox"><span>Sequência</span><b>${sequencia()} ${sequencia() === 1 ? 'dia' : 'dias'}</b><span>estudando sem parar</span></div>
+      <div class="pbox"><span>Lições concluídas</span><b>${feitas}</b><span>de ${LICOES.unidades.reduce((s, u) => s + u.licoes.length, 0)} no curso</span></div>
+    </div>`;
+  LICOES.unidades.forEach((u, ui) => {
+    const aberta = unidadeAberta(u) || u.licoes.some(l => l.publicada);
+    h += `<section class="unit${aberta ? '' : ' lock'}"><div class="unit-h"><div><div class="k">Unidade ${ui + 1} · ${esc(u.periodo)}</div><h2>${esc(u.titulo)}</h2></div></div>
+      <p class="mute" style="font-size:14px">${esc(u.descricao)}</p><div class="path">`;
+    u.licoes.forEach(l => {
+      let cls = 'soon', ic = '·', sub = 'Em preparação';
+      if (l.publicada) {
+        if (feita(l.id)) { cls = 'done'; ic = '✓'; const r = J.licoes[l.id]; sub = `Concluída · ${r.acertos} de ${r.total} certas`; }
+        else if (reqOk(l)) { cls = 'open'; ic = '▶'; sub = J.licoes[l.id] && J.licoes[l.id].secao ? `Parou na seção ${J.licoes[l.id].secao + 1}` : `${LIC[l.id].secoes.length} seções · com perguntas`; }
+        else { cls = 'lock'; ic = '×'; sub = 'Conclua as lições anteriores'; }
+      }
+      h += `<button class="node ${cls}" data-id="${l.id}"${cls === 'open' || cls === 'done' ? '' : ' disabled'}><span class="ic">${ic}</span><span>${esc(l.titulo)}<small>${sub}</small></span></button>`;
+    });
+    h += '</div></section>';
+  });
+  h += `<p class="mute" style="font-size:13px;margin-top:20px">Por enquanto o progresso fica salvo só neste navegador. Contas, energia diária e a versão completa chegam com o login.</p>`;
+  app.innerHTML = h; scrollTo(0, 0);
+  app.querySelectorAll('#niv .chip').forEach(b => b.onclick = () => { J.nivel = b.dataset.n; save(); home(); });
+  app.querySelectorAll('.node').forEach(b => b.onclick = () => abrir(b.dataset.id));
+}
+
+// ---------- lição ----------
+let S = null; // {lic, sec, fase:'intro'|'ler'|'perg'|'fimsec'|'fim', fila, qi, resp, ganhos, acertos, total}
+function abrir(id){
+  const lic = LIC[id]; if (!lic) return;
+  const r = J.licoes[id] || {};
+  S = {lic, sec: r.feita ? 0 : (r.secao || 0), fase: 'intro', ganhos: 0, acertos: 0, total: 0};
+  location.hash = 'licao/' + id; render();
+}
+function perguntasDa(sec){
+  const lim = RANK[J.nivel] || 2;
+  return sec.perguntas.filter(q => (RANK[q.nivel] || 2) <= lim).map((q, i) => ({q, i, revisao: false}));
+}
+function mapaLink(sec){
+  if (!sec.foco || !sec.foco.length) return '';
+  const f = sec.foco.map(c => c.join(',')).join(';');
+  return `<a class="navlink" style="display:inline-flex" href="index.html#ano=${sec.ano ?? ''}&foco=${encodeURIComponent(f)}${sec.zoom ? '&zoom=' + sec.zoom : ''}" target="_blank" rel="noopener">Ver no mapa ↗</a>`;
+}
+function progresso(){
+  const n = S.lic.secoes.length;
+  return `<div class="prog">${S.lic.secoes.map((_, k) => `<i class="${k < S.sec || S.fase === 'fim' ? 'done' : k === S.sec ? 'cur' : ''}"></i>`).join('')}</div>`;
+}
+function render(){
+  const L = S.lic, sec = L.secoes[S.sec];
+  let h = `<div class="row" style="justify-content:space-between;margin-bottom:6px"><button class="navlink" id="voltar" style="background:none;cursor:pointer">← Caminho</button><span class="mute" style="font-size:13px">${esc(L.titulo)}</span></div>` + progresso();
+  let foot = '';
+  if (S.fase === 'intro') {
+    h += `<div class="k">Lição · ${esc(L.periodo)}</div><h1 style="margin:6px 0 14px">${esc(L.titulo)}</h1>
+      <p class="mute" style="margin-bottom:16px">${esc(L.lugar)}</p>
+      <div class="box"><b style="color:var(--gold2)">Objetivo.</b> ${esc(L.objetivo)}</div>
+      <ol style="margin:22px 0 0 20px;line-height:1.9;font-size:16px">${L.secoes.map(s => `<li>${esc(s.titulo)} <span class="mute" style="font-size:13px">· ${Math.max(2, Math.round(s.palavras / 200))} min de leitura</span></li>`).join('')}</ol>
+      <p class="src">Lição escrita para o atlas a partir de: ${fontesTxt(L.fontes)}.</p>`;
+    foot = `<button class="btn primary" id="go">${S.sec ? 'Continuar da seção ' + (S.sec + 1) : 'Começar a leitura'}</button>`;
+  } else if (S.fase === 'ler') {
+    h += `<div class="k">Seção ${S.sec + 1} de ${L.secoes.length}</div><h1 style="margin:6px 0 18px">${esc(sec.titulo)}</h1>
+      <div class="reader">${sec.paragrafos.map(p => `<p>${md(p)}</p>`).join('')}</div>
+      <div class="row" style="margin-top:4px">${mapaLink(sec)}</div>
+      <p class="src">Fontes: ${fontesTxt(sec.fontes)}</p>`;
+    foot = `<button class="btn primary" id="go">Responder ${S.fila.length} perguntas</button>`;
+  } else if (S.fase === 'perg') {
+    const it = S.fila[S.qi], q = it.q, r = S.resp;
+    h += `<div class="k">Seção ${S.sec + 1} · pergunta ${S.qi + 1} de ${S.fila.length}${it.revisao ? ' · revisão' : ''}</div>
+      <h2 style="margin:10px 0 20px;font-size:26px">${esc(q.p)}</h2>` +
+      q.ops.map((o, k) => `<button class="q-op${r != null ? (k === q.ok ? ' ok' : k === r ? ' bad' : '') : ''}" data-k="${k}"${r != null ? ' disabled' : ''}>${esc(o)}</button>`).join('');
+    if (r != null) {
+      const certo = r === q.ok, ganho = certo ? (it.revisao ? XP_REVISAO : XP_CERTA) : 0;
+      h += `<div class="fb ${certo ? 'ok' : 'bad'}"><b>${certo ? 'Isso mesmo.' : 'Não foi essa.'}</b>${ganho ? `<span class="xp">+${ganho} XP</span>` : ''} ${esc(q.ex)}${!certo && !it.revisao ? '<br><span class="mute" style="font-size:13px">Essa pergunta volta no fim da seção.</span>' : ''}</div>`;
+    }
+    foot = `<button class="btn primary" id="go"${r == null ? ' disabled' : ''}>${r == null ? 'Escolha uma resposta' : 'Continuar'}</button>`;
+  } else if (S.fase === 'fimsec') {
+    h += `<div class="k">Seção ${S.sec + 1} concluída</div><h1 style="margin:6px 0 14px">${esc(sec.titulo)}</h1>
+      <p style="font-size:17px">Você somou <b style="color:var(--gold2)">${S.ganhosSec} XP</b> nesta seção.</p>`;
+    foot = `<button class="btn" id="sair">Parar aqui</button><button class="btn primary" id="go">Próxima seção: ${esc(L.secoes[S.sec + 1].titulo)}</button>`;
+  } else if (S.fase === 'fim') {
+    h += `<div class="k">Lição concluída</div><h1 style="margin:6px 0 10px">${esc(L.titulo)}</h1>
+      <div class="big">+${S.ganhos} XP</div>
+      <p style="font-size:17px;margin:10px 0 20px">${S.acertos} de ${S.total} perguntas certas de primeira, mais o bônus de ${XP_LICAO} XP por terminar a lição.</p>
+      <div class="box"><b style="color:var(--gold2)">Para lembrar.</b> ${esc(L.objetivo)}</div>`;
+    foot = `<button class="btn primary" id="sair">Voltar ao caminho</button>`;
+  }
+  app.innerHTML = h + `<div class="foot">${foot}</div>`;
+  scrollTo(0, 0);
+  $('#voltar').onclick = () => { S = null; location.hash = ''; home(); };
+  const go = $('#go'); if (go) go.onclick = avancar;
+  const sair = $('#sair'); if (sair) sair.onclick = () => { S = null; location.hash = ''; home(); };
+  app.querySelectorAll('.q-op').forEach(b => b.onclick = () => responder(+b.dataset.k));
+}
+function avancar(){
+  const L = S.lic;
+  if (S.fase === 'intro') { S.fase = 'ler'; S.fila = perguntasDa(L.secoes[S.sec]); }
+  else if (S.fase === 'ler') { S.fase = 'perg'; S.qi = 0; S.resp = null; S.ganhosSec = 0; }
+  else if (S.fase === 'perg') {
+    S.qi++; S.resp = null;
+    if (S.qi >= S.fila.length) {
+      const r = J.licoes[L.id] || (J.licoes[L.id] = {feita:false, acertos:0, total:0, secao:0});
+      if (S.sec + 1 < L.secoes.length) { r.secao = S.sec + 1; S.fase = 'fimsec'; }
+      else {
+        S.ganhos += XP_LICAO; J.xp += XP_LICAO;
+        r.feita = true; r.secao = 0; r.acertos = S.acertos; r.total = S.total; S.fase = 'fim';
+      }
+      save();
+    }
+  } else if (S.fase === 'fimsec') { S.sec++; S.fase = 'ler'; S.fila = perguntasDa(L.secoes[S.sec]); }
+  render();
+}
+function responder(k){
+  if (S.resp != null) return;
+  const it = S.fila[S.qi], certo = k === it.q.ok;
+  S.resp = k;
+  if (!it.revisao) { S.total++; if (certo) S.acertos++; }
+  if (certo) { const g = it.revisao ? XP_REVISAO : XP_CERTA; J.xp += g; S.ganhos += g; S.ganhosSec += g; }
+  else if (!it.revisao) S.fila.push({q: it.q, i: it.i, revisao: true});
+  marcaDia(); save(); render();
+}
+
+// ---------- rotas simples ----------
+function rota(){
+  const m = location.hash.match(/^#licao\/(.+)$/);
+  if (m && LIC[m[1]]) { if (!S || S.lic.id !== m[1]) abrir(m[1]); }
+  else home();
+}
+window.addEventListener('hashchange', () => { if (!location.hash) { S = null; home(); } });
+paintTop(); rota();
+})();
+</script>
+</body>
+</html>

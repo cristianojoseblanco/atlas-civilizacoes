@@ -1,0 +1,7 @@
+id,curso,ordem,titulo,periodo,descricao,requisitos
+oriente-antes,oriente-antigo,1,Antes das cidades,c. 10 mil – 3500 a.C.,"O cenário do Oriente Próximo, a agricultura, as aldeias e os primeiros centros de culto.",
+oriente-bronze-antigo,oriente-antigo,2,As primeiras cidades e impérios,c. 3500 – 2000 a.C.,"Uruk, as cidades sumérias, Ebla, o império de Akkad e a terceira dinastia de Ur.",oriente-antes
+oriente-bronze-medio,oriente-antigo,3,Reinos rivais e mercadores,c. 2000 – 1600 a.C.,"Isin e Larsa, os mercadores de Assur, Mari, Hamurabi e os primeiros hititas.",oriente-bronze-antigo
+oriente-bronze-tardio,oriente-antigo,4,A era das grandes potências,c. 1600 – 1200 a.C.,"Mitanni, hititas, Egito na Síria-Palestina, Assíria média e Babilônia cassita.",oriente-bronze-medio
+oriente-ferro,oriente-antigo,5,Depois do colapso,c. 1200 – 900 a.C.,"A crise de 1200, Israel, fenícios, arameus e os reinos neo-hititas.",oriente-bronze-tardio
+oriente-imperios,oriente-antigo,6,Os impérios universais,c. 900 – 330 a.C.,"O império assírio, a Babilônia caldeia, os medos e a unificação persa.",oriente-ferro

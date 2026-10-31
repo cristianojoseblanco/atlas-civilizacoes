@@ -1,0 +1,33 @@
+id,unidade,ordem,titulo,requisitos,base,status
+oriente-como-estudar,oriente-antes,1,Como estudar o Oriente Antigo,,F469 cap. 1,planejada
+oriente-paisagem,oriente-antes,2,"Rios, montanhas e desertos",oriente-como-estudar,F469 cap. 2,planejada
+oriente-neolitico,oriente-antes,3,Das primeiras aldeias às chefias,oriente-paisagem,F469 cap. 3;F466,planejada
+revolucao-urbana,oriente-bronze-antigo,1,A revolução urbana,,F469 cap. 4;F075;F076,publicada
+uruk-expansao,oriente-bronze-antigo,2,A expansão de Uruk e sua crise,revolucao-urbana,F469 cap. 5,planejada
+sumer-cidades,oriente-bronze-antigo,3,As cidades-Estado sumérias,uruk-expansao,F469 cap. 6,planejada
+ebla,oriente-bronze-antigo,4,O mundo de Ebla,uruk-expansao,F469 cap. 7,planejada
+akkad,oriente-bronze-antigo,5,O império de Akkad,sumer-cidades;ebla,F469 cap. 8,planejada
+ur-iii,oriente-bronze-antigo,6,Ur III: o último império sumério,akkad,F469 cap. 9,planejada
+crise-2000,oriente-bronze-medio,1,A crise do fim do terceiro milênio,ur-iii,F469 cap. 10,planejada
+isin-larsa,oriente-bronze-medio,2,Isin e Larsa,crise-2000,F469 cap. 11,planejada
+assur-mercadores,oriente-bronze-medio,3,Assur e os mercadores da Anatólia,crise-2000,F469 cap. 12,planejada
+mari,oriente-bronze-medio,4,A época de Mari,crise-2000,F469 cap. 13,planejada
+hamurabi,oriente-bronze-medio,5,Hamurabi da Babilônia,isin-larsa;mari,F469 cap. 14,planejada
+hititas-antigos,oriente-bronze-medio,6,Os primeiros hititas,assur-mercadores,F469 cap. 15,planejada
+bronze-tardio-mundo,oriente-bronze-tardio,1,"Carros de guerra, palácios e diplomacia",hamurabi;hititas-antigos,F469 cap. 16,planejada
+mitanni,oriente-bronze-tardio,2,O reino de Mitanni,bronze-tardio-mundo,F469 cap. 17,planejada
+imperio-hitita,oriente-bronze-tardio,3,O império hitita,bronze-tardio-mundo,F469 cap. 18,planejada
+siria-palestina-bt,oriente-bronze-tardio,4,Síria e Palestina entre impérios,bronze-tardio-mundo,F469 cap. 19,planejada
+assiria-media,oriente-bronze-tardio,5,A Assíria média,mitanni,F469 cap. 20,planejada
+babilonia-cassita,oriente-bronze-tardio,6,A Babilônia cassita,bronze-tardio-mundo,F469 cap. 21,planejada
+crise-1200,oriente-ferro,1,O colapso de 1200 a.C.,imperio-hitita;siria-palestina-bt;assiria-media;babilonia-cassita,F469 cap. 22,planejada
+israel,oriente-ferro,2,Israel e Judá,crise-1200,F469 cap. 23,planejada
+fenicios,oriente-ferro,3,Os fenícios,crise-1200,F469 cap. 24,planejada
+arameus,oriente-ferro,4,Os arameus,crise-1200,F469 cap. 25,planejada
+neo-hititas,oriente-ferro,5,Os reinos neo-hititas,crise-1200,F469 cap. 26,planejada
+assiria-babilonia-elam,oriente-ferro,6,"Assíria, Babilônia e Elam antes do império",crise-1200,F469 cap. 27,planejada
+assiria-expansao,oriente-imperios,1,A expansão assíria,assiria-babilonia-elam,F469 cap. 28,planejada
+assiria-estrutura,oriente-imperios,2,Como funcionava o império assírio,assiria-expansao,F469 cap. 29,planejada
+assiria-periferia,oriente-imperios,3,Nas bordas do império,assiria-expansao,F469 cap. 30,planejada
+babilonia-caldeia,oriente-imperios,4,A Babilônia de Nabucodonosor,assiria-estrutura,F469 cap. 31,planejada
+persas,oriente-imperios,5,Os medos e a unificação persa,babilonia-caldeia,F469 cap. 32,planejada

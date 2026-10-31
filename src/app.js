@@ -767,6 +767,11 @@ function openTourMenu(){
     });
     list.append(tc);
   }
+  const hc = document.createElement('h3'); hc.className = 'tm-sec'; hc.textContent = 'Cursos com XP'; list.append(hc);
+  const gc = document.createElement('div'); gc.className = 'tm-grid'; list.append(gc);
+  const ac = document.createElement('a'); ac.className = 'tm-item'; ac.href = 'aprender.html'; ac.style.textDecoration = 'none';
+  ac.innerHTML = '<span class="tm-bar" style="background:#c9a24a"></span><span class="tm-st go">Novo</span><b>Oriente Antigo</b><span class="tm-d">Lições longas, perguntas e pontos de experiência. Das primeiras aldeias ao império persa.</span><span class="tm-n">Abre a página Aprender</span>';
+  gc.append(ac);
   const h1 = document.createElement('h3'); h1.className = 'tm-sec'; h1.textContent = 'Aulas'; list.append(h1);
   const grid1 = document.createElement('div'); grid1.className = 'tm-grid'; list.append(grid1);
   let n = 0;
@@ -1158,6 +1163,14 @@ setup(); slider.value = idx; updateHUD(false); updatePeriodBtn();
 d3.select(canvas).call(zoom.transform, initialView());
 evStart = performance.now();
 requestAnimationFrame(tick);
+// link direto vindo das lições: index.html#ano=-3500&foco=45.6,31.3;44,32&zoom=6
+function lerHash(){
+  const q = new URLSearchParams(location.hash.slice(1)); if (!q.has('ano') && !q.has('foco')) return;
+  const ano = q.get('ano'); if (ano !== null && ano !== '') { const si = snapFor(+ano); if (si !== idx) go(si); }
+  const f = (q.get('foco') || '').split(';').map(c => c.split(',').map(Number)).filter(c => c.length === 2 && c.every(isFinite));
+  if (f.length) setTimeout(() => flyTo(f, q.get('zoom') ? +q.get('zoom') : undefined), 300);
+}
+lerHash(); window.addEventListener('hashchange', lerHash);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
 })();
 

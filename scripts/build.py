@@ -1,7 +1,7 @@
 """Monta index.html (um arquivo só, autocontido) a partir de src/ e data/."""
 import base64, json, os, pathlib, re, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import conteudo
+import conteudo, licoes, csv
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 src, data, nm = ROOT / 'src', ROOT / 'data', ROOT / 'node_modules'
 
@@ -40,3 +40,19 @@ for k, v in parts.items():
     html = html.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
 (ROOT / 'index.html').write_text(html)
 print('index.html', round(len(html.encode()) / 1e6, 2), 'MB')
+
+# ---------- aprender.html: o jogo das lições ----------
+with open(data / 'conteudo' / 'fontes.csv', encoding='utf-8') as f: FT = {r['id']: r for r in csv.DictReader(f)}
+L, erros = licoes.gerar(set(FT))
+if erros: sys.exit('lições com erro:\n' + '\n'.join(erros))
+usadas = set()
+for lic in L['licoes'].values():
+    usadas |= {f['id'] for f in lic['fontes']}
+    for s_ in lic['secoes']: usadas |= {f['id'] for f in s_['fontes']}
+fj = {k: dict(titulo=FT[k]['titulo'], autores=FT[k]['autores'], ano=FT[k]['ano'], url=FT[k]['url']) for k in sorted(usadas)}
+ap = (src / 'aprender.html').read_text()
+for k, v in {'LICOES': 'const LICOES=' + json.dumps(L, ensure_ascii=False) + ';', 'FONTES': 'const FONTES=' + json.dumps(fj, ensure_ascii=False) + ';',
+             'APRENDER': (src / 'aprender.js').read_text()}.items():
+    ap = ap.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
+(ROOT / 'aprender.html').write_text(ap)
+print('aprender.html', round(len(ap.encode()) / 1e3), 'kB;', len(L['licoes']), 'lições publicadas')
