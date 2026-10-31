@@ -14,36 +14,73 @@ const IC = {
   breve: '<svg class="ic" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="12" cy="20" r="2.6" fill="#8A8170"/><circle cx="20" cy="20" r="2.6" fill="#8A8170"/><circle cx="28" cy="20" r="2.6" fill="#8A8170"/></svg>',
 };
 
-// ---------- caminho (B: trilha | mapa sincronizados) ----------
-const OFF = [0, 64, 96, 64, 0, -64, -96, -64];
+// ---------- árvore de lições (B: trilha | mapa sincronizados) ----------
 const CORES = ['#E9C99A', '#F2B33D', '#2A9D8F', '#E5644A', '#C9D6DE', '#F2B33D'];
-const U = DADOS.unidades, TODAS = [];
-U.forEach((u, ui) => u.licoes.forEach((l, li) => { l.ui = ui; l.li = li; l.gi = TODAS.length; TODAS.push(l); }));
-const iAtual = Math.max(0, TODAS.findIndex(l => l.publicada));
-const estado = l => l.gi === iAtual ? 'atual' : l.gi < iAtual ? 'breve' : 'trancado';
+const U = DADOS.unidades, TODAS = [], POR_ID = {};
+U.forEach((u, ui) => u.licoes.forEach((l, li) => { l.ui = ui; l.li = li; l.gi = TODAS.length; TODAS.push(l); POR_ID[l.id] = l; }));
+const PUB = TODAS.find(l => l.publicada) || TODAS[0];
 const celular = () => innerWidth < 900;
-let focoGi = -1;
+const OK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CAD = '<svg width="13" height="14" viewBox="0 0 24 26" fill="none" aria-hidden="true"><rect x="4" y="11" width="16" height="12" rx="3" fill="currentColor"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="3"/></svg>';
 
+// progresso: fica no navegador; o menu "Simular" serve para ver a árvore em outros momentos
+const CHAVE = 'atlas-prototipo-b-feitos';
+let feitos = new Set();
+try { feitos = new Set(JSON.parse(localStorage.getItem(CHAVE) || '[]').filter(id => POR_ID[id])); } catch (e) {}
+const salva = () => { try { localStorage.setItem(CHAVE, JSON.stringify([...feitos])); } catch (e) {} };
+const aberta = l => l.requisitos.every(r => feitos.has(r));
+const estado = l => feitos.has(l.id) ? 'feito' : !aberta(l) ? 'trancado' : l.publicada ? 'atual' : 'proxima';
+const NOME_EST = {feito: 'concluída', atual: 'disponível', proxima: 'desbloqueada, em preparação', trancado: 'bloqueada'};
+let focoGi = -1, modoArvore = false;
+
+const chipReq = r => { const ok = feitos.has(r); return `<span class="req${ok ? ' ok' : ''}">${ok ? OK : CAD}${esc(POR_ID[r].titulo)}</span>`; };
 function caminho(){
   let h = '';
   U.forEach((u, ui) => {
-    h += `<section data-ui="${ui}"><div class="unidade" style="background:${CORES[ui]}"><div><span>Unidade ${ui + 1} · ${esc(u.periodo)}</span><b>${esc(u.titulo)}</b></div></div><div class="trilha">`;
-    u.licoes.forEach(l => { h += no(l, estado(l), l.gi); });
-    h += '</div></section>';
+    const ls = u.licoes, nf = ls.filter(l => feitos.has(l.id)).length;
+    const externos = [...new Set(ls.flatMap(l => l.requisitos).filter(r => POR_ID[r].ui !== ui))];
+    const aberto = ls.some(l => estado(l) !== 'trancado');
+    const status = nf === ls.length ? `${OK} Concluída` : aberto ? `${nf} de ${ls.length} feitas` : `${CAD} Bloqueada`;
+    h += `<section class="galho${aberto ? '' : ' fechado'}" data-ui="${ui}"><div class="unidade" style="background:${aberto ? CORES[ui] : 'var(--trancado)'}"><div><span>Galho ${ui + 1} · ${esc(u.periodo)}</span><b>${esc(u.titulo)}</b></div><span class="estado-u">${status}</span></div>`;
+    h += externos.length ? `<div class="req-galho"><span>Nasce de</span>${externos.map(chipReq).join('')}</div>` : `<div class="req-galho"><span>Começo de galho: não precisa de nada antes</span></div>`;
+    const nivel = {};
+    const lv = l => nivel[l.id] ?? (nivel[l.id] = Math.max(0, ...l.requisitos.filter(r => POR_ID[r].ui === ui).map(r => lv(POR_ID[r]) + 1)));
+    ls.forEach(lv);
+    const linhas = []; ls.forEach(l => (linhas[nivel[l.id]] ??= []).push(l));
+    h += `<div class="arvore"><svg class="ramos" aria-hidden="true"></svg>${linhas.map(row => `<div class="linha-arv${row.length >= 4 ? ' larga' : row.length === 3 ? ' media' : ''}">${row.map(no).join('')}</div>`).join('')}</div></section>`;
   });
   $('#caminho').innerHTML = h;
   document.querySelectorAll('.nowrap').forEach(w => {
-    const l = TODAS[+w.dataset.gi], b = w.querySelector('.no');
+    const l = POR_ID[w.dataset.id], b = w.querySelector('.no');
     b.onclick = e => { e.stopPropagation(); foco(l.gi); abreCartao(b, l); };
     if (matchMedia('(hover:hover)').matches) w.addEventListener('mouseenter', () => foco(l.gi));
   });
+  requestAnimationFrame(ramos);
 }
-function no(l, est, i){
+function no(l){
+  const est = estado(l);
   const anel = est === 'atual' ? anelSvg(st.secoesFeitas / L.secoes.length) : '';
   const ic = est === 'atual' ? IC.livro : est === 'feito' ? IC.feito : est === 'trancado' ? IC.cadeado : IC.breve;
   const balao = est === 'atual' ? `<span class="balao">${st.secoesFeitas ? 'Continuar' : 'Começar'}</span>` : '';
-  const desc = est === 'trancado' ? ', trancada' : est === 'breve' ? ', em preparação' : '';
-  return `<div class="nowrap" data-gi="${l.gi}" style="transform:translateX(${OFF[i % OFF.length]}px);margin-bottom:34px">${balao}<button class="no ${est}" aria-label="${esc(l.titulo)}${desc}, ${esc(l.lugar)}, ${anoTxt(l.ano)}">${anel}${ic}</button><span class="rotulo-no">${esc(l.titulo)}</span></div>`;
+  return `<div class="nowrap" data-gi="${l.gi}" data-id="${l.id}">${balao}<button class="no ${est}" aria-label="${esc(l.titulo)}, ${NOME_EST[est]}, ${esc(l.lugar)}, ${anoTxt(l.ano)}">${anel}${ic}</button><span class="rotulo-no">${esc(l.titulo)}</span></div>`;
+}
+// ramos entre lições do mesmo galho: saem de baixo do rótulo e chegam no topo do nó
+function ramos(){
+  document.querySelectorAll('.galho').forEach(g => {
+    const arv = g.querySelector('.arvore'), svg = arv.querySelector('.ramos'), R = arv.getBoundingClientRect();
+    svg.setAttribute('width', R.width); svg.setAttribute('height', R.height);
+    let p = '';
+    g.querySelectorAll('.nowrap').forEach(w => {
+      const l = POR_ID[w.dataset.id];
+      l.requisitos.filter(r => POR_ID[r].ui === l.ui).forEach(r => {
+        const a = g.querySelector(`.nowrap[data-id="${r}"]`).getBoundingClientRect(), b = w.querySelector('.no').getBoundingClientRect();
+        const x1 = a.left + a.width / 2 - R.left, y1 = a.bottom - R.top + 6, x2 = b.left + b.width / 2 - R.left, y2 = b.top - R.top - 4, my = (y1 + y2) / 2;
+        const cls = feitos.has(r) ? (feitos.has(l.id) ? 'feita' : 'aberta') : 'fechada';
+        p += `<path class="${cls}" d="M${x1} ${y1}C${x1} ${my} ${x2} ${my} ${x2} ${y2}"/>`;
+      });
+    });
+    svg.innerHTML = p;
+  });
 }
 function anelSvg(f){
   const r = 52, c = 2 * Math.PI * r;
@@ -53,29 +90,79 @@ function fechaCartao(){ const c = $('.cartao'); if (c) { c.parentElement.style.z
 function abreCartao(btn, l){
   const aberto = $('.cartao'), mesmo = aberto && aberto.parentElement === btn.parentElement; fechaCartao(); if (mesmo) return;
   const c = document.createElement('div'); c.className = 'cartao';
-  const est = estado(l), s = st.secoesFeitas, onde = `${esc(l.lugar)} · ${anoTxt(l.ano)}`;
-  if (est === 'atual') c.innerHTML = `<h3>${esc(l.titulo)}</h3><p>${onde}<br>Seção ${s + 1} de ${L.secoes.length} · ${esc(L.secoes[s].titulo)}</p><button class="b3" style="background:var(--papel)" id="comecar">${s ? 'Continuar' : 'Começar'} · gasta 1 energia</button>`;
-  else {
-    c.style.background = 'var(--papel)';
-    c.innerHTML = `<h3>${esc(l.titulo)}</h3><p>${onde}<br>${est === 'trancado' ? 'Termine as lições anteriores para abrir.' : 'Esta lição ainda está sendo escrita.'}</p><button class="b3" disabled>${est === 'trancado' ? 'Trancada' : 'Em breve'}</button>`;
-  }
+  const est = estado(l), s = st.secoesFeitas;
+  const reqs = l.requisitos.length ? `<div class="reqs"><b>Requisitos</b>${l.requisitos.map(chipReq).join('')}</div>` : `<div class="reqs"><b>Sem requisitos: começa um galho.</b></div>`;
+  let corpo;
+  if (est === 'atual') corpo = `<p>Seção ${s + 1} de ${L.secoes.length} · ${esc(L.secoes[s].titulo)}</p><button class="b3" style="background:var(--papel)" id="comecar">${s ? 'Continuar' : 'Começar'} · gasta 1 energia</button><a class="b3 link-c" href="prototipo-c.html">Testar como atividades (protótipo C)</a>`;
+  else if (est === 'feito') corpo = `<p>${l.publicada ? 'Concluída. Revisar não gasta energia.' : 'Concluída na simulação.'}</p>${l.publicada ? '<button class="b3" style="background:var(--papel)" id="comecar">Revisar</button>' : ''}`;
+  else if (est === 'proxima') corpo = `<p>Desbloqueada. O texto desta lição ainda está sendo escrito.</p><button class="b3" disabled>Em breve</button>`;
+  else corpo = `<p>Para abrir, conclua ${l.requisitos.filter(r => !feitos.has(r)).length === 1 ? 'a lição marcada com cadeado' : 'as lições marcadas com cadeado'}.</p><button class="b3" disabled>Bloqueada</button>`;
+  c.style.background = est === 'atual' ? 'var(--ouro)' : est === 'feito' ? 'var(--certo-bg)' : 'var(--papel)';
+  c.innerHTML = `<h3>${esc(l.titulo)}</h3><p class="onde">${esc(l.lugar)} · ${anoTxt(l.ano)}</p>${reqs}${corpo}`;
   const wrap = btn.parentElement; wrap.appendChild(c); wrap.style.zIndex = 40;
-  c.style.left = '50%'; c.style.top = 'calc(100% + 18px)'; c.style.translate = '-50% 0';
-  const b = $('#comecar'); if (b) b.onclick = () => { c.remove(); st.en = Math.max(0, st.en - 1); $('#en').textContent = st.en; abreLicao(); };
+  c.style.left = '50%'; c.style.top = 'calc(100% + 14px)'; c.style.translate = '-50% 0';
+  const r = c.getBoundingClientRect(), col = $('#caminho').getBoundingClientRect(), m = 8;
+  const dx = r.left < col.left + m ? col.left + m - r.left : r.right > col.right - m ? col.right - m - r.right : 0;
+  if (dx) { c.style.translate = `calc(-50% + ${dx}px) 0`; c.style.setProperty('--seta', `${-dx}px`); }
+  const b = $('#comecar'); if (b) b.onclick = () => { c.remove(); if (est === 'atual') { st.en = Math.max(0, st.en - 1); $('#en').textContent = st.en; } abreLicao(); };
 }
-document.addEventListener('click', e => { const c = $('.cartao'); if (c && !c.contains(e.target)) fechaCartao(); });
+document.addEventListener('click', e => { const c = $('.cartao'); if (c && !c.contains(e.target)) fechaCartao(); if (!e.target.closest('#simMenu, #simBtn')) $('#simMenu').hidden = true; });
 
-// ---------- painel do mapa ----------
-let cam = {s: 1, tx: 0, ty: 0}, passoT = null, vjX = null;
-const proj = l => [(l.lon - M.lon0) * M.kx, (M.lat1 - l.lat) * M.k];
+// ---------- progresso: aplicar, simular, celebrar ----------
+const ate = n => TODAS.filter(l => l.ui < n).map(l => l.id);
+const SIMULACOES = [
+  ['Do zero', () => []],
+  ['Galho 2 concluído', () => ate(2)],
+  ['No meio do galho 3', () => [...ate(2), 'crise-2000', 'isin-larsa', 'mari']],
+  ['Galho 4 concluído', () => ate(4)],
+  ['Tudo concluído', () => ate(6)],
+];
+function aplicaProgresso(novos){
+  const antes = new Set(TODAS.filter(l => estado(l) !== 'trancado').map(l => l.id));
+  feitos = new Set(novos); salva();
+  const abriu = TODAS.filter(l => !antes.has(l.id) && estado(l) !== 'trancado' && !feitos.has(l.id));
+  caminho(); pintaPainel();
+  const alvo = abriu[0] || TODAS.find(l => estado(l) === 'atual') || TODAS.find(l => estado(l) === 'proxima') || PUB;
+  const w = document.querySelector(`.nowrap[data-id="${alvo.id}"]`);
+  travaScroll = Date.now() + 900; w.scrollIntoView({behavior: reduzir ? 'auto' : 'smooth', block: 'center'});
+  focoGi = -1; foco(alvo.gi);
+  if (abriu.length && abriu.length < 20) {
+    abriu.forEach(l => document.querySelector(`.nowrap[data-id="${l.id}"]`).classList.add('abriu'));
+    aviso(abriu.length === 1 ? `Abriu: ${abriu[0].titulo}` : `Abriram ${abriu.length} lições: ${abriu.slice(0, 3).map(l => l.titulo).join(', ')}${abriu.length > 3 ? '…' : ''}`);
+  }
+}
+function aviso(txt){
+  const a = document.createElement('div'); a.className = 'aviso'; a.setAttribute('role', 'status'); a.innerHTML = `${IC.feito}<span>${esc(txt)}</span>`;
+  document.body.appendChild(a); setTimeout(() => a.classList.add('sai'), 3200); setTimeout(() => a.remove(), 3600);
+}
+function menuSimular(){
+  const m = $('#simMenu');
+  m.innerHTML = `<b>Ver a árvore em outro momento</b>${SIMULACOES.map(([t], k) => `<button data-k="${k}">${t}</button>`).join('')}<small>Só neste protótipo. O progresso fica salvo neste navegador.</small>`;
+  m.querySelectorAll('button').forEach(b => b.onclick = () => { m.hidden = true; aplicaProgresso(SIMULACOES[+b.dataset.k][1]()); });
+  $('#simBtn').onclick = e => { e.stopPropagation(); m.hidden = !m.hidden; };
+}
+
+// ---------- painel do mapa: pinos, ramos de requisito, Viajante ----------
+let cam = {s: 1, tx: 0, ty: 0}, passoT = null;
+const proj0 = l => [(l.lon - M.lon0) * M.kx, (M.lat1 - l.lat) * M.k];
+// lições no mesmo lugar ganham um pequeno afastamento para não ficarem uma sobre a outra
+const AFASTA = {};
+(() => { const grupos = {}; TODAS.forEach(l => (grupos[l.lon + ',' + l.lat] ??= []).push(l)); Object.values(grupos).forEach(g => g.forEach((l, k) => { AFASTA[l.id] = (k - (g.length - 1) / 2) * 9; })); })();
+const proj = l => { const [x, y] = proj0(l); return [x + (AFASTA[l.id] || 0), y]; };
 function painel(){
   const el = $('#painel');
-  const rotas = U.map((u, ui) => `<path class="rota" data-ui="${ui}" d="M${u.licoes.map(l => proj(l).map(n => n.toFixed(1)).join(' ')).join('L')}"/>`).join('');
-  el.innerHTML = `<svg class="campo" aria-hidden="true"><g id="camB">${M.svg}${rotas}</g></svg>`
-    + TODAS.map(l => `<button class="pin segue ${estado(l)}" data-gi="${l.gi}" aria-label="${esc(l.titulo)} · ${esc(l.lugar)}"></button>`).join('')
+  let ar = '';
+  TODAS.forEach(l => l.requisitos.forEach(r => {
+    const [x1, y1] = proj(POR_ID[r]), [x2, y2] = proj(l), dx = x2 - x1, dy = y2 - y1, d = Math.hypot(dx, dy);
+    if (d < 1) return;
+    const cx = (x1 + x2) / 2 - dy * .18, cy = (y1 + y2) / 2 + dx * .18;
+    ar += `<path class="ar" data-de="${r}" data-para="${l.id}" d="M${x1.toFixed(1)} ${y1.toFixed(1)}Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}"/>`;
+  }));
+  el.innerHTML = `<svg class="campo" aria-hidden="true"><g id="camB">${M.svg}<g id="ramosMapa">${ar}</g></g></svg>`
+    + TODAS.map(l => `<button class="pin segue" data-gi="${l.gi}"></button>`).join('')
     + `<div class="vjb segue" id="vjb" aria-hidden="true"><div class="corpo" id="vjCorpo"><span class="p">${VJ.parado}</span><span class="a">${VJ.andando}</span></div></div>`
     + `<div class="etiqueta segue" id="etq" aria-hidden="true"><span></span></div>`
-    + `<span class="epoca" id="epoca" aria-live="polite"></span><div class="placa" id="placa"></div>`
+    + `<span class="epoca" id="epoca" aria-live="polite"></span><button class="b-arvore" id="bArv" aria-pressed="false">${ICA}<span>Árvore inteira</span></button><div class="placa" id="placa"></div>`
     + `<div class="regua" aria-hidden="true">${U.map((u, ui) => `<i style="--cor:${CORES[ui]}"></i>`).join('')}<span class="marca-t" id="marcaT"></span></div>`;
   el.querySelectorAll('.pin').forEach(p => p.onclick = () => {
     const gi = +p.dataset.gi, w = document.querySelector(`.nowrap[data-gi="${gi}"]`);
@@ -83,17 +170,26 @@ function painel(){
     w.scrollIntoView({behavior: reduzir ? 'auto' : 'smooth', block: 'center'});
     w.classList.remove('realce'); void w.offsetWidth; w.classList.add('realce');
   });
+  $('#bArv').onclick = () => { modoArvore = !modoArvore; $('#bArv').setAttribute('aria-pressed', modoArvore); $('#bArv').classList.toggle('on', modoArvore); $('#bArv span').textContent = modoArvore ? 'Voltar à lição' : 'Árvore inteira'; const g = focoGi; focoGi = -1; foco(g); };
+  pintaPainel();
+}
+const ICA = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="4.5" r="2.6" fill="currentColor"/><circle cx="5" cy="19.5" r="2.6" fill="currentColor"/><circle cx="19" cy="19.5" r="2.6" fill="currentColor"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><path d="M12 7v3M10.5 14l-4 3.5M13.5 14l4 3.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+function pintaPainel(){
+  document.querySelectorAll('.pin').forEach(p => { const l = TODAS[+p.dataset.gi], e = estado(l); p.className = `pin segue ${e}${p.classList.contains('foco') ? ' foco' : ''}${p.classList.contains('longe') ? ' longe' : ''}`; p.setAttribute('aria-label', `${l.titulo} · ${l.lugar} · ${NOME_EST[e]}`); });
+  document.querySelectorAll('.ar').forEach(a => { const de = feitos.has(a.dataset.de), para = feitos.has(a.dataset.para); a.setAttribute('class', `ar ${de ? (para ? 'feita' : 'aberta') : 'fechada'}${a.classList.contains('on') ? ' on' : ''}`); });
 }
 function alvoCamera(l){
   const el = $('#painel'), cw = el.clientWidth, ch = el.clientHeight, base = Math.max(cw / M.w, ch / M.h);
-  let s, cx, cy;
-  if (celular()) {
-    const ps = U[l.ui].licoes.map(proj), xs = ps.map(p => p[0]), ys = ps.map(p => p[1]), pad = 60;
+  const enquadra = (ls, topo, baixo) => {
+    const ps = ls.map(proj), xs = ps.map(p => p[0]), ys = ps.map(p => p[1]), pad = 50;
     const bw = Math.max(...xs) - Math.min(...xs) + pad * 2, bh = Math.max(...ys) - Math.min(...ys) + pad * 2;
-    const topo = 54; // espaço do selo do ano
-    s = Math.max(base, Math.min(base * 4, cw / bw, (ch - topo) / bh));
-    cx = (Math.max(...xs) + Math.min(...xs)) / 2; cy = (Math.max(...ys) + Math.min(...ys)) / 2 - topo / 2 / s;
-  } else { s = base * 2.3; [cx, cy] = proj(l); cx += 40 / s; cy += 70 / s; }
+    const s = Math.max(base, Math.min(base * 4, cw / bw, (ch - topo - baixo) / bh));
+    return [s, (Math.max(...xs) + Math.min(...xs)) / 2, (Math.max(...ys) + Math.min(...ys)) / 2 - (topo - baixo) / 2 / s];
+  };
+  let s, cx, cy;
+  if (modoArvore) [s, cx, cy] = enquadra(TODAS, 64, celular() ? 0 : 150);
+  else if (celular()) [s, cx, cy] = enquadra(U[l.ui].licoes, 54, 0);
+  else { s = base * 2.3; [cx, cy] = proj(l); cx += 40 / s; cy += 70 / s; }
   const tx = Math.min(0, Math.max(cw - M.w * s, cw / 2 - cx * s)), ty = Math.min(0, Math.max(ch - M.h * s, ch / 2 - cy * s));
   return {s, tx, ty};
 }
@@ -107,8 +203,8 @@ function foco(gi, instantaneo){
   cam = alvoCamera(l);
   el.querySelector('#camB').style.transform = `translate(${cam.tx}px, ${cam.ty}px) scale(${cam.s})`;
   const tela = x => { const [px, py] = proj(x); return [px * cam.s + cam.tx, py * cam.s + cam.ty]; };
-  el.querySelectorAll('.pin').forEach(p => { const [x, y] = tela(TODAS[+p.dataset.gi]); p.style.transform = `translate(${x}px, ${y}px)`; p.classList.toggle('foco', +p.dataset.gi === gi); p.classList.toggle('longe', TODAS[+p.dataset.gi].ui !== l.ui); });
-  el.querySelectorAll('.rota').forEach(r => r.classList.toggle('on', +r.dataset.ui === l.ui));
+  el.querySelectorAll('.pin').forEach(p => { const x = TODAS[+p.dataset.gi], [sx, sy] = tela(x); p.style.transform = `translate(${sx}px, ${sy}px)`; p.classList.toggle('foco', x.gi === gi); p.classList.toggle('longe', !modoArvore && x.ui !== l.ui); });
+  el.querySelectorAll('.ar').forEach(a => a.classList.toggle('on', modoArvore || POR_ID[a.dataset.para].ui === l.ui));
   const [x, y] = tela(l);
   const vj = $('#vjb'); vj.style.transform = `translate(${x}px, ${y}px)`;
   if (ant && ligar && (ant.lon !== l.lon || ant.lat !== l.lat)) {
@@ -121,8 +217,11 @@ function foco(gi, instantaneo){
   const sp = etq.firstChild; if (sp.textContent !== l.lugar) { sp.textContent = l.lugar; sp.classList.remove('troca'); if (ligar) { void sp.offsetWidth; sp.classList.add('troca'); } }
   const ep = $('#epoca'), a0 = ant ? ant.ano : l.ano;
   if (ligar && a0 !== l.ano) contaAno(ep, a0, l.ano, 1100); else ep.textContent = anoTxt(l.ano);
-  const est = estado(l), rot = est === 'atual' ? 'Lição atual' : est === 'trancado' ? 'Trancada' : 'Em preparação';
-  const pl = $('#placa'); pl.innerHTML = `<div class="rot">Unidade ${l.ui + 1} · lição ${l.li + 1} · ${rot}</div><b>${esc(l.titulo)}</b>`;
+  const pl = $('#placa'), est = estado(l);
+  if (modoArvore) {
+    const nf = feitos.size, ab = TODAS.filter(x => estado(x) === 'atual' || estado(x) === 'proxima').length;
+    pl.innerHTML = `<div class="rot">Árvore do curso · Oriente Antigo</div><b>${nf} de ${TODAS.length} lições concluídas (${Math.round(nf / TODAS.length * 100)}%) · ${ab} abertas agora</b><div class="legenda-arv"><span><i class="feito"></i>Concluída</span><span><i class="atual"></i>Disponível</span><span><i class="proxima"></i>Em preparação</span><span><i class="trancado"></i>Bloqueada</span></div>`;
+  } else pl.innerHTML = `<div class="rot">Galho ${l.ui + 1} · lição ${l.li + 1} · ${NOME_EST[est]}</div><b>${esc(l.titulo)}</b>${l.requisitos.length ? `<div class="reqs-placa">${l.requisitos.map(chipReq).join('')}</div>` : ''}`;
   pl.classList.remove('troca'); if (ligar) { void pl.offsetWidth; pl.classList.add('troca'); }
   document.querySelectorAll('.regua i').forEach((r, k) => r.classList.toggle('ativa', k <= l.ui));
   const reg = $('.regua'), mt = $('#marcaT'), n = U[l.ui].licoes.length;
@@ -131,7 +230,7 @@ function foco(gi, instantaneo){
   if (!ligar) requestAnimationFrame(() => segue.concat(mt).forEach(n => n.style.transition = ''));
 }
 function contaAno(el, de, para, ms){
-  const t0 = performance.now(); clearTimeout(el._r); cancelAnimationFrame(el._f);
+  const t0 = performance.now(); cancelAnimationFrame(el._f);
   const f = t => { const k = Math.min(1, (t - t0) / ms), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; el.textContent = anoTxt(Math.round((de + (para - de) * e) / 10) * 10); if (k < 1) el._f = requestAnimationFrame(f); else el.textContent = anoTxt(para); };
   el._f = requestAnimationFrame(f);
 }
@@ -141,12 +240,11 @@ function pelaRolagem(){
   if (Date.now() < travaScroll || $('#licao')) return;
   const linha = celular() ? 68 + 210 + (innerHeight - 278) * .35 : innerHeight * .45;
   let melhor = -1, dm = 1e9;
-  document.querySelectorAll('.nowrap').forEach(w => { const r = w.getBoundingClientRect(), d = Math.abs(r.top + 40 - linha); if (d < dm) { dm = d; melhor = +w.dataset.gi; } });
+  document.querySelectorAll('.nowrap').forEach(w => { const r = w.getBoundingClientRect(), d = Math.abs(r.top + 40 - linha); if (d < dm - 2) { dm = d; melhor = +w.dataset.gi; } });
   if (melhor >= 0) foco(melhor);
 }
 addEventListener('scroll', () => { cancelAnimationFrame(rafS); rafS = requestAnimationFrame(() => { clearTimeout(pelaRolagem._t); pelaRolagem._t = setTimeout(pelaRolagem, 90); }); }, {passive: true});
-let largAnt = celular();
-addEventListener('resize', () => { clearTimeout(foco._r); foco._r = setTimeout(() => { if (largAnt !== celular()) largAnt = celular(); const g = focoGi; focoGi = -1; foco(g, true); }, 150); });
+addEventListener('resize', () => { clearTimeout(foco._r); foco._r = setTimeout(() => { ramos(); const g = focoGi; focoGi = -1; foco(g, true); }, 150); });
 
 // ---------- lição ----------
 let P = null;
@@ -162,7 +260,7 @@ function abreLicao(){
   $('#fechar').onclick = fechaLicao;
   montaMapa(); passo();
 }
-function fechaLicao(){ $('#licao').remove(); document.body.style.overflow = ''; caminho(); const w = document.querySelector(`.nowrap[data-gi="${iAtual}"]`); if (w) w.scrollIntoView({block: 'center'}); }
+function fechaLicao(){ $('#licao').remove(); document.body.style.overflow = ''; caminho(); const w = document.querySelector(`.nowrap[data-id="${PUB.id}"]`); if (w) w.scrollIntoView({block: 'center'}); }
 function barra(){ const f = Math.min(1, P.passo / P.totalPassos); $('#barra').style.width = (f * 100) + '%'; $('#barra').parentElement.setAttribute('aria-valuenow', Math.round(f * 100)); }
 function passo(){
   barra(); const palco = $('#palco'), base = $('#base'), bd = $('#baseDentro');
@@ -219,14 +317,15 @@ function fim(){
   P.passo = P.totalPassos; barra();
   const min = Math.max(1, Math.round((Date.now() - P.t0) / 60000));
   const pct = P.total ? Math.round(P.acertos / P.total * 100) : 0;
-  st.secoesFeitas = Math.min(L.secoes.length - 1, st.secoesFeitas + 1);
+  const concluiu = st.secoesFeitas + 1 >= L.secoes.length;
+  st.secoesFeitas = concluiu ? 0 : st.secoesFeitas + 1;
   $('#palco').innerHTML = `<div class="fim"><div class="vj" aria-hidden="true">${VJ.comemorando}</div><h1 class="titulo">Seção concluída!</h1>
     <div class="stats"><div class="stat" style="background:var(--ouro)"><span style="color:var(--tinta)">XP ganho</span><b id="sXp">0</b></div><div class="stat" style="background:var(--feito)"><span>De primeira</span><b>${P.acertos} de ${P.total}</b></div><div class="stat" style="background:var(--noite)"><span>Tempo</span><b>${min} min</b></div></div>
     <p style="font-size:17px;font-weight:700;color:var(--suave)">${pct}% das perguntas certas de primeira (${P.acertos} de ${P.total}).</p></div>`;
   conta($('#sXp'), 0, P.ganho, 900);
   $('#base').className = 'licao-base';
-  $('#baseDentro').innerHTML = `<span style="font-weight:800;color:var(--suave)">Próxima: ${esc(L.secoes[st.secoesFeitas].titulo)}</span><button class="b3 ouro" id="acao">Continuar</button>`;
-  $('#acao').onclick = () => { fechaLicao(); requestAnimationFrame(() => { const p = $('#anelP'); if (p) { const c = 2 * Math.PI * 52; p.style.strokeDashoffset = c; requestAnimationFrame(() => requestAnimationFrame(() => { p.style.strokeDashoffset = c * (1 - st.secoesFeitas / L.secoes.length); })); } }); };
+  $('#baseDentro').innerHTML = `<span style="font-weight:800;color:var(--suave)">${concluiu ? 'Lição concluída! Novos galhos vão se abrir.' : 'Próxima: ' + esc(L.secoes[st.secoesFeitas].titulo)}</span><button class="b3 ouro" id="acao">Continuar</button>`;
+  $('#acao').onclick = () => { fechaLicao(); if (concluiu) return aplicaProgresso([...feitos, PUB.id]); requestAnimationFrame(() => { const p = $('#anelP'); if (p) { const c = 2 * Math.PI * 52; p.style.strokeDashoffset = c; requestAnimationFrame(() => requestAnimationFrame(() => { p.style.strokeDashoffset = c * (1 - st.secoesFeitas / L.secoes.length); })); } }); };
   confete();
 }
 function confete(){
@@ -266,7 +365,8 @@ function montaMapa(){
 }
 
 $('#xp').textContent = st.xp; $('#en').textContent = st.en;
-caminho(); painel();
-document.querySelector(`.nowrap[data-gi="${iAtual}"]`).scrollIntoView({block: 'center'});
-foco(iAtual, true);
+caminho(); painel(); menuSimular();
+const inicio = TODAS.find(l => estado(l) === 'atual') || TODAS.find(l => estado(l) === 'proxima') || PUB;
+document.querySelector(`.nowrap[data-id="${inicio.id}"]`).scrollIntoView({block: 'center'});
+foco(inicio.gi, true);
 })();
