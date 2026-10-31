@@ -85,3 +85,12 @@ for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_B, ensure_ascii=False) +
     pb = pb.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
 (ROOT / 'prototipo-b.html').write_text(pb)
 print('prototipo-b.html', round(len(pb.encode()) / 1e3), 'kB')
+
+# ---------- prototipo-c.html: aprender mexendo (referência Brilliant) ----------
+uruk = next(r for r in csv.DictReader(open(ROOT / 'data' / 'conteudo' / 'lugares.csv', encoding='utf-8')) if r['id'] == 'L002')
+DADOS_C = dict(mapa={k: MP[k] for k in ('svg', 'w', 'h', 'lon0', 'lat1', 'k', 'kx')}, vj=VJ, uruk=dict(lon=float(uruk['lon']), lat=float(uruk['lat'])))
+pc = (src / 'prototipo-c.html').read_text()
+for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_C, ensure_ascii=False) + ';', 'PROTO': (src / 'prototipo-c.js').read_text()}.items():
+    pc = pc.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
+(ROOT / 'prototipo-c.html').write_text(pc)
+print('prototipo-c.html', round(len(pc.encode()) / 1e3), 'kB')
