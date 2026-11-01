@@ -121,15 +121,16 @@ cenas = []
 for r in csv.DictReader(open(ROOT / 'data' / 'licoes' / 'cenas' / 'revolucao-urbana.csv', encoding='utf-8')):
     cenas.append(dict(secao=int(r['secao']), paragrafo=int(r['paragrafo']), acao=r['acao'], args=[a.strip() for a in r['args'].split(',')]))
 LUGS = {r['id']: r for r in csv.DictReader(open(ROOT / 'data' / 'conteudo' / 'lugares.csv', encoding='utf-8'))}
-usados = {a for c in cenas for a in c['args'] if a in LUGS}
+usados = {q for c in cenas for a in c['args'] for q in a.split('|') if q in LUGS}
 lic_f = L['licoes']['revolucao-urbana']
 for c in cenas:
     assert c['secao'] < len(lic_f['secoes']) and c['paragrafo'] < len(lic_f['secoes'][c['secao']]['paragrafos']), ('cena fora da lição', c)
     for a in c['args']:
-        if a.startswith('L') and a[1:].isdigit(): assert a in LUGS, ('lugar inexistente na cena', a)
+        for q in a.split('|'):
+            if q.startswith('L') and q[1:].isdigit(): assert q in LUGS, ('lugar inexistente na cena', q)
 DADOS_F = dict(licao=dict(titulo=lic_f['titulo'], secoes=[dict(titulo=s_['titulo'], ano=s_['ano'], paragrafos=s_['paragrafos']) for s_ in lic_f['secoes']]),
                mapa={k: MP[k] for k in ('svg', 'w', 'h', 'lon0', 'lat1', 'k', 'kx')}, vj=VJ, cenas=cenas,
-               lugares={i: dict(nome=LUGS[i]['nome'], lon=float(LUGS[i]['lon']), lat=float(LUGS[i]['lat'])) for i in usados})
+               lugares={i: dict(nome=LUGS[i]['nome'], lon=float(LUGS[i]['lon']), lat=float(LUGS[i]['lat']), ano=int(LUGS[i]['ano_inicio'])) for i in usados})
 pf = (src / 'prototipo-f.html').read_text()
 for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_F, ensure_ascii=False) + ';', 'PROTO': (src / 'prototipo-f.js').read_text()}.items():
     pf = pf.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)

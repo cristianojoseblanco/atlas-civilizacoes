@@ -1,25 +1,22 @@
 secao,paragrafo,acao,args,esquema,nota
-0,0,camera,"40.5,34.2,1.4",,Crescente Fértil inteiro
 0,0,ano,"-9000,-4000",,o relógio corre pelo Neolítico
 0,0,aldeias,"L031,L116,L117,L105,L032,L015,L008,L001,L022,L033",,"sítios reais com ocupação antiga (lugares.csv); mostrados como aldeias"
 0,1,ano,"-4000,-3500",,
-0,1,camera,"45.4,31.6,4.2",,sul da Mesopotâmia
+0,1,?achar,"L002,L015,L022,L001,L008",,"o jogador toca onde acha que ficava Uruk; a câmera enquadra a Mesopotâmia"
 0,1,apaga,aldeias,,
 0,1,surge,L002,,Uruk vira cidade
-0,2,regua,"-9000,-3500,-3000",,"milênios lentos, depois poucos séculos"
-0,3,ciclo,"L002",sim,"excedente, população, técnica e organização se reforçam"
-0,4,graos,"L002",sim,excedente: a comida que sobra vai para a cidade
-1,0,camera,"45.55,31.45,5.2",,
+0,2,?regua,"-9000,-3500,-3000",,"o jogador arrasta até onde cai 3500 a.C.; depois a régua mostra milênios lentos contra séculos rápidos"
+0,3,ciclo,L002,sim,"excedente, população, técnica e organização se reforçam"
+0,4,graos,L002,sim,excedente: a comida que sobra vai para a cidade
 1,0,campo,"L002,26",sim,aldeias do entorno; posições ilustrativas
-1,0,selo,"L002,4 de 5 no campo (80%)",,"lição: talvez quatro em cada cinco pessoas"
-1,1,fluxo,"L002",sim,comida sobe das aldeias; produtos descem
+1,0,?pessoas,"L002,4",,"lição: talvez quatro em cada cinco pessoas no campo"
+1,1,fluxo,L002,sim,comida sobe das aldeias; produtos descem
 1,2,templo,"L002,Templo",,grandes organizações
-1,3,racoes,"L002",sim,rações de cevada saem do templo
-1,4,canais,"L002",sim,canais de irrigação a partir do Eufrates
+1,3,racoes,L002,sim,rações de cevada saem do templo
+1,4,?canais,"L002,3",sim,o jogador leva água do rio a três campos
 1,5,ano,"-3300,-3000",,
 1,5,cresce,"L002,100 ha",,"lição: cerca de 100 hectares por volta de 3000 a.C."
-1,5,absorve,"L002",sim,aldeias próximas desaparecem: a população vai para a cidade
-2,0,camera,"45.64,31.32,6.5",,
+1,5,absorve,L002,sim,aldeias próximas desaparecem: a população vai para a cidade
 2,0,vinheta,"L002,contas",,"ordem fixa e impessoal: fichas e números"
 2,1,vinheta,"L002,sessenta",,sistema sexagesimal
 2,2,vinheta,"L002,balanca",,cevada e prata como medida de valor
@@ -27,14 +24,14 @@ secao,paragrafo,acao,args,esquema,nota
 2,4,vinheta,"L002,tigelas",,tigelas de borda chanfrada
 3,0,vinheta,"L002,selo",,o selo lacra a argila
 3,1,vinheta,"L002,bula",,fichas dentro da bula
+3,2,?ordem,"L002,selo,bula,tablete",,o jogador toca as três etapas na ordem; depois a vinheta mostra o tablete
 3,2,vinheta,"L002,tablete",,a bola vira tablete
+3,3,?som,L002,,"o jogador escolhe o sinal para vida"
 3,3,vinheta,"L002,som",,flecha soa como vida
 3,4,vinheta,"L002,escola",,escolas de escribas e listas
-4,0,camera,"45.4,31.7,3.6",,
-4,0,territorio,"L002",sim,o Estado: um território com várias comunidades
+4,0,territorio,L002,sim,o Estado: um território com várias comunidades
 4,1,templo,"L002,Burocracia e clero",,
 4,2,templo,"L002,Eanna · deusa Inanna",,
-4,3,camera,"45.95,31.55,3.2",,abre o mapa para ver as cidades vizinhas
-4,3,rivais,"L003,L001,L008,L009,L005,L022",,"cidades que já existiam por volta de 3100 a.C. (lugares.csv)"
-4,3,muralha,"L002",sim,a muralha protege o que a cidade acumulou
-4,4,governante,"L002",,o governante reúne administração culto e guerra
+4,3,?cidades,"L003,L001,L008,L009,L005|L012,L010,L011",,"verdadeiras: já existiam por volta de 3100 a.C.; distratoras: fundadas depois (lugares.csv)"
+4,3,muralha,L002,sim,a muralha protege o que a cidade acumulou
+4,4,governante,L002,,o governante reúne administração culto e guerra
