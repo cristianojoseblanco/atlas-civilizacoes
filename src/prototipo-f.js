@@ -241,9 +241,10 @@ function enquadra(ids, anim, extra = 1, baixo = 0){
 }
 
 // ---------- interações no mapa (estilo Brilliant, sempre com o Viajante) ----------
-let tarefaOk = true;
+let tarefaOk = true, tent = 0, revelou = false;
+const LICAO = 'revolucao-urbana', VOLTA = 'prototipo-g.html#arvore/oriente-antigo';
 function cartao(html){
-  document.body.classList.add('em-tarefa'); medir(); poeCamera(cam);
+  tent = 0; revelou = false; document.body.classList.add('em-tarefa'); medir(); poeCamera(cam);
   const c = $('#tarefa'); c.hidden = false; c.dataset.vez = ''; c.innerHTML = html; c.animate([{transform: 'translateY(24px)', opacity: 0}, {transform: 'none', opacity: 1}], {duration: 360, easing: 'cubic-bezier(0.23,1,0.32,1)'});
   return c;
 }
@@ -252,7 +253,7 @@ function retornoT(ok, txt){ const r = $('#tarefa .ret'); r.className = 'ret ' + 
 function botoesT(verifica, revela){
   const b = $('#tarefa .bts'); b.innerHTML = `<button class="b3 peq" id="tVer" disabled>Verificar</button>`;
   $('#tVer').onclick = verifica;
-  return {pronto: v => { $('#tVer').disabled = !v; }, errou: () => { b.innerHTML = `<button class="b3 peq branco" id="tRev">Ver resposta</button><button class="b3 peq" id="tDenovo">Tentar de novo</button>`; $('#tRev').onclick = revela; $('#tDenovo').onclick = () => { b.innerHTML = `<button class="b3 peq" id="tVer">Verificar</button>`; $('#tVer').onclick = verifica; $('#tarefa .ret').textContent = ''; }; }};
+  return {pronto: v => { $('#tVer').disabled = !v; }, errou: () => { tent++; b.innerHTML = `<button class="b3 peq branco" id="tRev">Ver resposta</button><button class="b3 peq" id="tDenovo">Tentar de novo</button>`; $('#tRev').onclick = () => { revelou = true; revela(); }; $('#tDenovo').onclick = () => { b.innerHTML = `<button class="b3 peq" id="tVer">Verificar</button>`; $('#tVer').onclick = verifica; $('#tarefa .ret').textContent = ''; }; }};
 }
 const kmEntre = (a, b) => { const R = 6371, r = Math.PI / 180, dl = (b[1] - a[1]) * r, dn = (b[0] - a[0]) * r; const h = Math.sin(dl / 2) ** 2 + Math.cos(a[1] * r) * Math.cos(b[1] * r) * Math.sin(dn / 2) ** 2; return Math.round(2 * R * Math.asin(Math.sqrt(h)) / 10) * 10; };
 const doMapa = (sx, sy) => { const x = (sx - W / 2) / cam.s + cam.x, y = (sy - H / 2) / cam.s + cam.y; return [x / M.kx + M.lon0, M.lat1 - y / M.k]; };
@@ -275,7 +276,7 @@ const I = {
       palpite = doMapa(sx, sy); const [x, y] = proj(...palpite); limpa('.palpite'); const d = ancora(x, y, '<span class="alfinete"></span>', 'palpite'); surge(d, 0, true); vjVai(x - 26 / cam.s, y, null); bt.pronto(true); };
     mapa.addEventListener('pointerdown', toque); mapa.classList.add('mirando');
     function mostra(){ mapa.removeEventListener('pointerdown', toque); mapa.classList.remove('mirando'); const [x, y] = pl(alvo); if (palpite) { const [gx, gy] = proj(...palpite); linhaTracejada(gx, gy, x, y); } vjVai(x - 40 / cam.s, y, null); }
-    function verifica(){ const d = kmEntre(palpite, [LUG[alvo].lon, LUG[alvo].lat]);
+    function verifica(){ const d = kmEntre(palpite, [LUG[alvo].lon, LUG[alvo].lat]); Estado.km(d);
       if (d <= 150) { retornoT(true, `${d <= 40 ? 'Na mosca!' : 'Bem perto!'} Seu palpite ficou a cerca de ${d} km.`); mostra(); conclui(fim); }
       else { retornoT(false, `Ficou a cerca de ${d.toLocaleString('pt-BR')} km. Procure mais ao sul, entre os dois rios, perto do Golfo.`); bt.errou(); } }
     function revela(){ retornoT(true, `Aqui: no sul da Mesopotâmia, junto ao Eufrates.`); mostra(); conclui(fim); }
@@ -332,7 +333,7 @@ const I = {
       d.querySelector('button').onclick = e => { const b = e.currentTarget, k2 = b.dataset.k; if (fila.includes(k2)) fila = fila.filter(q => q !== k2); else fila.push(k2); marca(); bt.pronto(fila.length === ks.length); }; });
     const marca = () => document.querySelectorAll('.etapa').forEach(b => { const i = fila.indexOf(b.dataset.k); b.querySelector('.num').textContent = i >= 0 ? i + 1 : ''; b.classList.toggle('sel', i >= 0); });
     function verifica(){ const ok = fila.every((k, i) => k === ks[i]); document.querySelectorAll('.etapa').forEach(b => b.classList.add(ks[fila.indexOf(b.dataset.k)] === b.dataset.k ? 'certa' : 'errada'));
-      if (ok) { retornoT(true, 'Selo, depois fichas na bula, depois o tablete: as marcas de fora acabaram bastando.'); setTimeout(() => limpa('.etapa-a'), 1400); conclui(fim); } else { retornoT(false, 'Comece pelo que já existia antes de qualquer marca: o selo.'); bt.errou(); } }
+      if (ok) { if (tent === 0) Estado.marca('escriba'); retornoT(true, 'Selo, depois fichas na bula, depois o tablete: as marcas de fora acabaram bastando.'); setTimeout(() => limpa('.etapa-a'), 1400); conclui(fim); } else { retornoT(false, 'Comece pelo que já existia antes de qualquer marca: o selo.'); bt.errou(); } }
     function revela(){ fila = [...ks]; marca(); document.querySelectorAll('.etapa').forEach(b => { b.classList.remove('errada'); b.classList.add('certa'); }); retornoT(true, 'Selo, bula, tablete.'); setTimeout(() => limpa('.etapa-a'), 1400); conclui(fim); }
     document.querySelectorAll('.etapa').forEach(b => b.addEventListener('click', () => document.querySelectorAll('.etapa').forEach(x2 => x2.classList.remove('certa', 'errada'))));
   }); },
@@ -368,6 +369,8 @@ const I = {
 // no silêncio (voltar a um parágrafo já lido), a interação deixa só o resultado
 const I_SILENCIO = { cidades(args){ const [v] = args.join(',').split('|').map(s => s.split(',')); E.rivais(v, false); }, canais(){} };
 function conclui(fim){
+  const xp = revelou ? 0 : tent === 0 ? 10 : 5;
+  Estado.resposta(tent === 0 && !revelou); if (xp) { Estado.ganhaXp(xp); moeda(xp); } chipsTopo(); avisoConquistas();
   tarefaOk = true; base(); const b = $('#tarefa .bts'); if (b) b.innerHTML = '';
   // o retorno fica um pouco à vista e o cartão sai, liberando o mapa para a cena seguinte
   const c = $('#tarefa'), marca = c.dataset.vez = String(Math.random());
@@ -450,13 +453,45 @@ function marcaAgora(){
 }
 function base(){
   const sec = L.secoes[S], ult = P >= sec.paragrafos.length - 1, fimTudo = ult && S >= L.secoes.length - 1;
-  $('#baseDentro').innerHTML = `<span class="dica">${ult ? (fimTudo ? 'Fim da lição.' : 'Fim da seção. No app, aqui vêm as perguntas.') : `Parágrafo ${P + 1} de ${sec.paragrafos.length}`}</span><button class="b3 ouro" id="acao">${ult ? (fimTudo ? 'Recomeçar' : 'Próxima seção') : 'Continuar'}</button>`;
-  $('#acao').onclick = () => { if (!ult) { P++; marcaAgora(); tocar(S, P); } else irPara(fimTudo ? 0 : S + 1, 0); };
+  $('#baseDentro').innerHTML = `<span class="dica">${ult ? (fimTudo ? 'Fim da lição.' : 'Fim da seção. No app, aqui vêm as perguntas.') : `Parágrafo ${P + 1} de ${sec.paragrafos.length}`}</span><button class="b3 ouro" id="acao">${ult ? (fimTudo ? 'Concluir lição · +30 XP' : 'Próxima seção') : 'Continuar'}</button>`;
+  $('#acao').onclick = () => {
+    if (!ult) { P++; marcaAgora(); tocar(S, P); return; }
+    Estado.terminaSecao(LICAO, S);
+    if (fimTudo) return concluiLicao();
+    irPara(S + 1, 0);
+  };
   if (!tarefaOk) { $('#acao').disabled = true; $('#acao').textContent = 'Responda no mapa'; }
 }
-function irPara(s, p){ S = s; P = p; texto(); reconstruir(S, P); $('#palco').scrollTop = 0; }
+function concluiLicao(){
+  const ja = Estado.get().feitos.includes(LICAO); Estado.conclui(LICAO); if (!ja) moeda(30); chipsTopo();
+  const j = document.createElement('div'); j.className = 'janela';
+  j.innerHTML = `<div class="jan"><div class="jan-vj">${VJ.comemorando}</div><h2 class="titulo">Lição concluída!</h2><p>${ja ? 'Revisão feita.' : '+30 XP. Novas lições se abriram na árvore.'}</p><div class="bts"><a class="b3 ouro" href="${VOLTA}">Ver a árvore</a></div></div>`;
+  document.body.appendChild(j); avisoConquistas(); confete();
+}
+function irPara(s, p){
+  if (p === 0 && !Estado.entraSecao(LICAO, s)) return semEnergia();
+  chipsTopo(); S = s; P = p; texto(); reconstruir(S, P); $('#palco').scrollTop = 0;
+}
+function semEnergia(){
+  const j = document.createElement('div'); j.className = 'janela';
+  j.innerHTML = `<div class="jan"><h2 class="titulo">Sua energia acabou por hoje</h2><p>Cada seção nova gasta 1 energia, e ela volta a 5 amanhã. Revisar o que você já fez é grátis. No Premium, a energia não tem limite.</p><div class="bts"><a class="b3" href="${VOLTA}">Voltar à árvore</a><a class="b3 ouro" href="prototipo-g.html#perfil">Ver o Premium</a></div></div>`;
+  document.body.appendChild(j);
+}
+function chipsTopo(){ const st = Estado.get(); $('#xpC').textContent = numBR(st.xp); $('#enC').textContent = st.premium ? '∞' : st.energia; }
+function moeda(n){
+  const c = $('#chipXp'); if (!c || reduzir) return; const r = c.getBoundingClientRect();
+  const m = document.createElement('div'); m.className = 'moeda-voa'; m.textContent = '+' + n; document.body.appendChild(m);
+  m.animate([{transform: `translate(${innerWidth / 2}px, ${innerHeight * .6}px) scale(.6)`, opacity: 0}, {transform: `translate(${(innerWidth / 2 + r.left) / 2}px, ${innerHeight * .3}px) scale(1.2)`, opacity: 1, offset: .45}, {transform: `translate(${r.left}px, ${r.top}px) scale(.8)`, opacity: 1}], {duration: 800, easing: 'cubic-bezier(0.77,0,0.175,1)'}).onfinish = () => { m.remove(); c.animate([{transform: 'scale(1)'}, {transform: 'scale(1.18)'}, {transform: 'scale(1)'}], {duration: 380}); };
+}
+function confete(){
+  if (reduzir) return; const box = document.createElement('div'); box.className = 'confete'; document.body.appendChild(box);
+  ['#F2B33D', '#2A9D8F', '#E5644A', '#FFF6E3', '#8E6BBF'].forEach((cor, k) => { for (let i = 0; i < 9; i++) { const q = document.createElement('i'); q.style.left = Math.random() * 100 + 'vw'; q.style.background = cor; box.appendChild(q);
+    q.animate([{transform: 'translate(0,0) rotate(0)'}, {transform: `translate(${(Math.random() - .5) * 160}px, ${innerHeight + 40}px) rotate(${(Math.random() - .5) * 720}deg)`}], {duration: 1500 + Math.random() * 900, delay: Math.random() * 300, easing: 'cubic-bezier(0.23,1,0.32,1)', fill: 'forwards'}); } });
+  setTimeout(() => box.remove(), 3000);
+}
 
 montaMapa();
 addEventListener('resize', () => { medir(); poeCamera(cam); });
-irPara(0, 0);
+const feitasSec = Estado.get().secoes[LICAO] ?? -1;
+irPara(feitasSec + 1 < L.secoes.length ? feitasSec + 1 : 0, 0);
 })();

@@ -165,6 +165,24 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .futura{position:absolute;left:0;top:0;translate:-50% -50%;padding:3px 8px;border-radius:8px;border:2px dashed var(--suave);background:rgba(255,246,227,.8);font-size:11px;font-weight:800;color:var(--suave);text-align:center;white-space:nowrap}
 @media (max-width:860px){body.em-tarefa .mapa{height:74vh}.cand{font-size:12.5px;padding:3px 8px 3px 4px}.cand i{width:13px;height:13px}.tarefa{bottom:10px;padding:12px 14px}.tarefa .perg{font-size:15px;line-height:19px}.etapa{width:96px}.etapa svg{width:46px;height:34px}.sinais-i{gap:6px}}
 
+/* ligação com o app */
+.volta{width:38px;height:38px;flex:none;border-radius:12px;border:3px solid var(--contorno);display:flex;align-items:center;justify-content:center;font:800 24px var(--titulo);background:var(--carta);box-shadow:0 3px 0 var(--contorno);color:var(--tinta);text-decoration:none}
+.chipf{height:36px;display:flex;align-items:center;gap:6px;padding:0 10px;border-radius:999px;border:2.5px solid var(--contorno);background:var(--carta);font-weight:900;font-size:14px}
+.topo .secoes{margin-left:auto;margin-right:6px}
+.moeda-voa{position:fixed;left:0;top:0;z-index:95;padding:4px 10px;border-radius:999px;background:var(--ouro);border:3px solid var(--contorno);font:800 15px var(--titulo);pointer-events:none}
+.janela{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(15,26,34,.55)}
+.jan{width:min(440px,100%);padding:22px;border-radius:24px;background:var(--papel);border:3px solid var(--contorno);box-shadow:0 8px 0 var(--contorno);text-align:center}
+.jan h2{font-size:26px;margin:8px 0}.jan p{font-size:16px;line-height:23px;font-weight:700;color:var(--suave)}
+.jan .bts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.jan .b3{display:inline-flex;align-items:center;text-decoration:none;color:var(--tinta)}
+.jan-vj{width:130px;margin:0 auto}.jan-vj svg{width:100%;height:auto}
+.confete{position:fixed;inset:0;pointer-events:none;z-index:90;overflow:hidden}.confete i{position:absolute;top:-20px;width:11px;height:15px;border:2px solid var(--contorno);border-radius:3px}
+.conq-aviso{position:fixed;z-index:96;left:50%;top:76px;translate:-50% 0;display:flex;align-items:center;gap:12px;padding:12px 18px 12px 12px;border-radius:18px;background:var(--noite);color:var(--papel);border:3px solid var(--contorno);box-shadow:0 6px 0 var(--contorno);animation:entra 500ms var(--ease-out)}
+.conq-aviso.sai{opacity:0;transition:opacity 400ms ease}
+.conq-aviso .conq-ic{width:48px;height:48px;border-radius:50%;background:#FFF0C9;border:3px solid var(--ouro);display:flex;align-items:center;justify-content:center}
+.conq-aviso small{display:block;font-size:12px;font-weight:900;color:var(--ouro)}.conq-aviso b{font:800 18px var(--titulo)}
+@media (max-width:860px){.topo{gap:8px;padding:0 10px}.topo .nome{display:none}.chipf{height:32px;padding:0 8px;font-size:13px}}
+
 @media (max-width:860px){
   .corpo{display:flex;flex-direction:column}
   .mapa{order:-1;flex:none;height:50vh;border-left:none;border-bottom:3px solid var(--contorno)}
@@ -186,13 +204,14 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 </head>
 <body>
 <div class="app">
-  <header class="topo"><span class="nome">A revolução urbana</span><div class="secoes" id="secoes"></div></header>
+  <header class="topo"><a class="volta" href="prototipo-g.html#arvore/oriente-antigo" aria-label="Voltar à árvore">‹</a><span class="nome">A revolução urbana</span><div class="secoes" id="secoes"></div><span class="chipf" id="chipXp"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#F2B33D" stroke="#0F1A22" stroke-width="2"/></svg><b id="xpC">0</b></span><span class="chipf"><svg width="16" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8.5 5v10L12 22l-8.5-5V7z" fill="#2A9D8F" stroke="#0F1A22" stroke-width="2"/></svg><b id="enC">5</b></span></header>
   <div class="corpo">
     <main class="palco" id="palco"></main>
     <div class="mapa" id="mapa" aria-label="Mapa animado da lição"></div>
   </div>
   <div class="base"><div class="dentro" id="baseDentro"></div></div>
 </div>
+<script>/*ESTADO*/</script>
 <script>/*DADOS*/</script>
 <script>/*PROTO*/</script>
 </body>

@@ -132,7 +132,39 @@ DADOS_F = dict(licao=dict(titulo=lic_f['titulo'], secoes=[dict(titulo=s_['titulo
                mapa={k: MP[k] for k in ('svg', 'w', 'h', 'lon0', 'lat1', 'k', 'kx')}, vj=VJ, cenas=cenas,
                lugares={i: dict(nome=LUGS[i]['nome'], lon=float(LUGS[i]['lon']), lat=float(LUGS[i]['lat']), ano=int(LUGS[i]['ano_inicio'])) for i in usados})
 pf = (src / 'prototipo-f.html').read_text()
-for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_F, ensure_ascii=False) + ';', 'PROTO': (src / 'prototipo-f.js').read_text()}.items():
+for k, v in {'ESTADO': (src / 'estado.js').read_text(), 'DADOS': 'const DADOS=' + json.dumps(DADOS_F, ensure_ascii=False) + ';', 'PROTO': (src / 'prototipo-f.js').read_text()}.items():
     pf = pf.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
 (ROOT / 'prototipo-f.html').write_text(pf)
 print('prototipo-f.html', round(len(pf.encode()) / 1e3), 'kB;', len(cenas), 'cenas')
+
+# ---------- prototipo-g.html: o app (início com épocas e temas, árvore, perfil, Premium) ----------
+def ano_curto(a):
+    a = int(a)
+    if a >= 99999: return 'hoje'
+    if a < 0:
+        n = -a
+        return f'{round(n / 1000)} mil a.C.' if n >= 10000 else f'{n} a.C.'
+    return f'{a} d.C.'
+eps = list(csv.DictReader(open(ROOT / 'data' / 'conteudo' / 'epocas.csv', encoding='utf-8')))
+epocas = []
+for i, e in enumerate(eps):
+    ate = int(e['ate_ano']) + 1 if int(e['ate_ano']) < 99999 else 99999
+    if i == 0: per = f'até {ano_curto(ate)}'
+    else:
+        de = int(eps[i - 1]['ate_ano']) + 1
+        per = f'{ano_curto(de)} – {ano_curto(ate)}'
+    epocas.append(dict(id=e['id'], nome=e['nome'], descricao=e['descricao'], periodo=per))
+conta = {}
+for arq, campo in (('lugares.csv', 'lugares'), ('eventos.csv', 'eventos')):
+    for r in csv.DictReader(open(ROOT / 'data' / 'conteudo' / arq, encoding='utf-8')):
+        for t in [x for x in r['temas'].split(';') if x]:
+            conta.setdefault(t, {'lugares': 0, 'eventos': 0})[campo] += 1
+temas_g = [dict(id=t['id'], nome=t['nome'], descricao=t['descricao'], **conta.get(t['id'], {'lugares': 0, 'eventos': 0})) for t in csv.DictReader(open(ROOT / 'data' / 'conteudo' / 'temas.csv', encoding='utf-8'))]
+VJ_G = dict(VJ)
+DADOS_G = dict(unidades=DADOS_B['unidades'], mapa={k: MP[k] for k in ('svg', 'w', 'h', 'lon0', 'lat1', 'k', 'kx')}, vj=VJ_G, epocas=epocas, temas=temas_g,
+               cursos=[dict(id='oriente-antigo', titulo='Oriente Antigo', licoes=sum(len(u['licoes']) for u in DADOS_B['unidades']), epocas=['P04', 'P05', 'P06', 'P07'])])
+pg = (src / 'prototipo-g.html').read_text()
+for k, v in {'ESTADO': (src / 'estado.js').read_text(), 'DADOS': 'const DADOS=' + json.dumps(DADOS_G, ensure_ascii=False) + ';', 'PROTO': (src / 'prototipo-g.js').read_text()}.items():
+    pg = pg.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
+(ROOT / 'prototipo-g.html').write_text(pg)
+print('prototipo-g.html', round(len(pg.encode()) / 1e3), 'kB')
