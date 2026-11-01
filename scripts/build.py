@@ -115,3 +115,23 @@ for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_B, ensure_ascii=False) +
     pe = pe.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
 (ROOT / 'prototipo-e.html').write_text(pe)
 print('prototipo-e.html', round(len(pe.encode()) / 1e3), 'kB')
+
+# ---------- prototipo-f.html: o mapa 2D conta a lição, parágrafo a parágrafo ----------
+cenas = []
+for r in csv.DictReader(open(ROOT / 'data' / 'licoes' / 'cenas' / 'revolucao-urbana.csv', encoding='utf-8')):
+    cenas.append(dict(secao=int(r['secao']), paragrafo=int(r['paragrafo']), acao=r['acao'], args=[a.strip() for a in r['args'].split(',')]))
+LUGS = {r['id']: r for r in csv.DictReader(open(ROOT / 'data' / 'conteudo' / 'lugares.csv', encoding='utf-8'))}
+usados = {a for c in cenas for a in c['args'] if a in LUGS}
+lic_f = L['licoes']['revolucao-urbana']
+for c in cenas:
+    assert c['secao'] < len(lic_f['secoes']) and c['paragrafo'] < len(lic_f['secoes'][c['secao']]['paragrafos']), ('cena fora da lição', c)
+    for a in c['args']:
+        if a.startswith('L') and a[1:].isdigit(): assert a in LUGS, ('lugar inexistente na cena', a)
+DADOS_F = dict(licao=dict(titulo=lic_f['titulo'], secoes=[dict(titulo=s_['titulo'], ano=s_['ano'], paragrafos=s_['paragrafos']) for s_ in lic_f['secoes']]),
+               mapa={k: MP[k] for k in ('svg', 'w', 'h', 'lon0', 'lat1', 'k', 'kx')}, vj=VJ, cenas=cenas,
+               lugares={i: dict(nome=LUGS[i]['nome'], lon=float(LUGS[i]['lon']), lat=float(LUGS[i]['lat'])) for i in usados})
+pf = (src / 'prototipo-f.html').read_text()
+for k, v in {'DADOS': 'const DADOS=' + json.dumps(DADOS_F, ensure_ascii=False) + ';', 'PROTO': (src / 'prototipo-f.js').read_text()}.items():
+    pf = pf.replace('/*' + k + '*/', v.replace('</script', '<\\/script'), 1)
+(ROOT / 'prototipo-f.html').write_text(pf)
+print('prototipo-f.html', round(len(pf.encode()) / 1e3), 'kB;', len(cenas), 'cenas')

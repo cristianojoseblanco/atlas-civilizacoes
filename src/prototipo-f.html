@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Protótipo F · o mapa conta a lição · Atlas das Civilizações</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
+<style>
+:root{--noite:#1D2B36;--papel:#FFF6E3;--carta:#fff;--contorno:#0F1A22;--tinta:#1D2B36;--suave:#5D5647;--ouro:#F2B33D;--feito:#2A9D8F;--alerta:#E5644A;--mar:#3D7F8F;--terra:#F1DCA6;--rio:#2B6576;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);--titulo:'Bricolage Grotesque',system-ui,sans-serif;--texto:'Nunito Sans',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--papel);color:var(--tinta);font-family:var(--texto);-webkit-tap-highlight-color:transparent;overflow:hidden}
+button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
+:focus-visible{outline:3px solid var(--ouro);outline-offset:3px}
+.titulo{font-family:var(--titulo);font-weight:800}
+.b3{height:54px;padding:0 26px;border-radius:16px;border:3px solid var(--contorno);background:var(--carta);font-size:17px;font-weight:900;box-shadow:0 5px 0 var(--contorno);transition:transform 100ms var(--ease-out),box-shadow 100ms var(--ease-out)}
+.b3:active{transform:translateY(5px);box-shadow:0 0 0 var(--contorno)}
+.b3.ouro{background:var(--ouro)}
+.app{height:100%;display:grid;grid-template-rows:64px 1fr auto}
+.topo{display:flex;align-items:center;gap:16px;padding:0 20px;border-bottom:3px solid var(--contorno);background:var(--papel);z-index:3}
+.topo .nome{font-family:var(--titulo);font-weight:800;font-size:19px}
+.secoes{display:flex;gap:8px;margin-left:auto}
+.secoes button{width:34px;height:12px;border-radius:999px;border:2.5px solid var(--contorno);background:#E9DCC2}
+.secoes button.feita{background:var(--feito)}.secoes button.atual{background:var(--ouro);width:54px}
+.corpo{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}
+.palco{min-height:0;overflow:auto;padding:36px max(28px,calc((100% - 580px)/2)) 120px;scroll-behavior:smooth}
+.palco .rot{font-size:14px;font-weight:900;color:var(--suave);margin-bottom:8px}
+.palco h1{font-size:34px;line-height:38px;margin-bottom:22px}
+.txt{font-size:18px;line-height:30px;margin:0 0 18px;padding:10px 14px 10px 16px;border-radius:14px;border-left:5px solid transparent;transition:opacity 400ms ease,background-color 400ms ease,border-color 400ms ease;cursor:pointer}
+.txt b{font-weight:900}
+.txt.agora{background:var(--carta);border-color:var(--ouro);box-shadow:0 0 0 2.5px var(--contorno)}
+.txt:not(.agora):not(.depois){opacity:.55}
+.txt.depois{display:none}
+.txt.agora{animation:entra 420ms var(--ease-out)}
+@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.mapa{position:relative;min-height:0;overflow:hidden;background:var(--mar);border-left:3px solid var(--contorno)}
+.campo{display:block;width:100%;height:100%}
+.mapa .mar{fill:var(--mar)}.mapa .costa{fill:var(--contorno);stroke:var(--contorno);stroke-width:4px;stroke-linejoin:round;vector-effect:non-scaling-stroke}.mapa .terra{fill:var(--terra)}.mapa .lago{fill:var(--mar)}.mapa .rio{fill:none;stroke:var(--rio);stroke-width:1.8px;vector-effect:non-scaling-stroke}
+.mk{transform-box:view-box}
+.mk .dentro{transform-box:fill-box;transform-origin:center}
+.rot-s{font:800 11px var(--texto);fill:var(--tinta);paint-order:stroke;stroke:var(--terra);stroke-width:3px}
+.rot-m{font:800 13px var(--titulo);fill:var(--tinta);paint-order:stroke;stroke:var(--terra);stroke-width:4px}
+.rot-g{font:800 19px var(--titulo);fill:var(--tinta);paint-order:stroke;stroke:var(--terra);stroke-width:5px}
+.pegada{fill:rgba(242,179,61,.35);stroke:var(--contorno);stroke-width:2.5;stroke-dasharray:5 4}
+.canais path{fill:none;stroke:var(--rio);stroke-width:calc(var(--inv) * 3.5px);stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
+.territorio{fill:rgba(42,157,143,.16);stroke:var(--feito);stroke-width:calc(var(--inv) * 3px);stroke-dasharray:calc(var(--inv) * 10px) calc(var(--inv) * 6px);stroke-linejoin:round}
+.muralha{fill:none;stroke:var(--contorno);stroke-width:7;stroke-dasharray:1;stroke-dashoffset:0}
+.muralha{stroke-dasharray:.035 .015}
+.sobre{position:absolute;inset:0;pointer-events:none}
+.anc{position:absolute;left:0;top:0;width:0;height:0}
+.chip-m{position:absolute;left:0;top:44px;translate:-50% 0;padding:5px 12px;border-radius:12px;background:var(--papel);border:3px solid var(--contorno);font:800 15px var(--titulo);white-space:nowrap;box-shadow:0 4px 0 var(--contorno)}
+.chip-m.escuro{background:var(--noite);color:var(--papel);top:50px}
+.chip-m.ouro{background:var(--ouro);top:-92px}
+.selo-m .chip-m{top:-96px;background:var(--feito);color:#fff}
+.vj-anc .vj{position:absolute;left:-118px;top:-104px;width:80px;filter:drop-shadow(0 4px 0 rgba(15,26,34,.25))}
+.vj svg{display:block;width:100%;height:auto}
+.vj .a{display:none}.vj.andando.passo .a{display:block}.vj.andando.passo .p{display:none}
+.ano{position:absolute;left:16px;top:16px;height:44px;display:flex;align-items:center;padding:0 18px;border-radius:999px;background:var(--papel);border:3px solid var(--contorno);font:800 19px var(--titulo);box-shadow:0 4px 0 var(--contorno);font-variant-numeric:tabular-nums}
+.esquema-tag{position:absolute;right:14px;top:16px;padding:5px 11px;border-radius:999px;background:rgba(255,246,227,.85);border:2px dashed var(--contorno);font-size:13px;font-weight:800}
+.esquema-tag[hidden]{display:none}
+.ciclo{position:absolute;left:-110px;top:-110px;width:220px;height:220px}
+.seta-c{position:absolute;inset:0;animation:gira 14s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.no-c{position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(var(--a)) translateX(88px) rotate(calc(-1 * var(--a)))}
+.no-c svg{position:absolute;left:-22px;top:-22px;width:44px;height:44px;border-radius:50%;background:var(--papel);border:3px solid var(--contorno);box-shadow:0 3px 0 var(--contorno);padding:5px}
+.no-c span{position:absolute;left:0;top:26px;translate:-50% 0;font:800 13px var(--titulo);white-space:nowrap;background:var(--papel);padding:1px 7px;border-radius:8px}
+.leg-fluxo{position:absolute;left:-90px;top:120px;width:180px;display:flex;flex-direction:column;gap:4px;padding:8px 12px;border-radius:12px;background:var(--papel);border:3px solid var(--contorno);font-size:13px;font-weight:800}
+.leg-fluxo span{display:flex;align-items:center;gap:8px}.leg-fluxo i{width:12px;height:12px;border:2px solid var(--contorno)}.leg-fluxo i.g{background:var(--ouro);border-radius:50%}.leg-fluxo i.p{background:var(--feito)}
+.vin{position:absolute;left:60px;top:-170px;width:250px;padding:12px;border-radius:18px;background:var(--papel);border:3px solid var(--contorno);box-shadow:0 5px 0 var(--contorno);transform-origin:0 100%}
+.vin::before{content:"";position:absolute;left:-14px;bottom:24px;border:12px solid transparent;border-right-color:var(--contorno)}
+.vin svg{display:block;width:100%;height:auto;border-radius:10px;background:#FBEFD2}
+.vin p{font-size:14px;line-height:19px;font-weight:700;margin-top:8px}
+.vin .t1,.vin .t2{font:800 17px var(--titulo);fill:var(--tinta)}.vin .t2{fill:var(--feito)}
+.vin.roda .pop{animation:pop 500ms var(--ease-out) both;animation-delay:calc(var(--i) * 120ms + 200ms);transform-box:fill-box;transform-origin:center}
+@keyframes pop{from{transform:scale(0);opacity:0}70%{transform:scale(1.2)}to{transform:none;opacity:1}}
+.vin.roda .braco{animation:balanca 2.4s ease-in-out infinite;transform-origin:100px 34px}
+@keyframes balanca{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+.vin.roda .rola{animation:rola 2.6s var(--ease-out) infinite}
+@keyframes rola{from{transform:translate(30px,0)}to{transform:translate(170px,0)}}
+.vin.roda .marca-selo{stroke-dasharray:200;animation:risca 2.6s var(--ease-out) infinite}
+@keyframes risca{from{stroke-dashoffset:200}to{stroke-dashoffset:0}}
+.vin.roda .entra{animation:entraBula 2.8s var(--ease-out) infinite;animation-delay:calc(var(--i) * 250ms)}
+@keyframes entraBula{0%{transform:none;opacity:1}60%,100%{transform:translateX(90px);opacity:0}}
+.vin.roda .acha{animation:acha 2.4s var(--ease-out) both;transform-box:fill-box;transform-origin:center}
+@keyframes acha{0%{transform:scale(.7,.7);rx:40}100%{transform:none}}
+.vin.roda .acha rect{animation:canto 1.2s var(--ease-out) both}
+@keyframes canto{from{rx:40}to{rx:12}}
+.vin.roda .marcas-t{animation:aparece 600ms ease 1.2s both}
+@keyframes aparece{from{opacity:0}to{opacity:1}}
+.vin.roda .t2{animation:aparece 600ms ease 1s both}
+.regua-t{position:absolute;left:24px;right:24px;bottom:22px;padding:14px 18px 34px;border-radius:18px;background:var(--papel);border:3px solid var(--contorno);box-shadow:0 5px 0 var(--contorno)}
+.regua-t[hidden]{display:none}
+.trilho{position:relative;height:16px;border-radius:999px;background:#E9DCC2;border:2.5px solid var(--contorno);margin-top:30px}
+.trilho i{position:absolute;top:0;bottom:0;transform-origin:left}
+.trilho .lento{left:0;background:#D9C9A3;border-radius:999px 0 0 999px}
+.trilho .rapido{background:var(--alerta);border-radius:0 999px 999px 0}
+.trilho .cursor{position:absolute;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--ouro);border:3px solid var(--contorno)}
+.marcas{position:relative;height:18px;margin-top:6px}
+.marcas span{position:absolute;translate:-50% 0;font-size:12px;font-weight:800;white-space:nowrap}
+.marcas span:first-child{translate:0 0}.marcas .m2{translate:calc(-100% - 8px) 0}.marcas .m3{translate:-100% 0;top:16px;color:var(--alerta)}
+.marcas{height:34px}
+.durs{position:absolute;left:18px;right:18px;top:10px;height:20px}
+.durs span{position:absolute;translate:-50% 0;font-size:13px;font-weight:900;white-space:nowrap}
+.durs .d2{color:var(--alerta);font:800 15px var(--titulo)}
+.base{border-top:3px solid var(--contorno);background:var(--papel);z-index:3}
+.base .dentro{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:14px 24px calc(14px + env(safe-area-inset-bottom))}
+.base .dica{font-weight:800;color:var(--suave)}
+.base .b3{margin-left:auto;min-width:200px}
+@media (max-width:860px){
+  .corpo{display:flex;flex-direction:column}
+  .mapa{order:-1;flex:none;height:50vh;border-left:none;border-bottom:3px solid var(--contorno)}
+  .palco{padding:20px 16px 40px}
+  .palco h1{font-size:25px;line-height:29px;margin-bottom:14px}
+  .txt{font-size:16.5px;line-height:26px}
+  .topo .nome{font-size:16px}
+  .secoes button{width:22px}.secoes button.atual{width:36px}
+  .base .dica{display:none}.base .b3{width:100%;margin:0}
+  .vin{width:200px;left:40px;top:-150px}.vin p{font-size:12.5px;line-height:16px}
+  .vj-anc .vj{width:60px;left:-86px;top:-80px}
+  .rot-g{font-size:16px}
+  .regua-t{left:10px;right:10px;bottom:10px;padding:10px 12px 30px}
+  .durs span{font-size:11px}.durs .d2{font-size:13px}
+  .ciclo{transform:scale(.8)}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topo"><span class="nome">A revolução urbana</span><div class="secoes" id="secoes"></div></header>
+  <div class="corpo">
+    <main class="palco" id="palco"></main>
+    <div class="mapa" id="mapa" aria-label="Mapa animado da lição"></div>
+  </div>
+  <div class="base"><div class="dentro" id="baseDentro"></div></div>
+</div>
+<script>/*DADOS*/</script>
+<script>/*PROTO*/</script>
+</body>
+</html>
